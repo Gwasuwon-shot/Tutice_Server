@@ -1,11 +1,11 @@
 package gwasuwonshot.tutice.config.jwt;
 
+import gwasuwonshot.tutice.common.exception.BasicException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import gwasuwonshot.tutice.common.exception.ErrorStatus;
-import gwasuwonshot.tutice.common.exception.UnauthorizedException;
 
 import javax.annotation.PostConstruct;
 import java.nio.charset.StandardCharsets;
@@ -58,7 +58,7 @@ public class JwtService {
             return true;
         } catch (RuntimeException e) {
             if (e instanceof ExpiredJwtException) {
-                throw new UnauthorizedException(ErrorStatus.TOKEN_TIME_EXPIRED_EXCEPTION, ErrorStatus.TOKEN_TIME_EXPIRED_EXCEPTION.getMessage());
+                throw new BasicException(ErrorStatus.TOKEN_TIME_EXPIRED_EXCEPTION, ErrorStatus.TOKEN_TIME_EXPIRED_EXCEPTION.getMessage());
             }
             return false;
         }
