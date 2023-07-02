@@ -1,7 +1,6 @@
 # Tutice_Server
+
 32nd GoSopt WebJam 🌳Lesson 🔔Notification 🍎Service
-
-
 
 </aside>
 <hr>
@@ -48,14 +47,11 @@
 ├── 📂 test
 ```
 
-
-
 </aside>
 <hr>
 </br>
 
 # 💽 DB ERD
-
 
 디비 erd 이미지
 
@@ -71,10 +67,7 @@ api docs
 <hr>
 </br>
 
-
-# 🏃‍♀️ 역할분담 & 구현 진척도
-
-
+# 🏃‍ 역할분담 & 구현 진척도
 
 </aside>
 <hr>
@@ -94,7 +87,8 @@ api docs
 1. 이름으로부터 의도가 읽혀질 수 있게 쓴다.
 
 2. 단수를 기본형으로 한다.
-	- 기능 자체에서 단수, 복수를 구분하는 경우에만 복수 사용 ex. 다중삭제, 단일삭제
+
+   - 기능 자체에서 단수, 복수를 구분하는 경우에만 복수 사용 ex. 다중삭제, 단일삭제
 
 3. DB의 테이블, 클래스에는 `PascalCase`를 사용한다.
 
@@ -105,20 +99,17 @@ api docs
 6. 상수, enum에는 `UPPER_SNAKE_CASE`를 사용한다.
 
 7. 메소드는 `crud + http method`(동사) + 명사 형태로 작성한다.
-	- c : ex. `createUser`
-	- r : ex. `getUser`
-	- u : ex. `updateUser`
-	- d : ex. `deleteUser`
+
+   - c : ex. `createUser`
+   - r : ex. `getUser`
+   - u : ex. `updateUser`
+   - d : ex. `deleteUser`
 
 8. 약어 사용은 최대한 지양한다.
 
 9. 이름에 네 단어 이상이 들어가면 팀원과 상의를 거친 후 사용한다.
    </div>
    </details>
-
-
-
-
 
 <details>
 <summary>주석(Comment)</summary>
@@ -134,8 +125,6 @@ api docs
 
 </div>
 </details>
-
-
 
 <hr>
 </br>
@@ -196,4 +185,3 @@ api docs
 - 🖇️ merge: 다른브렌치를 merge하는 경우
 - 📌 init : Initial commit을 하는 경우
 ```
-
