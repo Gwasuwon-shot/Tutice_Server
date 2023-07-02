@@ -38,7 +38,7 @@
 	├── 📂 common(공용 클래스 관리)
 		├── 🗂️ entity(공통 엔티티)
 		├── 🗂️ dto (공통 DTO)
-		├── 🗂️ exception (공통 exception enum)
+		├── 🗂️ exception (공통 exception enum, BasicException)
 		├── 🗂️ advice
 		├── 🗂️ resolver
 
@@ -93,65 +93,26 @@ api docs
 
 1. 이름으로부터 의도가 읽혀질 수 있게 쓴다.
 
-- ex)
+2. 단수를 기본형으로 한다.
+	- 기능 자체에서 단수, 복수를 구분하는 경우에만 복수 사용 ex. 다중삭제, 단일삭제
 
-  ```jsx
-  // bad
-  function q() {
-    // ...stuff...
-  }
+3. DB의 테이블, 클래스에는 `PascalCase`를 사용한다.
 
-  // good
-  function query() {
-    // ..stuff..
-  }
-  ```
+4. 변수, 메소드에는 `camelCase`를 사용한다.
 
-2. 오브젝트, 함수, 그리고 인스턴스에는 `camelCase`를 사용한다.
+5. DB의 테이블의 칼럼에는 `snake_case`를 사용한다.
 
-- ex)
+6. 상수, enum에는 `UPPER_SNAKE_CASE`를 사용한다.
 
-  ```jsx
-  // bad
-  const OBJEcttsssss = {};
-  const this_is_my_object = {};
-  function c() {}
+7. 메소드는 `crud + http method`(동사) + 명사 형태로 작성한다.
+	- c : ex. `createUser`
+	- r : ex. `getUser`
+	- u : ex. `updateUser`
+	- d : ex. `deleteUser`
 
-  // good
-  const thisIsMyObject = {};
-  function thisIsMyFunction() {}
-  ```
+8. 약어 사용은 최대한 지양한다.
 
-3. 클래스나 constructor에는 `PascalCase`를 사용한다.
-
-- ex)
-
-  ```jsx
-  // bad
-  function user(options) {
-    this.name = options.name;
-  }
-
-  const bad = new user({
-    name: "nope",
-  });
-
-  // good
-  class User {
-    constructor(options) {
-      this.name = options.name;
-    }
-  }
-
-  const good = new User({
-    name: "yup",
-  });
-  ```
-
-4. 함수 이름은 동사 + 명사 형태로 작성한다.
-   ex) `postUserInformation( )`
-5. 약어 사용은 최대한 지양한다.
-6. 이름에 네 단어 이상이 들어가면 팀원과 상의를 거친 후 사용한다
+9. 이름에 네 단어 이상이 들어가면 팀원과 상의를 거친 후 사용한다.
    </div>
    </details>
 
@@ -160,23 +121,16 @@ api docs
 
 
 <details>
-<summary>주석(Functions)</summary>
+<summary>주석(Comment)</summary>
 <div markdown="1">
 
-1. 화살표 함수를 사용한다.
+1. 해당 메소드가 어디에 쓰이는지 설명한다.
 
-- ex)
+2. 해당 분기문이 어떤 분기인지 설명한다.
 
-  ```jsx
-  var arr1 = [1, 2, 3];
-  var pow1 = arr.map(function(x) {
-    // ES5 Not Good
-    return x * x;
-  });
+3. 반복문에서 어떤 조건에서 반복되는지 설명한다.
 
-  const arr2 = [1, 2, 3];
-  const pow2 = arr.map((x) => x * x); // ES6 Good
-  ```
+4. 정렬하고 필터링할때 어떤 조건의 정렬과 필터링인지 설명한다.
 
 </div>
 </details>
@@ -223,21 +177,23 @@ api docs
 <aside>
 📍  git commit message convention
 
-`ex) feat(변경한 파일) : 변경 내용 (/#issue num)`
+- 커밋은 한글로 작성한다.
+
+`ex) (#13)🍊feat : 변경 내용 `
 
 ```plain
-- ✨ feat:      새로운 기능 구현
+- 🍊 feat:      (수화가) 새로운 기능 구현
+- 🍋 feat:      (소정이가) 새로운 기능 구현
 - 🐛 fix:       버그, 오류 해결
 - 🧹 chore:     src 또는 test 파일을 수정하지 않는 기타 변경 사항 ( 새로운 파일 생성, 파일 이동, 이름 변경 등 )
 - ♻️ refactor:  버그 수정이나 기능 추가가 없는 코드 변경 ( 코드 구조 변경 등의 리팩토링 )
-- 💎 style:     코드의 의미에 영향을 미치지 않는 변경 사항 ( 코드 형식, 세미콜론 추가: 비즈니스 로직에 변경 없음 )
 - 🏗️ build:    빌드 시스템 또는 외부에 영향을 미치는 변경 사항 종속성 ( 라이브러리 추가 등 )
 - 📈 perf:      성능을 향상 시키기 위한 코드 변경
 - 🧪 test:      테스트 추가 또는 이전 테스트 수정
 - 📝 docs:      README나 WIKI 등의 문서 개정
 - ⏪️ revert:    이전 커밋을 되돌리는 경우
 - 📦 ci:      CI 구성 파일 및 스크립트 변경
-- Merge: 다른브렌치를 merge하는 경우
-- Init : Initial commit을 하는 경우
+- 🖇️ merge: 다른브렌치를 merge하는 경우
+- 📌 init : Initial commit을 하는 경우
 ```
 
