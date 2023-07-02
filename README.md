@@ -155,94 +155,9 @@ api docs
    </div>
    </details>
 
-<details>
-<summary>블록(Blocks)</summary>
-<div markdown="1">
 
-1. 복수행의 블록에는 중괄호({})를 사용한다.
 
-- ex)
 
-  ```jsx
-  // bad
-  if (test)
-    return false;
-
-  // good
-  if (test) return false;
-
-  // good
-  if (test) {
-    return false;
-  }
-
-  // bad
-  function() { return false; }
-
-  // good
-  function() {
-    return false;
-  }
-
-  ```
-
-2. 복수행 블록의 `if` 와 `else` 를 이용하는 경우 `else` 는 `if` 블록 끝의 중괄호( } )와 같은 행에 위치시킨다.
-
-- ex)
-  `java // bad if (test) { thing1(); thing2(); } else { thing3(); } // good if (test) { thing1(); thing2(); } else { thing3(); }`
-  </div>
-  </details>
-
-<details>
-<summary>코멘트(Comments)</summary>
-<div markdown="1">
-
-1. 복수형의 코멘트는 `/** ... */` 를 사용한다.
-
-- ex)
-
-  ```jsx
-  // good
-  /**
-   * @param {String} tag
-   * @return {Element} element
-   */
-  function make(tag) {
-    // ...stuff...
-
-    return element;
-  }
-  ```
-
-2. 단일 행의 코멘트에는 `//` 을 사용하고 코멘트를 추가하고 싶은 코드의 상부에 배치한다. 그리고 코멘트의 앞에 빈 행을 넣는다.
-
-- ex)
-  `jsx // bad const active = true; // is current tab // good // is current tab const active = true; // good function getType() { console.log('fetching type...'); // set the default type to 'no type' const type = this._type || 'no type'; return type; }`
-  </div>
-  </details>
-
-<details>
-<summary>문자열(Strings)</summary>
-<div markdown="1">
-
-1. 문자열에는 싱크쿼트 `''` 를 사용한다.
-
-- ex)
-
-  ```jsx
-  // bad
-  const name = "Capt. Janeway";
-
-  // good
-  const name = "Capt. Janeway";
-  ```
-
-2. 프로그램에서 문자열을 생성하는 경우는 문자열 연결이 아닌 `template strings`를 이용한다.
-
-- ex)
-  `` jsx // bad function sayHi(name) { return 'How are you, ' + name + '?'; } // bad function sayHi(name) { return ['How are you, ', name, '?'].join(); } // good function sayHi(name) { return `How are you, ${name}?`; } ``
-  </div>
-  </details>
 
 <details>
 <summary>주석(Functions)</summary>
