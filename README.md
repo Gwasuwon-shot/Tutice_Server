@@ -20,7 +20,7 @@
 ```jsx
 ├── 📂 main
 	├── 🗂️ resources
-		├── 📕 application.yml
+		├── 📕 application.yaml
 
 	├── 📂 domain
 		├── 📂 entity(엔티티)
