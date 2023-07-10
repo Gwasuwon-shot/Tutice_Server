@@ -19,4 +19,8 @@ public abstract class AuditingTimeEntity {
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    private LocalDateTime deletedAt;
 }
+
+

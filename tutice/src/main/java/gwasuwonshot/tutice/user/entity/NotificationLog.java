@@ -17,7 +17,7 @@ public class NotificationLog {
     private Long idx;
 
     @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "user_idx")
+    @JoinColumn(name = "user_idx", nullable = false)
     private User user;
 
     @Column(nullable = false)

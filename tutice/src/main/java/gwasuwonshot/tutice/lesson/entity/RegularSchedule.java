@@ -19,7 +19,7 @@ public class RegularSchedule {
     private Long idx;
 
     @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "lesson_idx")
+    @JoinColumn(name = "lesson_idx", nullable = false)
     private Lesson lesson;
 
     @Column(nullable = false)
