@@ -1,0 +1,84 @@
+{
+  "path": "cz-conventional-changelog",
+  "maxHeaderWidth": 100,
+  "types": [
+    {
+      "value": "feat",
+      "name": "🍊 feat: (sign language) new feature",
+      "title": "Features",
+      "emoji": "🍊"
+    },
+    {
+      "value": "feat",
+      "name": "🍋 feat: (Sojungiga) New feature implementation",
+      "title": "Features",
+      "emoji": "🍋"
+    },
+    {
+      "value": "fix",
+      "name": "🐛 fix: fix bugs, errors",
+      "title": "Bug Fixes",
+      "emoji": "🐛"
+    },
+    {
+      "value": "chore",
+      "name": "🧹 chore: other changes that don't modify the src or test files",
+      "title": "Chores",
+      "emoji": "🧹"
+    },
+    {
+      "value": "refactor",
+      "name": "♻️ refactor: Code changes without bug fixes or feature additions",
+      "title": "Refactors",
+      "emoji": "♻️"
+    },
+    {
+      "value": "build",
+      "name": "🏗️ build: changes that affect the build system or external dependencies",
+      "title": "Builds",
+      "emoji": "🏗️"
+    },
+    {
+      "value": "perf",
+      "name": "📈 perf: code changes to improve performance",
+      "title": "Performance Improvements",
+      "emoji": "📈"
+    },
+    {
+      "value": "test",
+      "name": "🧪 test: add test or edit previous test",
+      "title": "Tests",
+      "emoji": "🧪"
+    },
+    {
+      "value": "docs",
+      "name": "📝 docs: Revision of documents such as README and WIKI",
+      "title": "Documentation",
+      "emoji": "📝"
+    },
+    {
+      "value": "revert",
+      "name": "⏪️ revert: to revert a previous commit",
+      "title": "Reverts",
+      "emoji": "⏪️"
+    },
+    {
+      "value": "ci",
+      "name": "📦 ci: change CI configuration files and scripts",
+      "title": "CI Changes",
+      "emoji": "📦"
+    },
+    {
+      "value": "merge",
+      "name": "🖇️ Merge: When merging another branch",
+      "title": "Merges",
+      "emoji": "🖇️"
+    },
+    {
+      "value": "init",
+      "name": "📌 init: In case of initial commit",
+      "title": "Initial Commits",
+      "emoji": "📌"
+    }
+  ]
+}

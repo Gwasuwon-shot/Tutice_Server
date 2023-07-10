@@ -1,3 +1,5 @@
+const conventionalCommitTypes = require("cz-conventional-changelog");
+
 module.exports = {
   // Other configuration options...
 
