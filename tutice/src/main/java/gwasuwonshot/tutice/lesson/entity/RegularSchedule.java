@@ -1,6 +1,7 @@
 package gwasuwonshot.tutice.lesson.entity;
 
 
+import gwasuwonshot.tutice.common.entity.AuditingTimeEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +14,7 @@ import java.sql.Time;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class RegularSchedule {
+public class RegularSchedule extends AuditingTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;

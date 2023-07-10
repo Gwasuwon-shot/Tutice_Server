@@ -1,5 +1,6 @@
 package gwasuwonshot.tutice.user.entity;
 
+import gwasuwonshot.tutice.common.entity.AuditingTimeEntity;
 import gwasuwonshot.tutice.lesson.entity.Lesson;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -12,18 +13,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-//@Table( //두개 칼럼 조합 유니크
-//        name="user",
-//        uniqueConstraints={
-//                @UniqueConstraint(
-//                        name={"UniqueEmailAndProvider"},
-//                        columnNames={"email", "provider"}
-//                )
-//        }
-//)
+@Table( //두개 칼럼 조합 유니크
+        name="user",
+        uniqueConstraints={
+                @UniqueConstraint(
+                        name="UniqueEmailAndProvider",
+                        columnNames={"email", "provider"}
+                )
+        }
+)
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User {
+public class User extends AuditingTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
@@ -32,8 +34,8 @@ public class User {
     private String email;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "provider")
-    private Provider provider;
+    @Column(name = "provider", nullable = false)
+    private Provider provider = Provider.LOKAL;
 
     private String password;
 

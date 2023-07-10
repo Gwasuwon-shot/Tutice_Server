@@ -1,5 +1,6 @@
 package gwasuwonshot.tutice.user.entity;
 
+import gwasuwonshot.tutice.common.entity.AuditingTimeEntity;
 import gwasuwonshot.tutice.lesson.entity.Lesson;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -11,7 +12,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class NotificationLog {
+public class NotificationLog extends AuditingTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
