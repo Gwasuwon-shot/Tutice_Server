@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Time;
+import java.time.DayOfWeek;
 
 
 @Entity
@@ -30,11 +31,17 @@ public class RegularSchedule extends AuditingTimeEntity {
     private Time endTime;
 
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    DayOfWeek dayOfWeek;
+
+
     @Builder
-    public RegularSchedule(Lesson lesosn, Time startTime, Time endTime){
-        this.lesson = lesosn;
+    public RegularSchedule(Lesson lesson, Time startTime, Time endTime,DayOfWeek dayOfWeek){
+        this.lesson = lesson;
         this.startTime=startTime;
         this.endTime=endTime;
+        this.dayOfWeek=dayOfWeek;
 
     }
 }

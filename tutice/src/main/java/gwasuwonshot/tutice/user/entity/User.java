@@ -48,10 +48,10 @@ public class User extends AuditingTimeEntity {
     @Column(nullable = false)
     private Role role;
 
-    @OneToMany(mappedBy = "teacher")
+    @OneToMany(mappedBy = "teacher", cascade = {CascadeType.REMOVE})
     private List<Account> accountList;
 
-    @OneToMany(mappedBy = "teacher")
+    @OneToMany(mappedBy = "teacher", cascade = {CascadeType.PERSIST})
     private List<Lesson> lessonList;
 
     @OneToMany(mappedBy = "user")

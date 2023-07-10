@@ -50,14 +50,14 @@ public class Lesson extends AuditingTimeEntity {
     @Column(nullable = false)
     private Long amount;
 
-    @OneToMany(mappedBy = "lesson")
+    @OneToMany(mappedBy = "lesson", cascade = {CascadeType.PERSIST})
     private List<PaymentRecord> paymenRecordList;
 
 
-    @OneToMany(mappedBy = "lesson")
+    @OneToMany(mappedBy = "lesson", cascade = {CascadeType.PERSIST})
     private List<RegularSchedule> regularScheduleList;
 
-    @OneToMany(mappedBy = "lesson")
+    @OneToMany(mappedBy = "lesson", cascade = {CascadeType.PERSIST})
     private List<Schedule> scheduleList;
 
     @Builder

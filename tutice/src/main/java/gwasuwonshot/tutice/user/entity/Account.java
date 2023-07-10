@@ -23,14 +23,15 @@ public class Account extends AuditingTimeEntity {
     @Column(nullable = false)
     private String name;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String bank;
+    private Bank bank;
 
     @Column(nullable = false)
     private String number;
 
 
-    @Builder Account( User teacher, String name, String bank, String number){
+    @Builder Account( User teacher, String name, Bank bank, String number){
         this.teacher=teacher;
         this.name=name;
         this.bank=bank;
