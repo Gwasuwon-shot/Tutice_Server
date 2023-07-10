@@ -8,5 +8,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/")//url 아직 커스텀 안됨
 public class UserController {
-    dfdfd
+
 }
