@@ -31,7 +31,7 @@ public class Lesson extends AuditingTimeEntity {
     private User parents;
 
     @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "account_idx", nullable = false)
+    @JoinColumn(name = "account_idx")
     private Account account;
 
     @Column(nullable = false)
