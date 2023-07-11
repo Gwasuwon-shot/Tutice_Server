@@ -42,6 +42,10 @@ dependencies {
 	implementation group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
 
 
+	// firebase
+	implementation 'com.google.firebase:firebase-admin:6.8.1'
+	implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.2.2'
+
 	// swagger
 	implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
 }
