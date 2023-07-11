@@ -44,6 +44,8 @@ public class User extends AuditingTimeEntity {
 
     private String deviceToken;
 
+    private Boolean isMarketing;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
@@ -71,13 +73,14 @@ public class User extends AuditingTimeEntity {
 
     @Builder
     public User(String email, Provider provider, String password,
-                String name, String deviceToken, Role role){
+                String name, String deviceToken, Role role, Boolean isMarketing){
         this.email = email;
         this.provider = provider;
         this.password=password;
         this.name = name;
         this.deviceToken = deviceToken;
         this.role=role;
+        this.isMarketing=isMarketing;
         this.accountList=new ArrayList<>();
         this.lessonList=new ArrayList<>();
         this.notificationLogList = new ArrayList<>();
