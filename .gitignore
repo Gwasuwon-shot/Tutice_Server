@@ -4,7 +4,7 @@
 /**/src/main/resources/application.properties
 /**/src/main/resources/application.yaml
 /**/src/main/resources/gwasuoneshot-firebase.json
-
+*.json
 
 ### IntelliJ IDEA ###
 .idea
