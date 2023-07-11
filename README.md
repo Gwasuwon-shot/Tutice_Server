@@ -6,6 +6,29 @@
 <hr>
 </br>
 
+
+<img width="450" height="400" src="https://github.com/Gwasuwon-shot/Tutice_Client/assets/100409061/d9ba9eb3-fbbc-4e11-9ebc-59ea2ec19f56"/>
+
+
+🔔 <b> 쉬운 수업 관리로 열리는 정확한 나의 결실  🌳 <br/>
+과외의 출결 체크부터 수업비 관리까지 한번의 클릭으로 쉽게 관리하는 서비스</b> <br />
+
+</aside>
+<hr>
+</br>
+
+#  🍊🍋 Team Gwasuwon BE
+
+|![image](https://github.com/Gwasuwon-shot/Tutice_Server/assets/65851554/ccef89d8-487d-48ff-8614-a6285b3e7acd)|![image](https://github.com/Gwasuwon-shot/Tutice_Server/assets/65851554/cdc06d5a-b6b1-4d2a-bf37-556442dbc3ee)|
+|:---|:---|
+|🍊유수화🍊|🍋박소정🍋|
+
+
+
+</aside>
+<hr>
+</br>
+
 # 🧑‍🔧 Tech Stack
 ### Backend
 <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white"> <img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"> ![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens) <img src="https://img.shields.io/badge/spring data jpa-6DB33F?style=for-the-badge&logoColor=white">  <img src="https://img.shields.io/badge/hibernate-59666C?style=for-the-badge&logo=hibernate&logoColor=white"> <img src="https://img.shields.io/badge/gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white"> 
@@ -27,6 +50,10 @@
 <br> 
 <br>
 
+
+</aside>
+<hr>
+</br>
 
 # 🏠 server architecture
 
