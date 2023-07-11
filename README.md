@@ -57,8 +57,8 @@
 
 # 🏠 server architecture
 
-서버 아키텍처 이미지!
 
+![image](https://github.com/Gwasuwon-shot/Tutice_Server/assets/65851554/b8587aef-7256-4778-8c72-0a700aa1d0bb)
 </aside>
 <hr>
 </br>
