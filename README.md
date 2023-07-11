@@ -53,7 +53,9 @@
 
 # 💽 DB ERD
 
-디비 erd 이미지
+
+![image](https://github.com/Gwasuwon-shot/Tutice_Server/assets/65851554/f850fcb2-0519-4e99-adf0-ad1ae59df395)
+
 
 </aside>
 <hr>
