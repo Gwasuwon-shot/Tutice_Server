@@ -16,7 +16,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-class FCMService {
+public class FCMService {
     private final String API_URL = "https://fcm.googleapis.com/v1/projects/gwasuoneshot-55659/messages:send";
     // api_url 추후 보안 분리
     private final ObjectMapper objectMapper;
