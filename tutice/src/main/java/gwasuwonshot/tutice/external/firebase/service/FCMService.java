@@ -17,7 +17,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 class FCMService {
-    private final String API_URL = "https://fcm.googleapis.com/v1/projects/gwasuoneshot/messages:send";
+    private final String API_URL = "https://fcm.googleapis.com/v1/projects/gwasuoneshot-55659/messages:send";
+    // api_url 추후 보안 분리
     private final ObjectMapper objectMapper;
 
     public Response sendMessage(String deviceToken,String title, String body) throws IOException {
@@ -36,7 +37,8 @@ class FCMService {
     }
 
     private String getAccessToken() throws IOException {
-        String firebaseConfigPath = "../../../../../../resources/firebase/gwasuoneshot-firebase.json";
+        String firebaseConfigPath = "firebase/gwasuoneshot-firebase.json";
+        // firebaseConfigPath 추후 보안 분리
         GoogleCredentials googleCredentials = GoogleCredentials
                 .fromStream(new ClassPathResource(firebaseConfigPath).getInputStream())
                 .createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
