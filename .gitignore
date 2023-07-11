@@ -21,8 +21,8 @@ out/
 HELP.md
 .gradle
 /**/.gradle
-gradle/wrapper/gradle-wrapper.properties
-/**/gradle/wrapper/gradle-wrapper.properties
+#gradle/wrapper/gradle-wrapper.properties
+#/**/gradle/wrapper/gradle-wrapper.properties
 
 build/
 ### !gradle/wrapper/gradle-wrapper.jar
