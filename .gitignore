@@ -1,11 +1,10 @@
 
 
-
 ### 설정 파일들 ###
 /**/src/main/resources/application.properties
 /**/src/main/resources/application.yaml
-*.json
 /**/src/main/resources/gwasuoneshot-firebase.json
+
 
 ### IntelliJ IDEA ###
 .idea
