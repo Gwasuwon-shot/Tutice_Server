@@ -8,7 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import gwasuwonshot.tutice.common.dto.ApiResponse;
+import gwasuwonshot.tutice.common.dto.ApiResponseDto;
 import gwasuwonshot.tutice.common.exception.ErrorStatus;
 
 import java.util.Objects;
@@ -22,9 +22,9 @@ public class ControllerExceptionAdvice {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    protected ApiResponse handleMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
+    protected ApiResponseDto handleMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
         FieldError fieldError = Objects.requireNonNull(e.getFieldError());
-        return ApiResponse.error(ErrorStatus.REQUEST_VALIDATION_EXCEPTION, String.format("%s. (%s)", fieldError.getDefaultMessage(), fieldError.getField()));
+        return ApiResponseDto.error(ErrorStatus.REQUEST_VALIDATION_EXCEPTION, String.format("%s. (%s)", fieldError.getDefaultMessage(), fieldError.getField()));
     }
 
     /**
@@ -33,17 +33,17 @@ public class ControllerExceptionAdvice {
      */
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
-    protected ApiResponse<Object> handleException(final Exception e) {
+    protected ApiResponseDto<Object> handleException(final Exception e) {
         System.out.println(e.getMessage()); //에러 메시지를 로그에 넣기위해
-        return ApiResponse.error(ErrorStatus.INTERNAL_SERVER_ERROR);
+        return ApiResponseDto.error(ErrorStatus.INTERNAL_SERVER_ERROR);
     }
 
     /**
      * Tutice Custom  Error
      */
     @ExceptionHandler(BasicException.class)
-    protected ResponseEntity<ApiResponse> handleBasicException(BasicException e) {
+    protected ResponseEntity<ApiResponseDto> handleBasicException(BasicException e) {
         return ResponseEntity.status(e.getHttpStatus())
-                .body(ApiResponse.error(e.getErrorStatus(), e.getMessage()));
+                .body(ApiResponseDto.error(e.getErrorStatus(), e.getMessage()));
     }
 }

@@ -18,6 +18,8 @@ public enum SuccessStatus {
      * 201 CREATED
      */
     SIGNUP_SUCCESS(HttpStatus.CREATED, "회원가입이 완료됐습니다."),
+    CREATE_LESSON_SUCCESS(HttpStatus.CREATED, "수업 생성이 완료됐습니다."),
+
     ;
 
     private final HttpStatus httpStatus;
