@@ -1,7 +1,10 @@
 package gwasuwonshot.tutice.schedule.entity;
 
+import gwasuwonshot.tutice.lesson.entity.Payment;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Arrays;
 
 @Getter
 @RequiredArgsConstructor
@@ -14,4 +17,10 @@ public enum ScheduleStatus {
 
     private final String key;
     private final String value;
+
+    public static ScheduleStatus getScheduleStatusByValue(String value){
+        return Arrays.stream(ScheduleStatus.values())
+                .filter(s -> s.getValue().equals(value))
+                .findAny().orElseThrow();
+    }
 }
