@@ -3,6 +3,8 @@ package gwasuwonshot.tutice.user.entity;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Arrays;
+
 @Getter
 @RequiredArgsConstructor
 public enum Role {
@@ -11,4 +13,10 @@ public enum Role {
     TEACHER("ROLE_TEACHER","선생님");
     private final String key;
     private final String value;
+
+    public static Role getRoleByValue(String value){
+        return Arrays.stream(Role.values())
+                .filter(r -> r.getValue().equals(value))
+                .findAny().orElseThrow();
+    }
 }

@@ -35,7 +35,7 @@ public class User extends AuditingTimeEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "provider", nullable = false)
-    private Provider provider = Provider.LOKAL;
+    private Provider provider = Provider.LOCAL;
 
     private String password;
 
