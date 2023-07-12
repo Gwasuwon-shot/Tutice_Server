@@ -20,7 +20,7 @@
 #  🍊🍋 Team Gwasuwon BE
 
 |![image](https://github.com/Gwasuwon-shot/Tutice_Server/assets/65851554/ccef89d8-487d-48ff-8614-a6285b3e7acd)|![image](https://github.com/Gwasuwon-shot/Tutice_Server/assets/65851554/cdc06d5a-b6b1-4d2a-bf37-556442dbc3ee)|
-|:---|:---|
+|:---:|:---:|
 |🍊<a href="https://github.com/YuSuhwa-ve">유수화</a>🍊|🍋<a href="https://github.com/sojungpp">박소정</a>🍋|
 |🍎 FCM 알림 구현 |🍏 도커&젠킨스 CI/CD|
 |🍎 Lesson 관련 api |🍏 로컬 로그인&회원가입|
