@@ -6,10 +6,63 @@
 <hr>
 </br>
 
+
+<img width="450" height="400" src="https://github.com/Gwasuwon-shot/Tutice_Client/assets/100409061/d9ba9eb3-fbbc-4e11-9ebc-59ea2ec19f56"/>
+
+
+🔔 <b> 쉬운 수업 관리로 열리는 정확한 나의 결실  🌳 <br/>
+과외의 출결 체크부터 수업비 관리까지 한번의 클릭으로 쉽게 관리하는 서비스</b> <br />
+
+</aside>
+<hr>
+</br>
+
+#  🍊🍋 Team Gwasuwon BE
+
+|![image](https://github.com/Gwasuwon-shot/Tutice_Server/assets/65851554/ccef89d8-487d-48ff-8614-a6285b3e7acd)|![image](https://github.com/Gwasuwon-shot/Tutice_Server/assets/65851554/cdc06d5a-b6b1-4d2a-bf37-556442dbc3ee)|
+|:---|:---|
+|🍊유수화🍊|🍋박소정🍋|
+|🍎 FCM 알림 구현 |🍏 도커&젠킨스 CI/CD|
+|🍎 Lesson 관련 api |🍏 로컬 로그인&회원가입|
+|🍎 Payment 관련 api |🍏 Schedule 관련 api|
+
+
+
+
+</aside>
+<hr>
+</br>
+
+# 🧑‍🔧 Tech Stack
+### Backend
+<img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white"> <img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"> ![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens) <img src="https://img.shields.io/badge/spring data jpa-6DB33F?style=for-the-badge&logoColor=white">  <img src="https://img.shields.io/badge/hibernate-59666C?style=for-the-badge&logo=hibernate&logoColor=white"> <img src="https://img.shields.io/badge/gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white"> 
+
+### DB
+<img src="https://img.shields.io/badge/amazon rds-527FFF?style=for-the-badge&logo=amazonrds&logoColor=white"> <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white"> <img src="https://img.shields.io/badge/redis-DC382D?style=for-the-badge&logo=redis&logoColor=white"> <img src="https://img.shields.io/badge/firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=white"> <img src="https://img.shields.io/badge/amazon s3-569A31?style=for-the-badge&logo=amazons3&logoColor=white">
+
+### CI/CD
+<img src="https://img.shields.io/badge/jenkins-D24939?style=for-the-badge&logo=jenkins&logoColor=white"> <img src="https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white"> <img src="https://img.shields.io/badge/docker hub-2496ED?style=for-the-badge&logo=docker&logoColor=white"> 
+
+### Deploy
+<img src="https://img.shields.io/badge/amazon ec2-FF9900?style=for-the-badge&logo=amazon ec2&logoColor=white"> 
+
+### Develop Tool
+<img src="https://img.shields.io/badge/intelliJ-000000?style=for-the-badge&logo=intellij idea&logoColor=white"> <img src="https://img.shields.io/badge/postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white"> <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white"> <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white"> 
+
+### Communicate Tool
+<img src="https://img.shields.io/badge/slack-4A154B?style=for-the-badge&logo=slack&logoColor=white"> <img src="https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white">
+<br> 
+<br>
+
+
+</aside>
+<hr>
+</br>
+
 # 🏠 server architecture
 
-서버 아키텍처 이미지!
 
+![image](https://github.com/Gwasuwon-shot/Tutice_Server/assets/65851554/b8587aef-7256-4778-8c72-0a700aa1d0bb)
 </aside>
 <hr>
 </br>
