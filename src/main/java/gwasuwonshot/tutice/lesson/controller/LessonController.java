@@ -29,9 +29,9 @@ public class LessonController {
 
 
 
-        System.out.println("컨트럴로안");
+        //레슨정보 생성
         Long createdLessonId = lessonService.createLesson(userId,request);
-
+        //레슨코드 생성
         String createdLessonCode = lessonService.createLessonCode(createdLessonId);
 
         return ApiResponseDto.success(SuccessStatus.CREATE_LESSON_SUCCESS ,CreateLessonResponseDto.of(createdLessonCode) );
