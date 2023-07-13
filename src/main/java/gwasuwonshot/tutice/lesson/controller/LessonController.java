@@ -21,12 +21,15 @@ public class LessonController {
 
     private final LessonService lessonService;
 
-    @PostMapping("/")
+    @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponseDto<CreateLessonResponseDto> createLesson(
             @UserId final Long userId,
-            @RequestBody @Valid final CreateLessonRequestDto request ) {
+            @Valid @RequestBody  final CreateLessonRequestDto request ) {
 
+
+
+        System.out.println("컨트럴로안");
         Long createdLessonId = lessonService.createLesson(userId,request);
 
         String createdLessonCode = lessonService.createLessonCode(createdLessonId);

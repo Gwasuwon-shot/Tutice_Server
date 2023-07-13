@@ -1,17 +1,15 @@
 package gwasuwonshot.tutice.lesson.service;
 
-import gwasuwonshot.tutice.TuticeApplication;
 import gwasuwonshot.tutice.common.exception.ErrorStatus;
 import gwasuwonshot.tutice.lesson.dto.assembler.LessonAssembler;
 import gwasuwonshot.tutice.lesson.dto.request.CreateLessonRequestDto;
-import gwasuwonshot.tutice.lesson.dto.response.CreateLessonResponseDto;
 import gwasuwonshot.tutice.lesson.entity.Lesson;
 import gwasuwonshot.tutice.lesson.entity.Payment;
 import gwasuwonshot.tutice.lesson.repository.LessonRepository;
 import gwasuwonshot.tutice.user.dto.assembler.AccountAssembler;
 import gwasuwonshot.tutice.user.entity.Account;
 import gwasuwonshot.tutice.user.entity.User;
-import gwasuwonshot.tutice.user.exception.UserNotFoundException;
+import gwasuwonshot.tutice.user.exception.userException.NotFoundUserException;
 import gwasuwonshot.tutice.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,7 +26,7 @@ public class LessonService {
     public Long createLesson(
             final Long userId, final CreateLessonRequestDto request){
         User teacher = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
 
 
         Payment payment = Payment.getPaymentByValue(request.getLesson().getPayment());
@@ -43,7 +41,6 @@ public class LessonService {
 
         Lesson lesson  = lessonAssembler.toEntity(
                 teacher,
-                null,
                 account,
                 request.getLesson().getSubject(),
                 request.getLesson().getStudentName(),

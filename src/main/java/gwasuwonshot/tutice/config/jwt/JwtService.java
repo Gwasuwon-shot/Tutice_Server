@@ -37,7 +37,7 @@ public class JwtService {
                 .setExpiration(new Date(now.getTime() + 120 * 60 * 1000L));
 
         //private claim 등록
-        claims.put("userId", userId);
+        claims.put("userIdx", userId);
 
         return Jwts.builder()
                 .setHeaderParam(Header.TYPE , Header.JWT_TYPE)
@@ -77,7 +77,7 @@ public class JwtService {
     // JWT 토큰 내용 확인
     public String getJwtContents(String token) {
         final Claims claims = getBody(token);
-        return (String) claims.get("userId");
+        return (String) claims.get("userIdx");
     }
 
 }

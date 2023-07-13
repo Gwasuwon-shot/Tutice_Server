@@ -21,16 +21,16 @@ public class ControllerExceptionAdvice {
      */
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ExceptionHandler(MethodArgumentNotValidException.class) //@Vlid에서 걸러지는 에러들
     protected ApiResponseDto handleMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
         FieldError fieldError = Objects.requireNonNull(e.getFieldError());
         return ApiResponseDto.error(ErrorStatus.REQUEST_VALIDATION_EXCEPTION, String.format("%s. (%s)", fieldError.getDefaultMessage(), fieldError.getField()));
     }
 
-    /**
-     * 500 Internal Server
-     * 근데 이거로 처리하면 에러메시지가 로그에 안나타나고 그냥 500으로 퉁쳐지는듯
-     */
+//    /**
+//     * 500 Internal Server
+//     * 근데 이거로 처리하면 에러메시지가 로그에 안나타나고 그냥 500으로 퉁쳐지는듯
+//     */
 //    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 //    @ExceptionHandler(Exception.class)
 //    protected ApiResponseDto<Object> handleException(final Exception e) {
@@ -46,4 +46,7 @@ public class ControllerExceptionAdvice {
         return ResponseEntity.status(e.getHttpStatus())
                 .body(ApiResponseDto.error(e.getErrorStatus(), e.getMessage()));
     }
+
+
+
 }
