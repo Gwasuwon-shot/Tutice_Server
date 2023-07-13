@@ -1,5 +1,7 @@
 package gwasuwonshot.tutice.lesson.dto.request;
 
+import gwasuwonshot.tutice.common.resolver.enumValue.Enum;
+import gwasuwonshot.tutice.user.entity.Role;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -21,18 +23,18 @@ public class CreateLessonRequestRegularSchedule {
 
     @NotBlank
     @Schema(description = "시작 시간")
-    @Pattern(
-            regexp="(0[0-9]|1[0-9]|2[0-4]):(0[1-9]|[0-5][0-9])", //시간정보
-            message = "시간의 형태는 HH:mm의 형태여야합니다."
-    )
+//    @Pattern(//문제
+//            regexp="/(0[1-9]|1[0-9]|2[0-4]):(0[0-9]|[0-5][0-9])$/", //시간정보
+//            message = "시작 시간의 형태는 HH:mm의 형태여야합니다."
+//    )
     private String startTime;
 
     @NotBlank
     @Schema(description = "종료 시간")
-    @Pattern(
-            regexp="(0[0-9]|1[0-9]|2[0-4]):(0[1-9]|[0-5][0-9])", //시간정보
-            message = "시간의 형태는 HH:mm의 형태여야합니다."
-    )
+//    @Pattern(
+//            regexp="/(0[1-9]|1[0-9]|2[0-4]):(0[0-9]|[0-5][0-9])$/", //시간정보
+//            message = "종료 시간의 형태는 HH:mm의 형태여야합니다."
+//    )
     private String endTime;
 }
 

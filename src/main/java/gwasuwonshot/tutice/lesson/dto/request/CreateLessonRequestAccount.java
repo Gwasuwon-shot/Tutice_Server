@@ -20,10 +20,10 @@ public class CreateLessonRequestAccount {
     private String bank;
 
     @NotBlank
-    @Pattern(
-            regexp="([0123456789-])", //계좌번호
-            message = "계좌번호는 숫자와 하이픈으로만 이루어져야합니다."
-    )
+//    @Pattern(//문제
+//            regexp="[0123456789-]", //계좌번호
+//            message = "계좌번호는 숫자와 하이픈으로만 이루어져야합니다."
+//    )
     @Schema(description = "계좌번호")
     private String number;
 

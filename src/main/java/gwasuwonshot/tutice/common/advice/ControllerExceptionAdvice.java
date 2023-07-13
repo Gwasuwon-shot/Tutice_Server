@@ -24,7 +24,7 @@ public class ControllerExceptionAdvice {
     @ExceptionHandler(MethodArgumentNotValidException.class) //@Vlid에서 걸러지는 에러들
     protected ApiResponseDto handleMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
         FieldError fieldError = Objects.requireNonNull(e.getFieldError());
-        return ApiResponse.error(ErrorStatus.REQUEST_VALIDATION_EXCEPTION, String.format("%s", fieldError.getDefaultMessage()));
+        return ApiResponseDto.error(ErrorStatus.REQUEST_VALIDATION_EXCEPTION, String.format("%s", fieldError.getDefaultMessage()));
     }
 
 
