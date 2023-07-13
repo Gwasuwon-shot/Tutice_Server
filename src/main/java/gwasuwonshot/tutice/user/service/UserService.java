@@ -29,6 +29,7 @@ public class UserService {
                 request.getEmail(),
                 password,
                 request.getName(),
+
                 Role.getRoleByValue(request.getRole()),
                 request.getIsMarketing());
         User newUser = userRepository.save(user);
