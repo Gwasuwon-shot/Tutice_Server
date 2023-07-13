@@ -8,14 +8,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserAssembler {
 
-    public User toEntity(String email, Provider provider, String password,
-                         String name, String deviceToken, Role role, Boolean isMarketing){
+    public User toEntity(String email, String password,
+                         String name, Role role, Boolean isMarketing){
         return User.builder()
                 .email(email)
-                .provider(provider)
+                .provider(Provider.LOCAL)
                 .password(password)
                 .name(name)
-                .deviceToken(deviceToken)
                 .role(role)
                 .isMarketing(isMarketing)
                 .build();
