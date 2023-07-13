@@ -32,6 +32,9 @@ public class UserIdResolver implements HandlerMethodArgumentResolver {
 
         final String token = request.getHeader("Authorization");
 
+
+        System.out.println("배리어토큰 : "+token);
+
         // 토큰 검증
         if (!jwtService.verifyToken(token)) {
             throw new RuntimeException(String.format("USER_ID를 가져오지 못했습니다. (%s - %s)", parameter.getClass(), parameter.getMethod()));

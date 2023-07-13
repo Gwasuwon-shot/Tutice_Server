@@ -23,7 +23,7 @@ public class LessonController {
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponseDto<CreateLessonResponseDto> createLesosn(
+    public ApiResponseDto<CreateLessonResponseDto> createLesson(
             @UserId final Long userId,
             @RequestBody @Valid final CreateLessonRequestDto request ) {
 

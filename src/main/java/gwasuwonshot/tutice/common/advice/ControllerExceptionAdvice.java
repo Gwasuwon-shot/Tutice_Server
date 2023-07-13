@@ -31,12 +31,12 @@ public class ControllerExceptionAdvice {
      * 500 Internal Server
      * 근데 이거로 처리하면 에러메시지가 로그에 안나타나고 그냥 500으로 퉁쳐지는듯
      */
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(Exception.class)
-    protected ApiResponseDto<Object> handleException(final Exception e) {
-        System.out.println(e.getMessage()); //에러 메시지를 로그에 넣기위해
-        return ApiResponseDto.error(ErrorStatus.INTERNAL_SERVER_ERROR);
-    }
+//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+//    @ExceptionHandler(Exception.class)
+//    protected ApiResponseDto<Object> handleException(final Exception e) {
+//        System.out.println(e.getMessage()); //에러 메시지를 로그에 넣기위해
+//        return ApiResponseDto.error(ErrorStatus.INTERNAL_SERVER_ERROR);
+//    }
 
     /**
      * Tutice Custom  Error
