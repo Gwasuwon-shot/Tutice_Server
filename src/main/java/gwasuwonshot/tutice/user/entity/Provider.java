@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum Provider {
-    LOKAL("PROVIDER_LOKAL","자체"),
+    LOCAL("PROVIDER_LOCAL","자체"),
     KAKAO("PROVIDER_KAKAO","카카오");
     private final String key;
     private final String value;
