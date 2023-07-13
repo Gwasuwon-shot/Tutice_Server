@@ -24,7 +24,7 @@ public class CreateLessonRequestRegularSchedule {
     @NotBlank
     @Schema(description = "시작 시간")
 //    @Pattern(//문제
-//            regexp="/(0[1-9]|1[0-9]|2[0-4]):(0[0-9]|[0-5][0-9])$/", //시간정보
+//            regexp="/(0[1-9]|1[0-9]|2[0-4]):(0[0-9]|[0-5][0-9]):00$/", //시간정보
 //            message = "시작 시간의 형태는 HH:mm의 형태여야합니다."
 //    )
     private String startTime;
@@ -32,7 +32,7 @@ public class CreateLessonRequestRegularSchedule {
     @NotBlank
     @Schema(description = "종료 시간")
 //    @Pattern(
-//            regexp="/(0[1-9]|1[0-9]|2[0-4]):(0[0-9]|[0-5][0-9])$/", //시간정보
+//            regexp="/(0[1-9]|1[0-9]|2[0-4]):(0[0-9]|[0-5][0-9]):00$/", //시간정보
 //            message = "종료 시간의 형태는 HH:mm의 형태여야합니다."
 //    )
     private String endTime;
