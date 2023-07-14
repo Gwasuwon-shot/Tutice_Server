@@ -22,7 +22,8 @@ public @interface Enum {
 
     Class<? extends Payload>[] payload() default { };
 
-    Class<? extends java.lang.Enum<?>> enumClass();
+    //Class<? extends java.lang.Enum<?>> enumClass();
+    Class<? extends EnumModel> enumClass();
 
     boolean ignoreCase() default false;
 }

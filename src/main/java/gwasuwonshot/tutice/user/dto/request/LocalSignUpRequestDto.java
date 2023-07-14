@@ -11,6 +11,7 @@ import javax.validation.constraints.*;
 @NoArgsConstructor
 public class LocalSignUpRequestDto {
 
+
     @Enum(enumClass = Role.class, ignoreCase = true, message ="잘못된 role 값 입니다.")
     private String role;
 

@@ -1,6 +1,6 @@
 package gwasuwonshot.tutice.user.entity;
 
-import gwasuwonshot.tutice.lesson.entity.Payment;
+import gwasuwonshot.tutice.common.resolver.enumValue.EnumModel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 @Getter
 @RequiredArgsConstructor
-public enum Provider {
+public enum Provider implements EnumModel {
     LOCAL("PROVIDER_LOCAL","자체"),
     KAKAO("PROVIDER_KAKAO","카카오");
     private final String key;

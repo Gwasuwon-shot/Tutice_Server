@@ -1,11 +1,12 @@
 package gwasuwonshot.tutice.user.entity;
 
+import gwasuwonshot.tutice.common.resolver.enumValue.EnumModel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum Bank {
+public enum Bank implements EnumModel {
 
     //기획과의 논의를 통해 은행정보는 텍스트로만 저장하는것으로 변경
 //    SINHAN("BANK_SINHAN","신한은행"),

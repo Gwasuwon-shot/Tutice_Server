@@ -1,6 +1,6 @@
 package gwasuwonshot.tutice.schedule.entity;
 
-import gwasuwonshot.tutice.lesson.entity.Payment;
+import gwasuwonshot.tutice.common.resolver.enumValue.EnumModel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 @Getter
 @RequiredArgsConstructor
-public enum ScheduleStatus {
+public enum ScheduleStatus implements EnumModel {
 
     NO_STATUS("SCHEDULE_STATUS_NO_STATUS","상태없음"),
     ATTENDANCE("SCHEDULE_STATUS_ATTENDANCE","출석"),
