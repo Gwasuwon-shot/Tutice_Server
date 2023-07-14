@@ -1,4 +1,4 @@
-package gwasuwonshot.tutice.common.resolver.userId;
+package gwasuwonshot.tutice.common.resolver.userIdx;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,5 +7,5 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface UserId {
+public @interface UserIdx {
 }

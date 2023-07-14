@@ -18,7 +18,7 @@ public class PaymentRecord extends AuditingTimeEntity {
     private Long idx;
 
     @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "lesson_idx", nullable = false)
+    @JoinColumn(name = "lesson_idx", nullable = false,  foreignKey = @ForeignKey(ConstraintMode.CONSTRAINT))
     private Lesson lesson;
 
     private Date date;

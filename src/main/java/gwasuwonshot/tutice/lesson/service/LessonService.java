@@ -8,7 +8,11 @@ import gwasuwonshot.tutice.lesson.dto.assembler.PaymentRecordAssembler;
 import gwasuwonshot.tutice.lesson.dto.assembler.RegularScheduleAssembler;
 import gwasuwonshot.tutice.lesson.dto.request.CreateLessonRequestDto;
 import gwasuwonshot.tutice.lesson.dto.response.GetLessonByUserResponseDto;
-import gwasuwonshot.tutice.lesson.entity.*;
+import gwasuwonshot.tutice.lesson.dto.response.GetLessonDetailByParentsResponseDto;
+import gwasuwonshot.tutice.lesson.entity.DayOfWeek;
+import gwasuwonshot.tutice.lesson.entity.Lesson;
+import gwasuwonshot.tutice.lesson.entity.Payment;
+import gwasuwonshot.tutice.lesson.entity.RegularSchedule;
 import gwasuwonshot.tutice.lesson.repository.LessonRepository;
 import gwasuwonshot.tutice.lesson.repository.PaymentRecordRepository;
 import gwasuwonshot.tutice.lesson.repository.RegularScheduleRepository;
@@ -45,8 +49,14 @@ public class LessonService {
     private final PaymentRecordAssembler paymentRecordAssembler;
     private final PaymentRecordRepository paymentRecordRepository;
 
-    public GetLessonByUserResponseDto getLessonByUser(final Long userId){
-        User user = userRepository.findById(userId)
+    @Transactional
+    public GetLessonDetailByParentsResponseDto getLessonDetailByParents(Long userIdx,Long lessonIdx){
+        //1. 먼저 유저를 찾고 유저의 롤이 부모님
+
+    }
+
+    public GetLessonByUserResponseDto getLessonByUser(final Long userIdx){
+        User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
 
         if(user.getRole().equals(Role.PARENTS)){
@@ -91,7 +101,8 @@ public class LessonService {
                 request.getLesson().getStudentName(),
                 request.getLesson().getCount(),
                 payment,
-                request.getLesson().getAmount()
+                request.getLesson().getAmount(),
+                DateAndTimeConvert.stringConvertDate(request.getLesson().getStartDate())
 
         );
 
