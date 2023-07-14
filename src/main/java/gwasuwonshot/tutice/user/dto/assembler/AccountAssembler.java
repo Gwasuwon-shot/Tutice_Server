@@ -1,7 +1,6 @@
 package gwasuwonshot.tutice.user.dto.assembler;
 
 import gwasuwonshot.tutice.user.entity.Account;
-import gwasuwonshot.tutice.user.entity.Bank;
 import gwasuwonshot.tutice.user.entity.User;
 import org.springframework.stereotype.Component;
 
