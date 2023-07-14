@@ -1,6 +1,8 @@
 package gwasuwonshot.tutice.lesson.dto.request;
 
 import gwasuwonshot.tutice.common.resolver.enumValue.Enum;
+import gwasuwonshot.tutice.lesson.entity.DayOfWeek;
+import gwasuwonshot.tutice.lesson.entity.Payment;
 import gwasuwonshot.tutice.user.entity.Role;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
@@ -16,11 +18,7 @@ public class CreateLessonRequestRegularSchedule {
     @NotBlank
     @Schema(description = "요일")
     // TODO :  enum validation으로 변경
-
-    @Pattern(
-            regexp="(월|화|수|목|금|토|일)", //요일 정보
-            message = "요일은 월,화,수,목,금,토,일 중 하나여야 합니다."
-    )
+    @Enum(enumClass = DayOfWeek.class, ignoreCase = true, message ="요일은 월,화,수,목,금,토,일 중 하나여야 합니다.")
     private String dayOfWeek;
 
     @NotBlank
