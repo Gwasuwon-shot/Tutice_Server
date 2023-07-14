@@ -48,17 +48,17 @@ public class LessonController {
 
     }
 
-//    @GetMapping("/detail/parents/{lessonIdx}")
-//    @ResponseStatus(HttpStatus.OK)
-//    public ApiResponseDto<GetLessonDetailByParentsResponseDto> getLessonDetailByParents(
-//            @UserIdx final Long userIdx
-//            ,@PathVariable final Long lessonIdx){
-//
-//
-//        return ApiResponseDto.success(SuccessStatus.GET_LESSON_DETAIL_BY_PARENTS_SUCCESS ,
-//                lessonService.getLessonDetailByParents(userIdx,lessonIdx));
-//
-//
-//    }
+    @GetMapping("/detail/parents/{lessonIdx}")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponseDto<GetLessonDetailByParentsResponseDto> getLessonDetailByParents(
+            @UserIdx final Long userIdx
+            ,@PathVariable final Long lessonIdx){
+
+
+        return ApiResponseDto.success(SuccessStatus.GET_LESSON_DETAIL_BY_PARENTS_SUCCESS ,
+                lessonService.getLessonDetailByParents(userIdx,lessonIdx));
+
+
+    }
 
 }

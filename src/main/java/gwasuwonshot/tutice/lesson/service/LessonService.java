@@ -1,6 +1,5 @@
 package gwasuwonshot.tutice.lesson.service;
 
-import gwasuwonshot.tutice.TuticeApplication;
 import gwasuwonshot.tutice.common.exception.ErrorStatus;
 import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
 import gwasuwonshot.tutice.lesson.dto.assembler.LessonAssembler;
@@ -13,6 +12,7 @@ import gwasuwonshot.tutice.lesson.entity.DayOfWeek;
 import gwasuwonshot.tutice.lesson.entity.Lesson;
 import gwasuwonshot.tutice.lesson.entity.Payment;
 import gwasuwonshot.tutice.lesson.entity.RegularSchedule;
+import gwasuwonshot.tutice.lesson.exception.NotFoundLessonException;
 import gwasuwonshot.tutice.lesson.repository.LessonRepository;
 import gwasuwonshot.tutice.lesson.repository.PaymentRecordRepository;
 import gwasuwonshot.tutice.lesson.repository.RegularScheduleRepository;
@@ -20,6 +20,7 @@ import gwasuwonshot.tutice.user.dto.assembler.AccountAssembler;
 import gwasuwonshot.tutice.user.entity.Account;
 import gwasuwonshot.tutice.user.entity.Role;
 import gwasuwonshot.tutice.user.entity.User;
+import gwasuwonshot.tutice.user.exception.userException.InvalidRoleException;
 import gwasuwonshot.tutice.user.exception.userException.NotFoundUserException;
 import gwasuwonshot.tutice.user.repository.AccountRepository;
 import gwasuwonshot.tutice.user.repository.UserRepository;
@@ -45,11 +46,36 @@ public class LessonService {
     private final PaymentRecordAssembler paymentRecordAssembler;
     private final PaymentRecordRepository paymentRecordRepository;
 
-//    @Transactional
-//    public GetLessonDetailByParentsResponseDto getLessonDetailByParents(Long userIdx,Long lessonIdx){
-//        //1. 먼저 유저를 찾고 유저의 롤이 부모님
-//
-//    }
+    @Transactional
+    public GetLessonDetailByParentsResponseDto getLessonDetailByParents(Long userIdx,Long lessonIdx){
+        //1. 먼저 유저를 찾고 유저의 롤이 부모님확인
+        User parents = userRepository.findById(userIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+
+        if(!parents.getRole().equals(Role.PARENTS)){
+            throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION,ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
+        }
+
+        // 2. 부모님의 수업중 해당 수업 아이디 있는지 확인
+//        System.out.println("시작1"); // TODO : 이거 jpa 영속성 관련 이슈인것같은데... 구현하고 공부해보기....
+//        parents.getLessonList().forEach(lesson -> System.out.println(lesson.getStudentName()));
+//        System.out.println("끝1");
+
+
+
+
+        Lesson lesson = lessonRepository.findAllByParentsIdx(parents.getIdx())
+                .stream()
+                .filter(pl -> pl.getIdx().equals(lessonIdx))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundLessonException(ErrorStatus.NOT_FOUND_LESSON_EXCEPTION,ErrorStatus.NOT_FOUND_LESSON_EXCEPTION.getMessage()));
+
+
+        //3. 해당 수업아이디가 있으면 정보 주기
+        return GetLessonDetailByParentsResponseDto.of(lesson);
+
+
+    }
 
     public GetLessonByUserResponseDto getLessonByUser(final Long userIdx){
         User user = userRepository.findById(userIdx)
@@ -70,15 +96,20 @@ public class LessonService {
 
     @Transactional
     public Long createLesson(
-            final Long userId, final CreateLessonRequestDto request){
+            final Long userIdx, final CreateLessonRequestDto request){
 
-        User teacher = userRepository.findById(userId)
+        User teacher = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
 
 
-        Payment payment = Payment.getPaymentByValue(request.getLesson().getPayment());
+        //0. 역할이 선생님이 아니면 에러발생
+        if(!teacher.getRole().equals(Role.TEACHER)){
+            throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION,ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
+        }
 
         //1. 선생님 계좌등록
+        Payment payment = Payment.getPaymentByValue(request.getLesson().getPayment());
+
         Account account = accountAssembler.toEntity(
                 teacher,
                 request.getAccount().getName(),
