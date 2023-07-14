@@ -25,7 +25,7 @@ public class CreateLessonRequestLesson {
 
     @NotBlank
     // TODO :  enum validation으로 변경
-    @Pattern(regexp = "(선불|후불)", message = "payment는 선불 or 후불 입니다.")
+    @Enum(enumClass = Payment.class, ignoreCase = true, message ="payment는 선불 or 후불 입니다.")
     @Schema(description = "선불 or 후불")
     private String payment;
 

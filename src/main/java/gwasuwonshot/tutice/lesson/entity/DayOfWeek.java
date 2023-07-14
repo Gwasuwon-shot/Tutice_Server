@@ -1,5 +1,6 @@
 package gwasuwonshot.tutice.lesson.entity;
 
+import gwasuwonshot.tutice.common.resolver.enumValue.EnumModel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -7,7 +8,7 @@ import java.util.Arrays;
 
 @Getter
 @RequiredArgsConstructor
-public enum DayOfWeek {
+public enum DayOfWeek implements EnumModel {
     MONDAY("DAY_OF_WEEK_MONDAY","월"),
     TUESDAY("DAY_OF_WEEK_TUESDAY","화"),
     WEDNESDAY("DAY_OF_WEEK_WEDNESDAY","수"),
