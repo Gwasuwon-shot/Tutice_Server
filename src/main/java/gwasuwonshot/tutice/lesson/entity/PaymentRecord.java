@@ -24,10 +24,18 @@ public class PaymentRecord extends AuditingTimeEntity {
     @Column(nullable = false)
     private Date date;
 
+    @Column(nullable = false)
+    private Long amount;
+
+    @Column(nullable = false)
+    private Boolean status = false;
+
     @Builder
-    public PaymentRecord(Lesson lesson, Date date){
+    public PaymentRecord(Lesson lesson, Date date, Long amount, Boolean status){
         this.lesson = lesson;
         this.date = date;
+        this.amount = amount;
+        this.status = false;
 
     }
 
