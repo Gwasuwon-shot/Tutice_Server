@@ -4,14 +4,13 @@ import gwasuwonshot.tutice.TuticeApplication;
 import gwasuwonshot.tutice.common.exception.ErrorStatus;
 import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
 import gwasuwonshot.tutice.lesson.dto.assembler.LessonAssembler;
+import gwasuwonshot.tutice.lesson.dto.assembler.PaymentRecordAssembler;
 import gwasuwonshot.tutice.lesson.dto.assembler.RegularScheduleAssembler;
 import gwasuwonshot.tutice.lesson.dto.request.CreateLessonRequestDto;
 import gwasuwonshot.tutice.lesson.dto.response.GetLessonByUserResponseDto;
-import gwasuwonshot.tutice.lesson.entity.DayOfWeek;
-import gwasuwonshot.tutice.lesson.entity.Lesson;
-import gwasuwonshot.tutice.lesson.entity.Payment;
-import gwasuwonshot.tutice.lesson.entity.RegularSchedule;
+import gwasuwonshot.tutice.lesson.entity.*;
 import gwasuwonshot.tutice.lesson.repository.LessonRepository;
+import gwasuwonshot.tutice.lesson.repository.PaymentRecordRepository;
 import gwasuwonshot.tutice.lesson.repository.RegularScheduleRepository;
 import gwasuwonshot.tutice.user.dto.assembler.AccountAssembler;
 import gwasuwonshot.tutice.user.entity.Account;
@@ -27,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.net.StandardSocketOptions;
 import java.sql.Time;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
@@ -42,6 +42,8 @@ public class LessonService {
     private final AccountRepository accountRepository;
     private final RegularScheduleAssembler regularScheduleAssembler;
     private final RegularScheduleRepository regularScheduleRepository;
+    private final PaymentRecordAssembler paymentRecordAssembler;
+    private final PaymentRecordRepository paymentRecordRepository;
 
     public GetLessonByUserResponseDto getLessonByUser(final Long userId){
         User user = userRepository.findById(userId)
@@ -96,6 +98,14 @@ public class LessonService {
         teacher.addLesson(lesson);
 
         lessonRepository.save(lesson);
+
+        //2.1 레슨이 선불일 경우 가짜 PaymentRecord 생성
+        if(lesson.getPayment().equals(Payment.PRE_PAYMENT)){
+            PaymentRecord paymentRecord = paymentRecordAssembler.toEntity(lesson, null);
+
+            paymentRecordRepository.save(paymentRecord);
+        }
+
 
         //3. 해당 레슨 정기일정 생성
         //?근본적인의문 : builder와 어셈블러가 다른이유를 모르겠음?/

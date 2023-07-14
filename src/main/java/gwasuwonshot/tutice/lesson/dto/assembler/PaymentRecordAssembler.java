@@ -8,7 +8,7 @@ import java.sql.Date;
 
 @Component
 public class PaymentRecordAssembler {
-    public PaymentRecord toEntity(Lesson lesson, Date date){
+    public PaymentRecord toEntity(Lesson lesson, Date date){//default 로 status false
         return PaymentRecord.builder()
                 .lesson(lesson)
                 .date(date)

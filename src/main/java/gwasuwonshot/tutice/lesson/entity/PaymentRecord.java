@@ -21,7 +21,6 @@ public class PaymentRecord extends AuditingTimeEntity {
     @JoinColumn(name = "lesson_idx", nullable = false)
     private Lesson lesson;
 
-    @Column(nullable = false)
     private Date date;
 
     @Column(nullable = false)
