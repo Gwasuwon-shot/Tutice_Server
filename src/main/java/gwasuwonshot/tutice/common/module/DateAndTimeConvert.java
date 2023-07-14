@@ -52,14 +52,14 @@ public class DateAndTimeConvert {
 
     }
 
-    public static String stringConvertDate(Date date){
+    public static String dateConvertString(Date date){
 
         //import java.sql.Date;
         //"yyyy-mm-dd 형식이어야함
         return date.toString();
     }
 
-    public static String nowDateConvertDate(){
+    public static String nowDateConvertString(){
         //현재날짜를 'yyyy-mm-dd'에 형식의 string으로 만들어주기
         LocalDate nowDate = LocalDate.now();
         return nowDate.toString();
