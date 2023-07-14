@@ -89,7 +89,8 @@ public class LessonService {
                 request.getLesson().getStudentName(),
                 request.getLesson().getCount(),
                 payment,
-                request.getLesson().getAmount()
+                request.getLesson().getAmount(),
+                DateAndTimeConvert.stringConvertDate(request.getLesson().getStartDate())
 
         );
 
