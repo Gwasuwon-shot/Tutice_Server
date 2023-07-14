@@ -7,6 +7,7 @@ import gwasuwonshot.tutice.lesson.dto.assembler.LessonAssembler;
 import gwasuwonshot.tutice.lesson.dto.assembler.RegularScheduleAssembler;
 import gwasuwonshot.tutice.lesson.dto.request.CreateLessonRequestDto;
 import gwasuwonshot.tutice.lesson.dto.response.GetLessonByUserResponseDto;
+import gwasuwonshot.tutice.lesson.dto.response.GetLessonDetailByParentsResponseDto;
 import gwasuwonshot.tutice.lesson.entity.DayOfWeek;
 import gwasuwonshot.tutice.lesson.entity.Lesson;
 import gwasuwonshot.tutice.lesson.entity.Payment;
@@ -43,8 +44,14 @@ public class LessonService {
     private final RegularScheduleAssembler regularScheduleAssembler;
     private final RegularScheduleRepository regularScheduleRepository;
 
-    public GetLessonByUserResponseDto getLessonByUser(final Long userId){
-        User user = userRepository.findById(userId)
+    @Transactional
+    public GetLessonDetailByParentsResponseDto getLessonDetailByParents(Long userIdx,Long lessonIdx){
+        //1. 먼저 유저를 찾고 유저의 롤이 부모님
+
+    }
+
+    public GetLessonByUserResponseDto getLessonByUser(final Long userIdx){
+        User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
 
         if(user.getRole().equals(Role.PARENTS)){
