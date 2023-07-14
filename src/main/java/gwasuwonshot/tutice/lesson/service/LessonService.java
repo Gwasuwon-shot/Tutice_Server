@@ -24,14 +24,10 @@ import gwasuwonshot.tutice.user.exception.userException.NotFoundUserException;
 import gwasuwonshot.tutice.user.repository.AccountRepository;
 import gwasuwonshot.tutice.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.SpringApplication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.net.StandardSocketOptions;
-import java.sql.Time;
-import java.time.LocalDate;
-import java.util.Arrays;
+
 import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,11 +45,11 @@ public class LessonService {
     private final PaymentRecordAssembler paymentRecordAssembler;
     private final PaymentRecordRepository paymentRecordRepository;
 
-    @Transactional
-    public GetLessonDetailByParentsResponseDto getLessonDetailByParents(Long userIdx,Long lessonIdx){
-        //1. 먼저 유저를 찾고 유저의 롤이 부모님
-
-    }
+//    @Transactional
+//    public GetLessonDetailByParentsResponseDto getLessonDetailByParents(Long userIdx,Long lessonIdx){
+//        //1. 먼저 유저를 찾고 유저의 롤이 부모님
+//
+//    }
 
     public GetLessonByUserResponseDto getLessonByUser(final Long userIdx){
         User user = userRepository.findById(userIdx)
@@ -112,9 +108,7 @@ public class LessonService {
 
         //2.1 레슨이 선불일 경우 가짜 PaymentRecord 생성
         if(lesson.getPayment().equals(Payment.PRE_PAYMENT)){
-            PaymentRecord paymentRecord = paymentRecordAssembler.toEntity(lesson, null);
-
-            paymentRecordRepository.save(paymentRecord);
+            paymentRecordRepository.save(paymentRecordAssembler.toEntity(lesson, null));
         }
 
 
