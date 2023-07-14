@@ -17,7 +17,7 @@ public class Account extends AuditingTimeEntity {
     private Long idx;
 
     @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "techer_idx", nullable = false)
+    @JoinColumn(name = "techer_idx", nullable = false,  foreignKey = @ForeignKey(ConstraintMode.CONSTRAINT))
     private User teacher;
 
     @Column(nullable = false)

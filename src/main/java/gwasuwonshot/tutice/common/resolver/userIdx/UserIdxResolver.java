@@ -1,4 +1,4 @@
-package gwasuwonshot.tutice.common.resolver.userId;
+package gwasuwonshot.tutice.common.resolver.userIdx;
 
 
 import gwasuwonshot.tutice.common.exception.ErrorStatus;
@@ -18,13 +18,13 @@ import javax.validation.constraints.NotNull;
 
 @RequiredArgsConstructor
 @Component
-public class UserIdResolver implements HandlerMethodArgumentResolver {
+public class UserIdxResolver implements HandlerMethodArgumentResolver {
 
     private final JwtService jwtService;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(UserId.class) && Long.class.equals(parameter.getParameterType());
+        return parameter.hasParameterAnnotation(UserIdx.class) && Long.class.equals(parameter.getParameterType());
     }
 
     @Override

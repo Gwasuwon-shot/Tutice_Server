@@ -4,14 +4,17 @@ import gwasuwonshot.tutice.TuticeApplication;
 import gwasuwonshot.tutice.common.exception.ErrorStatus;
 import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
 import gwasuwonshot.tutice.lesson.dto.assembler.LessonAssembler;
+import gwasuwonshot.tutice.lesson.dto.assembler.PaymentRecordAssembler;
 import gwasuwonshot.tutice.lesson.dto.assembler.RegularScheduleAssembler;
 import gwasuwonshot.tutice.lesson.dto.request.CreateLessonRequestDto;
 import gwasuwonshot.tutice.lesson.dto.response.GetLessonByUserResponseDto;
+import gwasuwonshot.tutice.lesson.dto.response.GetLessonDetailByParentsResponseDto;
 import gwasuwonshot.tutice.lesson.entity.DayOfWeek;
 import gwasuwonshot.tutice.lesson.entity.Lesson;
 import gwasuwonshot.tutice.lesson.entity.Payment;
 import gwasuwonshot.tutice.lesson.entity.RegularSchedule;
 import gwasuwonshot.tutice.lesson.repository.LessonRepository;
+import gwasuwonshot.tutice.lesson.repository.PaymentRecordRepository;
 import gwasuwonshot.tutice.lesson.repository.RegularScheduleRepository;
 import gwasuwonshot.tutice.user.dto.assembler.AccountAssembler;
 import gwasuwonshot.tutice.user.entity.Account;
@@ -21,13 +24,10 @@ import gwasuwonshot.tutice.user.exception.userException.NotFoundUserException;
 import gwasuwonshot.tutice.user.repository.AccountRepository;
 import gwasuwonshot.tutice.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.SpringApplication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.net.StandardSocketOptions;
-import java.sql.Time;
-import java.util.Arrays;
+
 import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,9 +42,17 @@ public class LessonService {
     private final AccountRepository accountRepository;
     private final RegularScheduleAssembler regularScheduleAssembler;
     private final RegularScheduleRepository regularScheduleRepository;
+    private final PaymentRecordAssembler paymentRecordAssembler;
+    private final PaymentRecordRepository paymentRecordRepository;
 
-    public GetLessonByUserResponseDto getLessonByUser(final Long userId){
-        User user = userRepository.findById(userId)
+//    @Transactional
+//    public GetLessonDetailByParentsResponseDto getLessonDetailByParents(Long userIdx,Long lessonIdx){
+//        //1. 먼저 유저를 찾고 유저의 롤이 부모님
+//
+//    }
+
+    public GetLessonByUserResponseDto getLessonByUser(final Long userIdx){
+        User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
 
         if(user.getRole().equals(Role.PARENTS)){
@@ -89,13 +97,20 @@ public class LessonService {
                 request.getLesson().getStudentName(),
                 request.getLesson().getCount(),
                 payment,
-                request.getLesson().getAmount()
+                request.getLesson().getAmount(),
+                DateAndTimeConvert.stringConvertDate(request.getLesson().getStartDate())
 
         );
 
         teacher.addLesson(lesson);
 
         lessonRepository.save(lesson);
+
+        //2.1 레슨이 선불일 경우 가짜 PaymentRecord 생성
+        if(lesson.getPayment().equals(Payment.PRE_PAYMENT)){
+            paymentRecordRepository.save(paymentRecordAssembler.toEntity(lesson, null));
+        }
+
 
         //3. 해당 레슨 정기일정 생성
         //?근본적인의문 : builder와 어셈블러가 다른이유를 모르겠음?/
