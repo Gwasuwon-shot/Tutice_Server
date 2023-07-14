@@ -32,6 +32,7 @@ public class ControllerExceptionAdvice {
      * 500 Internal Server
      * 근데 이거로 처리하면 에러메시지가 로그에 안나타나고 그냥 500으로 퉁쳐지는듯
      */
+    // TODO 추후 500에러 잘되게끔.... 커스텀해보기 로그에 에러가 찍히게끔
 //    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 //    @ExceptionHandler(Exception.class)
 //    protected ApiResponse<Object> handleException(final Exception e) {

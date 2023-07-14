@@ -15,6 +15,8 @@ import javax.validation.constraints.Pattern;
 public class CreateLessonRequestRegularSchedule {
     @NotBlank
     @Schema(description = "요일")
+    // TODO :  enum validation으로 변경
+
     @Pattern(
             regexp="(월|화|수|목|금|토|일)", //요일 정보
             message = "요일은 월,화,수,목,금,토,일 중 하나여야 합니다."
@@ -23,6 +25,8 @@ public class CreateLessonRequestRegularSchedule {
 
     @NotBlank
     @Schema(description = "시작 시간")
+    // TODO :  타임 추후 validate 확실하게
+
 //    @Pattern(//문제
 //            regexp="/(0[1-9]|1[0-9]|2[0-4]):(0[0-9]|[0-5][0-9]):00$/", //시간정보
 //            message = "시작 시간의 형태는 HH:mm:00의 형태여야합니다."
@@ -31,6 +35,7 @@ public class CreateLessonRequestRegularSchedule {
 
     @NotBlank
     @Schema(description = "종료 시간")
+    // TODO :  타임 추후 validate 확실하게
 //    @Pattern(
 //            regexp="/(0[1-9]|1[0-9]|2[0-4]):(0[0-9]|[0-5][0-9]):00$/", //시간정보
 //            message = "종료 시간의 형태는 HH:mm:00의 형태여야합니다."

@@ -6,6 +6,7 @@ import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
 import gwasuwonshot.tutice.lesson.dto.assembler.LessonAssembler;
 import gwasuwonshot.tutice.lesson.dto.assembler.RegularScheduleAssembler;
 import gwasuwonshot.tutice.lesson.dto.request.CreateLessonRequestDto;
+import gwasuwonshot.tutice.lesson.dto.response.GetLessonByUserResponseDto;
 import gwasuwonshot.tutice.lesson.entity.DayOfWeek;
 import gwasuwonshot.tutice.lesson.entity.Lesson;
 import gwasuwonshot.tutice.lesson.entity.Payment;
@@ -14,6 +15,7 @@ import gwasuwonshot.tutice.lesson.repository.LessonRepository;
 import gwasuwonshot.tutice.lesson.repository.RegularScheduleRepository;
 import gwasuwonshot.tutice.user.dto.assembler.AccountAssembler;
 import gwasuwonshot.tutice.user.entity.Account;
+import gwasuwonshot.tutice.user.entity.Role;
 import gwasuwonshot.tutice.user.entity.User;
 import gwasuwonshot.tutice.user.exception.userException.NotFoundUserException;
 import gwasuwonshot.tutice.user.repository.AccountRepository;
@@ -40,6 +42,23 @@ public class LessonService {
     private final AccountRepository accountRepository;
     private final RegularScheduleAssembler regularScheduleAssembler;
     private final RegularScheduleRepository regularScheduleRepository;
+
+    public GetLessonByUserResponseDto getLessonByUser(final Long userId){
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+
+        if(user.getRole().equals(Role.PARENTS)){
+            return GetLessonByUserResponseDto.of(!(lessonRepository.findAllByParentsIdx(user.getIdx()).isEmpty())
+                    ,user.getName());
+
+        } else if (user.getRole().equals(Role.TEACHER)) {
+            return GetLessonByUserResponseDto.of(!(lessonRepository.findAllByTeacherIdx(user.getIdx()).isEmpty())
+                    ,user.getName());
+        }
+        else{
+            return null; // 관리자 계정일경우..... 뭐하지??
+        }
+    }
 
     @Transactional
     public Long createLesson(

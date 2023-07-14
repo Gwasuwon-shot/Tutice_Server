@@ -18,7 +18,8 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class FCMService {
     private final String API_URL = "https://fcm.googleapis.com/v1/projects/tutice-29eef/messages:send";
-    // api_url 추후 보안 분리
+    // TODO :  api_url 추후 보안 분리
+    // TODO : constants들 class 내부 상수로 정리
     private final ObjectMapper objectMapper;
 
     public Response sendMessage(String deviceToken,String title, String body) throws IOException {
@@ -38,7 +39,8 @@ public class FCMService {
 
     private String getAccessToken() throws IOException {
         String firebaseConfigPath = "gwasuoneshot-firebase.json";
-        // firebaseConfigPath 추후 보안 분리
+        // TODO : firebaseConfigPath 추후 보안 분리
+
         GoogleCredentials googleCredentials = GoogleCredentials
                 .fromStream(new ClassPathResource(firebaseConfigPath).getInputStream())
                 .createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
