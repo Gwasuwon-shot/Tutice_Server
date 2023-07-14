@@ -48,4 +48,16 @@ public class LessonController {
 
     }
 
+    @GetMapping("/detail/parents/{lessonIdx}")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponseDto<GetLessonByUserResponseDto> getLessonDetailByParents(
+            @UserId final Long userId
+            ,@PathVariable final Long lessonIdx){
+
+        return ApiResponseDto.success(SuccessStatus.GET_LESSON_BY_USER_SUCCESS ,
+                lessonService.getLessonByUser(userId));
+
+
+    }
+
 }
