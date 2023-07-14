@@ -12,6 +12,7 @@ public class PaymentRecordAssembler {
         return PaymentRecord.builder()
                 .lesson(lesson)
                 .date(date)
+                .amount(lesson.getAmount())
                 .build();
     }
 }
