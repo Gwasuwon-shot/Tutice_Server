@@ -2,6 +2,9 @@ package gwasuwonshot.tutice.common.resolver.enumValue;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class EnumValidator implements ConstraintValidator<Enum, String> {
 
@@ -14,11 +17,16 @@ public class EnumValidator implements ConstraintValidator<Enum, String> {
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        Object[] enumValues = this.annotation.enumClass().getEnumConstants();
+        List<EnumValue>  enumValues = Arrays.stream(this.annotation.enumClass().getEnumConstants())
+                .map(EnumValue::new)
+                .collect(Collectors.toList());
+
+
         if (enumValues != null) {
-            for (Object enumValue : enumValues) {
-                if (value.equals(enumValue.toString())
-                        || (this.annotation.ignoreCase() && value.equalsIgnoreCase(enumValue.toString()))) {
+            for (EnumValue enumValue : enumValues) {
+                System.out.println(enumValue.getValue());
+                if (value.equals(enumValue.getValue())
+                        || (this.annotation.ignoreCase() && value.equalsIgnoreCase(enumValue.getValue()))) {
                     return true;
                 }
             }

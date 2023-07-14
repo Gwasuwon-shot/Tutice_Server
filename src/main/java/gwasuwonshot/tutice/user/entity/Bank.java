@@ -1,11 +1,12 @@
 package gwasuwonshot.tutice.user.entity;
 
+import gwasuwonshot.tutice.common.resolver.enumValue.EnumModel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum Bank {
+public enum Bank implements EnumModel {
     SINHAN("BANK_SINHAN","신한은행"),
     KB("BANK_KB","KB국민은행"),
     WOORI("BANK_WOORI","우리은행"),
