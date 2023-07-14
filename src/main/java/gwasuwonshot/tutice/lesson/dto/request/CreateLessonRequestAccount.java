@@ -20,6 +20,7 @@ public class CreateLessonRequestAccount {
     private String bank;
 
     @NotBlank
+    // TODO :  계좌번호 추후 validate 확실하게
 //    @Pattern(//문제
 //            regexp="[0123456789-]", //계좌번호
 //            message = "계좌번호는 숫자와 하이픈으로만 이루어져야합니다."

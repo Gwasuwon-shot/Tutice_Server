@@ -10,6 +10,8 @@ import java.sql.Date;
 import java.sql.Time;
 
 public class DateAndTimeConvert {
+
+    // TODO Time에 대한 포맷 validator를 지금은 여기에 두는데 나중엔 requestDto로 옮기기
     public static Time stringConvertTime(String stringTime){ //"hh:mm:00" 형식이어야함
         try{
             return Time.valueOf(stringTime);
@@ -32,6 +34,7 @@ public class DateAndTimeConvert {
         return timeFullString.substring(0,timeFullString.length()-3); //HH:mm 형식으로 줌
     }
 
+    // TODO Date에 대한 포맷 validator를 지금은 여기에 두는데 나중엔 requestDto로 옮기기
     public static Date stringConvertDate(String stringDate){ //"yyyy-mm-dd 형식이어야함
 
         try{
