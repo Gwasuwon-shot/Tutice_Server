@@ -1,6 +1,6 @@
 package gwasuwonshot.tutice.user.controller;
 
-import gwasuwonshot.tutice.common.dto.ApiResponse;
+import gwasuwonshot.tutice.common.dto.ApiResponseDto;
 import gwasuwonshot.tutice.common.exception.SuccessStatus;
 import gwasuwonshot.tutice.user.dto.request.LocalSignUpRequestDto;
 import gwasuwonshot.tutice.user.dto.response.LoginResponseDto;
@@ -20,8 +20,8 @@ public class AuthController {
 
     @PostMapping("/local/sign-up")
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse<LoginResponseDto> localSignUp(@RequestBody @Valid final LocalSignUpRequestDto request) {
-        return ApiResponse.success(SuccessStatus.SIGNUP_SUCCESS, userService.localSignUp(request));
+    public ApiResponseDto<LoginResponseDto> localSignUp(@RequestBody @Valid final LocalSignUpRequestDto request) {
+        return ApiResponseDto.success(SuccessStatus.SIGNUP_SUCCESS, userService.localSignUp(request));
     }
 
 }

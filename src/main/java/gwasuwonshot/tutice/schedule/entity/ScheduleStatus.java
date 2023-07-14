@@ -4,6 +4,8 @@ import gwasuwonshot.tutice.common.resolver.enumValue.EnumModel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Arrays;
+
 @Getter
 @RequiredArgsConstructor
 public enum ScheduleStatus implements EnumModel {
@@ -15,4 +17,10 @@ public enum ScheduleStatus implements EnumModel {
 
     private final String key;
     private final String value;
+
+    public static ScheduleStatus getScheduleStatusByValue(String value){
+        return Arrays.stream(ScheduleStatus.values())
+                .filter(s -> s.getValue().equals(value))
+                .findAny().orElseThrow();
+    }
 }

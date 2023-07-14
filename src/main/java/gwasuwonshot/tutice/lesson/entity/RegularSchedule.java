@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Time;
-import java.time.DayOfWeek;
+import gwasuwonshot.tutice.lesson.entity.DayOfWeek;
 
 
 @Entity

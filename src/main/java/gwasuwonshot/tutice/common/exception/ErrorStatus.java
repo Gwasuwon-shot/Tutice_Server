@@ -17,6 +17,8 @@ public enum ErrorStatus {
     VALIDATION_WRONG_TYPE_EXCEPTION(HttpStatus.BAD_REQUEST, "잘못된 타입이 입력되었습니다"),
     PARAMETER_TYPE_MISMATCH_EXCEPTION(HttpStatus.BAD_REQUEST, "파라미터의 타입이 잘못됐습니다"),
     INVALID_PASSWORD_EXCEPTION(HttpStatus.BAD_REQUEST, "잘못된 비밀번호가 입력됐습니다."),
+    INVALID_DATE_EXCEPTION(HttpStatus.BAD_REQUEST, "날짜의 형태는 yyyy-mm-dd 형태여야합니다."),
+    INVALID_TIME_EXCEPTION(HttpStatus.BAD_REQUEST, "시간의 형태는 HH:mm:00의 형태여야합니다."),
 
 
 
@@ -26,6 +28,7 @@ public enum ErrorStatus {
      */
     TOKEN_TIME_EXPIRED_EXCEPTION(HttpStatus.UNAUTHORIZED, "만료된 토큰입니다."),
     INVALID_REFRESH_TOKEN_EXCEPTION(HttpStatus.UNAUTHORIZED, "유효하지 않은 리프레시 토큰입니다."),
+    INVALID_ACCESS_TOKEN_EXCEPTION(HttpStatus.UNAUTHORIZED, "유효하지 않은 엑세스 토큰입니다."),
 
     /**
      * 404 NOT FOUND

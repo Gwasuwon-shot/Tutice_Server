@@ -11,11 +11,11 @@ import java.util.ArrayList;
 @Component
 public class LessonAssembler {
 
-    public Lesson toEntity(User teacher, User parents, Account account, String subject, String studentName,
+    public Lesson toEntity(User teacher, Account account, String subject, String studentName,
                                     Long count, Payment payment, Long amount){
         return Lesson.builder()
                 .teacher(teacher)
-                .parents(parents)
+                .parents(null)
                 .account(account)
                 .subject(subject)
                 .studentName(studentName)

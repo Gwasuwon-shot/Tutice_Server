@@ -60,6 +60,17 @@ public class Lesson extends AuditingTimeEntity {
     @OneToMany(mappedBy = "lesson", cascade = {CascadeType.PERSIST})
     private List<Schedule> scheduleList;
 
+    public void addPaymentRecord(PaymentRecord paymentRecord){
+        paymenRecordList.add(paymentRecord);
+    }
+
+    public void addRegularSchedule(RegularSchedule regularSchedule){
+        regularScheduleList.add(regularSchedule);
+    }
+    public void addSchedule(Schedule schedule){
+        scheduleList.add(schedule);
+    }
+
     @Builder
     public Lesson(User teacher, User parents, Account account, String subject, String studentName,
                   Long count, Payment payment, Long amount){
