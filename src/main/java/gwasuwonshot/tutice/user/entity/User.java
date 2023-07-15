@@ -85,5 +85,7 @@ public class User extends AuditingTimeEntity {
         this.notificationLogList = new ArrayList<>();
     }
 
-
+    public void setDeviceToken(String deviceToken) {
+        this.deviceToken = deviceToken;
+    }
 }
