@@ -92,4 +92,13 @@ public class Lesson extends AuditingTimeEntity {
         this.scheduleList = new ArrayList<>();
     }
 
-}
+
+
+
+
+    public Boolean isMatchedPayment(Payment matchedPayment){
+        return this.getPayment().equals(matchedPayment);
+    }
+
+
+    }

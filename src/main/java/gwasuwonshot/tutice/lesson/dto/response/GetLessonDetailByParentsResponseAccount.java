@@ -1,5 +1,6 @@
 package gwasuwonshot.tutice.lesson.dto.response;
 
+import gwasuwonshot.tutice.user.entity.Account;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +14,8 @@ public class GetLessonDetailByParentsResponseAccount {
     private String bank;
     private String number;
 
+
     public static GetLessonDetailByParentsResponseAccount of(String name, String bank, String number) {
-        return new GetLessonDetailByParentsResponseAccount(name, bank,number);
+        return new GetLessonDetailByParentsResponseAccount(name,bank,number);
     }
 }

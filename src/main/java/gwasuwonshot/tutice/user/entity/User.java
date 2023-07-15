@@ -1,7 +1,9 @@
 package gwasuwonshot.tutice.user.entity;
 
 import gwasuwonshot.tutice.common.entity.AuditingTimeEntity;
+import gwasuwonshot.tutice.common.exception.ErrorStatus;
 import gwasuwonshot.tutice.lesson.entity.Lesson;
+import gwasuwonshot.tutice.user.exception.userException.InvalidRoleException;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -83,6 +85,14 @@ public class User extends AuditingTimeEntity {
         this.accountList=new ArrayList<>();
         this.lessonList=new ArrayList<>();
         this.notificationLogList = new ArrayList<>();
+    }
+
+
+
+
+
+    public Boolean isMatchedRole(Role matchRole){
+        return this.getRole().equals(matchRole);
     }
 
     public void setDeviceToken(String deviceToken) {
