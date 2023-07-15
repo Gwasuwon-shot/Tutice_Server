@@ -58,7 +58,7 @@ public class Lesson extends AuditingTimeEntity {
     private List<PaymentRecord> paymenRecordList;
 
 
-    @OneToMany(mappedBy = "lesson", cascade = {CascadeType.PERSIST})
+    @OneToMany(mappedBy = "lesson")
     private List<RegularSchedule> regularScheduleList;
 
     @OneToMany(mappedBy = "lesson", cascade = {CascadeType.PERSIST})

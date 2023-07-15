@@ -9,19 +9,20 @@ import java.util.Arrays;
 @Getter
 @RequiredArgsConstructor
 public enum DayOfWeek implements EnumModel {
-    MONDAY("DAY_OF_WEEK_MONDAY","월"),
-    TUESDAY("DAY_OF_WEEK_TUESDAY","화"),
-    WEDNESDAY("DAY_OF_WEEK_WEDNESDAY","수"),
-    THURSDAY("DAY_OF_WEEK_THURSDAY","목"),
-    FRIDAY("DAY_OF_WEEK_FRIDAY","금"),
-    SATURDAY("DAY_OF_WEEK_SATURDAY","토"),
-    SUNDAY("DAY_OF_WEEK_SUNDAY","일");
+    MONDAY("DAY_OF_WEEK_MONDAY","월",1),
+    TUESDAY("DAY_OF_WEEK_TUESDAY","화",2),
+    WEDNESDAY("DAY_OF_WEEK_WEDNESDAY","수",3),
+    THURSDAY("DAY_OF_WEEK_THURSDAY","목",4),
+    FRIDAY("DAY_OF_WEEK_FRIDAY","금",5),
+    SATURDAY("DAY_OF_WEEK_SATURDAY","토",6),
+    SUNDAY("DAY_OF_WEEK_SUNDAY","일",7);
 
 
 
 
     private final String key;
     private final String value;
+    private final Long index; // java.time.DayOfWeek와 호환을 위해 만듬
 
     public static DayOfWeek getDayOfWeekByValue(String value){
         return Arrays.stream(DayOfWeek.values())
