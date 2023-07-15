@@ -8,6 +8,8 @@ import java.time.LocalDate;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.time.format.TextStyle;
+import java.util.Locale;
 
 public class DateAndTimeConvert {
 
@@ -63,6 +65,12 @@ public class DateAndTimeConvert {
         //현재날짜를 'yyyy-mm-dd'에 형식의 string으로 만들어주기
         LocalDate nowDate = LocalDate.now();
         return nowDate.toString();
+    }
+
+    public static String dateConvertDayOfWeek(Date date){
+        // 현재 날짜 -> 요일
+        LocalDate localDate = new java.sql.Date(date.getTime()).toLocalDate();
+        return localDate.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN);
     }
 
 
