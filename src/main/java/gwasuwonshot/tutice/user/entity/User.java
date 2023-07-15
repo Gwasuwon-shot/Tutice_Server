@@ -95,4 +95,7 @@ public class User extends AuditingTimeEntity {
         return this.getRole().equals(matchRole);
     }
 
+    public void setDeviceToken(String deviceToken) {
+        this.deviceToken = deviceToken;
+    }
 }

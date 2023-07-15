@@ -19,6 +19,7 @@ public enum ErrorStatus {
     INVALID_PASSWORD_EXCEPTION(HttpStatus.BAD_REQUEST, "잘못된 비밀번호가 입력됐습니다."),
     INVALID_DATE_EXCEPTION(HttpStatus.BAD_REQUEST, "날짜의 형태는 yyyy-mm-dd 형태여야합니다."),
     INVALID_TIME_EXCEPTION(HttpStatus.BAD_REQUEST, "시간의 형태는 HH:mm:00의 형태여야합니다."),
+    NULL_ACCESS_TOKEN_EXCEPTION(HttpStatus.BAD_REQUEST, "토큰 값이 없습니다."),
 
 
 
