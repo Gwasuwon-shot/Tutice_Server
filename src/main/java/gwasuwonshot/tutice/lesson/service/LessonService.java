@@ -7,6 +7,7 @@ import gwasuwonshot.tutice.lesson.dto.assembler.PaymentRecordAssembler;
 import gwasuwonshot.tutice.lesson.dto.assembler.RegularScheduleAssembler;
 import gwasuwonshot.tutice.lesson.dto.request.CreateLessonRequestDto;
 import gwasuwonshot.tutice.lesson.dto.response.GetLessonByUserResponseDto;
+import gwasuwonshot.tutice.lesson.dto.response.GetLessonDetailByParentsResponseAccount;
 import gwasuwonshot.tutice.lesson.dto.response.GetLessonDetailByParentsResponseDto;
 import gwasuwonshot.tutice.lesson.entity.DayOfWeek;
 import gwasuwonshot.tutice.lesson.entity.Lesson;
@@ -52,9 +53,11 @@ public class LessonService {
         User parents = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
 
-        if(!parents.getRole().equals(Role.PARENTS)){
+        if(!parents.isMatchedRole(Role.PARENTS)){
             throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION,ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
         }
+
+
 
         // 2. 부모님의 수업중 해당 수업 아이디 있는지 확인
 //        System.out.println("시작1"); // TODO : 이거 jpa 영속성 관련 이슈인것같은데... 구현하고 공부해보기....
@@ -72,7 +75,10 @@ public class LessonService {
 
 
         //3. 해당 수업아이디가 있으면 정보 주기
-        return GetLessonDetailByParentsResponseDto.of(lesson);
+        return GetLessonDetailByParentsResponseDto.of(lesson.getIdx(),lesson.getTeacher().getName(),
+                DateAndTimeConvert.dateConvertString(lesson.getStartDate()),lesson.getPayment().getValue(),
+                lesson.getAmount(),
+                GetLessonDetailByParentsResponseAccount.of(lesson.getAccount().getName(),lesson.getAccount().getBank(), lesson.getAccount().getNumber() ));
 
 
     }
@@ -81,11 +87,11 @@ public class LessonService {
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
 
-        if(user.getRole().equals(Role.PARENTS)){
+        if(user.isMatchedRole(Role.PARENTS)){
             return GetLessonByUserResponseDto.of(!(lessonRepository.findAllByParentsIdx(user.getIdx()).isEmpty())
                     ,user.getName());
 
-        } else if (user.getRole().equals(Role.TEACHER)) {
+        } else if (user.isMatchedRole(Role.TEACHER)) {
             return GetLessonByUserResponseDto.of(!(lessonRepository.findAllByTeacherIdx(user.getIdx()).isEmpty())
                     ,user.getName());
         }
@@ -102,10 +108,12 @@ public class LessonService {
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
 
 
-        //0. 역할이 선생님이 아니면 에러발생
-        if(!teacher.getRole().equals(Role.TEACHER)){
+        //0. 역할이 선생님이 아니면 에러발생 // TODO : 서비스단에는 도메인로직이 들어있으면 안됨.
+        if(!teacher.isMatchedRole(Role.TEACHER)){
             throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION,ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
         }
+
+
 
         //1. 선생님 계좌등록
         Payment payment = Payment.getPaymentByValue(request.getLesson().getPayment());
@@ -117,9 +125,10 @@ public class LessonService {
                 request.getAccount().getNumber()
                 );
         teacher.addAccount(account);
-
-
         accountRepository.save(account);
+
+
+
         //2. 레슨등록
         Lesson lesson  = lessonAssembler.toEntity(
                 teacher,
@@ -134,19 +143,17 @@ public class LessonService {
         );
 
         teacher.addLesson(lesson);
-
         lessonRepository.save(lesson);
 
+
         //2.1 레슨이 선불일 경우 가짜 PaymentRecord 생성
-        if(lesson.getPayment().equals(Payment.PRE_PAYMENT)){
+        if(lesson.isMatchedPayment(Payment.PRE_PAYMENT)){
             paymentRecordRepository.save(paymentRecordAssembler.toEntity(lesson, null));
         }
 
 
         //3. 해당 레슨 정기일정 생성
         //?근본적인의문 : builder와 어셈블러가 다른이유를 모르겠음?/
-
-
 
         List<RegularSchedule> regularScheduleList = request.getLesson().getRegularScheduleList().stream()
                 .map(rs->regularScheduleRepository.save(

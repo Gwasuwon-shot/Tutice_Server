@@ -15,7 +15,7 @@ public class GetLessonDetailByParentsResponseAccount {
     private String number;
 
 
-    public static GetLessonDetailByParentsResponseAccount of(Account account) {
-        return new GetLessonDetailByParentsResponseAccount(account.getName(), account.getBank(), account.getName());
+    public static GetLessonDetailByParentsResponseAccount of(String name, String bank, String number) {
+        return new GetLessonDetailByParentsResponseAccount(name,bank,number);
     }
 }
