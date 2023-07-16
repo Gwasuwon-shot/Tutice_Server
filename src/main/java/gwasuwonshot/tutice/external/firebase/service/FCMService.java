@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.common.net.HttpHeaders;
 import gwasuwonshot.tutice.external.firebase.domain.FCMMessage;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import okhttp3.*;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,11 +22,11 @@ import java.util.List;
 public class FCMService {
 
     @Value("${firebase.api-url}")
-    private final String API_URL;
+    private String API_URL;
     // TODO : constants들 class 내부 상수로 정리
 
     @Value("${firebase.config-path}")
-    private final String FIREBASE_CONFIG_PATH;
+    private String FIREBASE_CONFIG_PATH;
 
 
     private final ObjectMapper objectMapper;
