@@ -8,6 +8,8 @@ import java.time.LocalDate;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
@@ -74,5 +76,25 @@ public class DateAndTimeConvert {
     }
 
 
+    public static Date stringConvertStartMonthDate(String month) {
+        return stringConvertDate(month + "-01");
+    }
+
+    public static LocalDate stringConvertLocalDate(String stringLocalDate) {
+        return LocalDate.parse(stringLocalDate);
+    }
+
+    public static String localDateConvertString(LocalDate localDate){
+        return localDate.toString();
+    }
+
+    public static String localDateConvertDayOfWeek(LocalDate localDate) {
+        // 현재 날짜 -> 요일
+        return localDate.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN);
+    }
+
+    public static String localTimeConvertString(LocalTime localTime) {
+        return localTime.format(DateTimeFormatter.ofPattern("HH:mm"));
+    }
 
 }

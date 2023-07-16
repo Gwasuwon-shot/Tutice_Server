@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 
 
 import javax.persistence.*;
-import java.sql.Date;
-import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -25,7 +25,7 @@ public class Schedule extends AuditingTimeEntity {
     private Lesson lesson;
 
     @Column(nullable = false)
-    private Date date;
+    private LocalDate date;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -35,15 +35,15 @@ public class Schedule extends AuditingTimeEntity {
     private Long cycle;
 
     @Column(nullable = false)
-    private Time startTime;
+    private LocalTime startTime;
 
     @Column(nullable = false)
-    private Time endTime;
+    private LocalTime endTime;
 
 
     @Builder
-    public Schedule(Lesson lesson, Date date, ScheduleStatus status,
-                    Long cycle, Time startTime, Time endTime){
+    public Schedule(Lesson lesson, LocalDate date, ScheduleStatus status,
+                    Long cycle, LocalTime startTime, LocalTime endTime){
         this.lesson=lesson;
         this.date = date;
         this.status = status;
