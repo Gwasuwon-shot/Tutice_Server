@@ -8,8 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.sql.Time;
-import gwasuwonshot.tutice.lesson.entity.DayOfWeek;
+import java.time.LocalTime;
 
 
 @Entity
@@ -25,10 +24,10 @@ public class RegularSchedule extends AuditingTimeEntity {
     private Lesson lesson;
 
     @Column(nullable = false)
-    private Time startTime;
+    private LocalTime startTime;
 
     @Column(nullable = false)
-    private Time endTime;
+    private LocalTime endTime;
 
 
     @Enumerated(EnumType.STRING)
@@ -37,7 +36,7 @@ public class RegularSchedule extends AuditingTimeEntity {
 
 
     @Builder
-    public RegularSchedule(Lesson lesson, Time startTime, Time endTime,DayOfWeek dayOfWeek){
+    public RegularSchedule(Lesson lesson, LocalTime startTime, LocalTime endTime, DayOfWeek dayOfWeek){
         this.lesson = lesson;
         this.startTime=startTime;
         this.endTime=endTime;
