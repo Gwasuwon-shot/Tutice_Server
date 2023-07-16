@@ -9,13 +9,8 @@ import gwasuwonshot.tutice.lesson.dto.request.CreateLessonRequestDto;
 import gwasuwonshot.tutice.lesson.dto.response.GetLessonByUserResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.GetLessonDetailByParentsResponseAccount;
 import gwasuwonshot.tutice.lesson.dto.response.GetLessonDetailByParentsResponseDto;
-import gwasuwonshot.tutice.lesson.entity.DayOfWeek;
-import gwasuwonshot.tutice.lesson.entity.Lesson;
-import gwasuwonshot.tutice.lesson.entity.Payment;
-import gwasuwonshot.tutice.lesson.entity.RegularSchedule;
-import gwasuwonshot.tutice.lesson.exception.AlreadyExistLessonParentsException;
-import gwasuwonshot.tutice.lesson.exception.InvalidLessonCodeException;
-import gwasuwonshot.tutice.lesson.exception.NotFoundLessonException;
+import gwasuwonshot.tutice.lesson.entity.*;
+import gwasuwonshot.tutice.lesson.exception.*;
 import gwasuwonshot.tutice.lesson.repository.LessonRepository;
 import gwasuwonshot.tutice.lesson.repository.PaymentRecordRepository;
 import gwasuwonshot.tutice.lesson.repository.RegularScheduleRepository;
@@ -34,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.time.LocalDate;
 import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -77,8 +73,7 @@ public class LessonService {
                 .stream()
                 .filter(pl -> pl.getIdx().equals(lessonIdx))
                 .findFirst()
-                .orElseThrow(() -> new NotFoundLessonException(ErrorStatus.NOT_FOUND_LESSON_EXCEPTION,ErrorStatus.NOT_FOUND_LESSON_EXCEPTION.getMessage()));
-
+                .orElseThrow(() -> new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION,ErrorStatus.INVALID_LESSON_EXCEPTION.getMessage()));
 
         //3. 해당 수업아이디가 있으면 정보 주기
         return GetLessonDetailByParentsResponseDto.of(lesson.getIdx(),lesson.getTeacher().getName(),
@@ -155,8 +150,11 @@ public class LessonService {
 
         //2.1 레슨이 선불일 경우 가짜 PaymentRecord 생성
         if(lesson.isMatchedPayment(Payment.PRE_PAYMENT)){
-            paymentRecordRepository.save(paymentRecordAssembler.toEntity(lesson, null));
+            PaymentRecord prePaymentRecord = paymentRecordAssembler.toEntity(lesson, null);
+            paymentRecordRepository.save(prePaymentRecord);
+            lesson.addPaymentRecord(prePaymentRecord);
         }
+
 
 
         //3. 해당 레슨 정기일정 생성
@@ -184,6 +182,62 @@ public class LessonService {
 
         return lesson.getIdx();
 
+    }
+
+    @Transactional
+    public Boolean createLessonMaintenance(Long userIdx,Long lessonIdx, Boolean isLessonMaintenance){
+//        //연장시
+//        //연장안할때
+//        유저가 선생이 맞는지 확인
+//        유효한 레슨인지, 선생의 레슨이 맞는지확인
+//        연장안하면 -> isFinished 만 true로 변경
+//                연장하면
+//        가짜 paymentRecord생성
+//        startDate는 해당 수업의 마지막 스케쥴날짜 +1
+
+        User teacher = userRepository.findById(userIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+
+
+        //0. 역할이 선생님이 아니면 에러발생 // TODO : 서비스단에는 도메인로직이 들어있으면 안됨.
+        if(!teacher.isMatchedRole(Role.TEACHER)){
+            throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION,ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
+        }
+
+        Lesson lesson = lessonRepository.findById(lessonIdx)
+                .orElseThrow(() -> new NotFoundLessonException(ErrorStatus.NOT_FOUND_LESSON_EXCEPTION,ErrorStatus.NOT_FOUND_LESSON_EXCEPTION.getMessage()));
+
+        if(!lesson.isMatchedTeacher(teacher)){
+            throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION,ErrorStatus.INVALID_LESSON_EXCEPTION.getMessage());
+        }
+
+
+        if(isLessonMaintenance){
+            //연장하면
+            ////        가짜 paymentRecord생성
+            paymentRecordRepository.save(paymentRecordAssembler.toEntity(lesson, null));
+
+            ////        startDate는 해당 수업의 마지막 스케쥴날짜 +1
+            LocalDate maintenanceDate = scheduleRepository.findTopByLessonOrderByDateDesc(lesson).getDate().plusDays(1);
+
+            //연장...!
+            Schedule.autoCreateSchedule(maintenanceDate,lesson.getCount(),lesson)
+                    .forEach(acs->scheduleRepository.save(acs));;
+
+
+
+
+
+            return true;
+
+        }
+        else{//연장안하면, isFinished 만 true로 변경
+            if(lesson.getIsFinished()){
+                throw new AlreadyFinishedLessonException(ErrorStatus.ALREADY_FINISHED_LESSON_EXCEPTION,ErrorStatus.ALREADY_FINISHED_LESSON_EXCEPTION.getMessage());
+            }
+            lesson.finishLesson();
+            return false;
+        }
     }
 
     @Transactional

@@ -25,6 +25,8 @@ public enum SuccessStatus {
      */
     SIGNUP_SUCCESS(HttpStatus.CREATED, "회원가입이 완료됐습니다."),
     CREATE_LESSON_SUCCESS(HttpStatus.CREATED, "수업 생성이 완료됐습니다."),
+    AUTO_CREATE_SCHEDULE_FROM_LESSON_MAINTENANCE_SUCCESS(HttpStatus.CREATED,"수업 연장으로 다음 사이클 스케쥴 자동생성 성공"),
+    FINISH_LESSON_SUCCESS(HttpStatus.CREATED,"수업 종료 성공"),
 
     ;
 
