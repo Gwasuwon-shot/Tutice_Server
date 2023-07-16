@@ -76,10 +76,9 @@ public class Lesson extends AuditingTimeEntity {
     }
 
     @Builder
-    public Lesson(User teacher, User parents, Account account, String subject, String studentName,
+    public Lesson(User teacher,  Account account, String subject, String studentName,
                   Long count, Payment payment, Long amount, LocalDate startDate){
         this.teacher = teacher;
-        this.parents=parents;
         this.account=account;
         this.subject=subject;
         this.studentName=studentName;
@@ -93,7 +92,9 @@ public class Lesson extends AuditingTimeEntity {
     }
 
 
-
+    public void connectParents(User parents) {
+        this.parents=parents;
+    }
 
 
     public Boolean isMatchedPayment(Payment matchedPayment){

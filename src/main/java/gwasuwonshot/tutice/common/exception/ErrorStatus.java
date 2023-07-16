@@ -37,12 +37,14 @@ public enum ErrorStatus {
      */
     NOT_FOUND_USER_EXCEPTION(HttpStatus.NOT_FOUND, "존재하지 않는 유저입니다"),
     NOT_FOUND_LESSON_EXCEPTION(HttpStatus.NOT_FOUND, "수업을 찾을 수 없습니다."),
+    INVALID_LESSON_CODE_EXCEPTION(HttpStatus.NOT_FOUND,"유효하지 않은 레슨코드입니다."),
 
 
     /**
      * 409 CONFLICT
      */
     ALREADY_EXIST_USER_EXCEPTION(HttpStatus.CONFLICT, "이미 존재하는 유저입니다"),
+    ALREADY_EXIST_LESSON_PARENTS_EXCEPTION(HttpStatus.CONFLICT, "이미 학부모가 등록된 수업입니다."),
 
 
     /**

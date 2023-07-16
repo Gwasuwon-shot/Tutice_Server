@@ -15,7 +15,6 @@ public class LessonAssembler {
                            Long count, Payment payment, Long amount, LocalDate startDate){
         return Lesson.builder()
                 .teacher(teacher)
-                .parents(null)
                 .account(account)
                 .subject(subject)
                 .studentName(studentName)
