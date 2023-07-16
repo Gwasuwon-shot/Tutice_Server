@@ -15,13 +15,13 @@ import javax.validation.constraints.Pattern;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CreateLessonRequestRegularSchedule {
-    @NotBlank
+    @NotBlank(message = "요일이 없습니다.")
     @Schema(description = "요일")
     // TODO :  enum validation으로 변경
     @Enum(enumClass = DayOfWeek.class, ignoreCase = true, message ="요일은 월,화,수,목,금,토,일 중 하나여야 합니다.")
     private String dayOfWeek;
 
-    @NotBlank
+    @NotBlank(message = "시작 시간이 없습니다.")
     @Schema(description = "시작 시간")
     // TODO :  타임 추후 validate 확실하게
 
@@ -31,7 +31,7 @@ public class CreateLessonRequestRegularSchedule {
 //    )
     private String startTime;
 
-    @NotBlank
+    @NotBlank(message = "종료 시간이 없습니다.")
     @Schema(description = "종료 시간")
     // TODO :  타임 추후 validate 확실하게
 //    @Pattern(

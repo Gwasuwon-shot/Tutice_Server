@@ -11,15 +11,15 @@ import javax.validation.constraints.Pattern;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CreateLessonRequestAccount {
-    @NotBlank
+    @NotBlank(message = "예금주가 없습니다.")
     @Schema(description = "예금주")
     private String name;
 
-    @NotBlank
+    @NotBlank(message = "은행이 없습니다.")
     @Schema(description = "은행")
     private String bank;
 
-    @NotBlank
+    @NotBlank(message = "계좌번호가 없습니다.")
     // TODO :  계좌번호 추후 validate 확실하게
 //    @Pattern(//문제
 //            regexp="[0123456789-]", //계좌번호

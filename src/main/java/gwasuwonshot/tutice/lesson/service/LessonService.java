@@ -13,6 +13,8 @@ import gwasuwonshot.tutice.lesson.entity.DayOfWeek;
 import gwasuwonshot.tutice.lesson.entity.Lesson;
 import gwasuwonshot.tutice.lesson.entity.Payment;
 import gwasuwonshot.tutice.lesson.entity.RegularSchedule;
+import gwasuwonshot.tutice.lesson.exception.AlreadyExistLessonParentsException;
+import gwasuwonshot.tutice.lesson.exception.InvalidLessonCodeException;
 import gwasuwonshot.tutice.lesson.exception.NotFoundLessonException;
 import gwasuwonshot.tutice.lesson.repository.LessonRepository;
 import gwasuwonshot.tutice.lesson.repository.PaymentRecordRepository;
@@ -87,6 +89,7 @@ public class LessonService {
 
     }
 
+    @Transactional
     public GetLessonByUserResponseDto getLessonByUser(final Long userIdx){
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
@@ -183,6 +186,35 @@ public class LessonService {
 
     }
 
+    @Transactional
+    public void updateLessonParents(Long userIdx, String lessonCode){
+        //1. 유저가 학부모가 맞는지 보기
+        User parents = userRepository.findById(userIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+
+
+        //0. 역할이 선생님이 아니면 에러발생
+        if(!parents.isMatchedRole(Role.PARENTS)){
+            throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION,ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
+        }
+        //2. 레슨코드해석
+        Long lessonIdx = this.getLessonIdxFromLessonCode(lessonCode);
+        //3. 해석한 레슨아이디로 레슨찾기 -> 없으면 404
+        Lesson lesson = lessonRepository.findById(lessonIdx)
+                .orElseThrow(()->new NotFoundLessonException(ErrorStatus.NOT_FOUND_LESSON_EXCEPTION, ErrorStatus.NOT_FOUND_LESSON_EXCEPTION.getMessage()));
+        //4. 레슨에 연결된 학부모검사 -> 현유저가 아닌유저이면 409
+        if(lesson.getParents() == null){
+            lesson.connectParents(parents);
+
+        } else if (lesson.getParents().equals(parents)) {
+            //이미 같은유저가 연결된거면 성공으로 치기
+        }
+        else{
+            throw new AlreadyExistLessonParentsException(ErrorStatus.ALREADY_EXIST_LESSON_PARENTS_EXCEPTION, ErrorStatus.ALREADY_EXIST_LESSON_PARENTS_EXCEPTION.getMessage());
+        }
+
+    }
+
     public String createLessonCode(Long lessonIdx){
         //statless하게 lessonIdx의 정보를 가진 레슨코드를 생성하여 추후 레슨코드만 해석해도 어떤 레슨인지 알수있게
         byte[] lessonIdxBytes = (lessonIdx+"").getBytes();
@@ -192,11 +224,13 @@ public class LessonService {
     }
 
     public Long getLessonIdxFromLessonCode(String lessonCode){
-
-        byte[] lessonIdxBytes = Base64.getDecoder().decode(lessonCode);
-        Long lessonIdx = Long.parseLong(new String(lessonIdxBytes));
-
-        return lessonIdx;
+        try{
+            byte[] lessonIdxBytes = Base64.getDecoder().decode(lessonCode);
+            Long lessonIdx = Long.parseLong(new String(lessonIdxBytes));
+            return lessonIdx;
+        }catch (Exception e){
+            throw new InvalidLessonCodeException(ErrorStatus.INVALID_LESSON_CODE_EXCEPTION,ErrorStatus.INVALID_LESSON_CODE_EXCEPTION.getMessage());
+        }
 
     }
 
