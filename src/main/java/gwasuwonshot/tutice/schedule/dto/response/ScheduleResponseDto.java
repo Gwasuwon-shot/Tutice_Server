@@ -3,7 +3,7 @@ package gwasuwonshot.tutice.schedule.dto.response;
 import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
 import lombok.*;
 
-import java.sql.Time;
+import java.time.LocalTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -17,14 +17,14 @@ public class ScheduleResponseDto {
     private String startTime;
     private String endTime;
 
-    public static ScheduleResponseDto of(Long idx, String studentName, String teacherName, String subject, Time startTime, Time endTime) {
+    public static ScheduleResponseDto of(Long idx, String studentName, String teacherName, String subject, LocalTime startTime, LocalTime endTime) {
         return ScheduleResponseDto.builder()
                 .idx(idx)
                 .studentName(studentName)
                 .teacherName(teacherName)
                 .subject(subject)
-                .startTime(DateAndTimeConvert.timeConvertString(startTime))
-                .endTime(DateAndTimeConvert.timeConvertString(endTime))
+                .startTime(DateAndTimeConvert.localTimeConvertString(startTime))
+                .endTime(DateAndTimeConvert.localTimeConvertString(endTime))
                 .build();
     }
 }

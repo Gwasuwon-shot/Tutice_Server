@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -21,7 +21,7 @@ public class PaymentRecord extends AuditingTimeEntity {
     @JoinColumn(name = "lesson_idx", nullable = false,  foreignKey = @ForeignKey(ConstraintMode.CONSTRAINT))
     private Lesson lesson;
 
-    private Date date;
+    private LocalDate date;
 
     @Column(nullable = false)
     private Long amount;
@@ -30,7 +30,7 @@ public class PaymentRecord extends AuditingTimeEntity {
     private Boolean status = false;
 
     @Builder
-    public PaymentRecord(Lesson lesson, Date date, Long amount, Boolean status){
+    public PaymentRecord(Lesson lesson, LocalDate date, Long amount, Boolean status){
         this.lesson = lesson;
         this.date = date;
         this.amount = amount;
