@@ -4,10 +4,7 @@ import gwasuwonshot.tutice.common.exception.ErrorStatus;
 import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
 import gwasuwonshot.tutice.lesson.entity.Lesson;
 import gwasuwonshot.tutice.lesson.repository.LessonRepository;
-import gwasuwonshot.tutice.schedule.dto.response.GetScheduleByUserResponseDto;
-import gwasuwonshot.tutice.schedule.dto.response.GetTodayScheduleByParentsResponseDto;
-import gwasuwonshot.tutice.schedule.dto.response.GetTodayScheduleByTeacherResponseDto;
-import gwasuwonshot.tutice.schedule.dto.response.ScheduleByDate;
+import gwasuwonshot.tutice.schedule.dto.response.*;
 import gwasuwonshot.tutice.schedule.entity.Schedule;
 import gwasuwonshot.tutice.schedule.entity.ScheduleStatus;
 import gwasuwonshot.tutice.schedule.repository.ScheduleRepository;
@@ -23,6 +20,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -202,5 +200,45 @@ public class ScheduleService {
         List<ScheduleStatus> attendanceStatusList = new ArrayList<>((Arrays.asList(ScheduleStatus.ATTENDANCE, ScheduleStatus.ABSENCE)));
         Integer count = scheduleRepository.countByLesson_IdxAndStatusIn(lessonIdx, attendanceStatusList);
         return count+1;
+    }
+
+    public GetMissingAttendanceScheduleResponseDto getMissingAttendanceSchedule(Long userIdx) {
+        // 유저 존재 여부
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+
+        List<Lesson> lessonList = user.getLessonList();
+
+        // 오늘 수업 시작&끝 체크 안 한 것
+        List<Schedule> missingScheduleList = scheduleRepository.findAllByStatusAndDateAndStartTimeIsBeforeAndLessonIn(ScheduleStatus.NO_STATUS, LocalDate.now(), LocalTime.now(), lessonList);
+        // 오늘 이전 체크 안 한 것
+        List<Schedule> afterTodayMissingScheduleList = scheduleRepository.findAllByStatusAndDateIsBeforeAndLessonInOrderByDate(ScheduleStatus.NO_STATUS, LocalDate.now(), lessonList);
+        missingScheduleList.addAll(afterTodayMissingScheduleList);
+        missingScheduleList.sort(Comparator.comparing(Schedule::getDate));
+
+        // 누락 수업 없는 경우
+        if(missingScheduleList.isEmpty()) return GetMissingAttendanceScheduleResponseDto.of();
+
+        // 누락 수업 시간별 묶기
+        List<Schedule> scheduleList = new ArrayList<>();
+        List<MissingScheduleByDate> scheduleListByDateList = new ArrayList<>();
+        List<Integer> scheduleCountList = new ArrayList<>();
+        LocalDate scheduleDate = missingScheduleList.get(0).getDate();
+
+        for(Schedule schedule : missingScheduleList) {
+            if (!scheduleDate.isEqual(schedule.getDate())) {
+                scheduleListByDateList.add(MissingScheduleByDate.of(DateAndTimeConvert.localDateConvertString(scheduleDate),
+                                DateAndTimeConvert.localDateConvertDayOfWeek(scheduleDate),
+                                scheduleList,
+                                scheduleCountList));
+                scheduleDate = schedule.getDate();
+                scheduleList.clear();
+                scheduleCountList.clear();
+            }
+            scheduleCountList.add(getScheduleCount(schedule));
+            scheduleList.add(schedule);
+        }
+        scheduleListByDateList.add(MissingScheduleByDate.of(DateAndTimeConvert.localDateConvertString(scheduleDate), DateAndTimeConvert.localDateConvertDayOfWeek(scheduleDate), scheduleList, scheduleCountList));
+        return GetMissingAttendanceScheduleResponseDto.ofSchedule(scheduleListByDateList);
     }
 }
