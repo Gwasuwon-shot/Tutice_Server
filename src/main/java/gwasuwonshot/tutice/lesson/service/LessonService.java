@@ -17,6 +17,8 @@ import gwasuwonshot.tutice.lesson.exception.NotFoundLessonException;
 import gwasuwonshot.tutice.lesson.repository.LessonRepository;
 import gwasuwonshot.tutice.lesson.repository.PaymentRecordRepository;
 import gwasuwonshot.tutice.lesson.repository.RegularScheduleRepository;
+import gwasuwonshot.tutice.schedule.entity.Schedule;
+import gwasuwonshot.tutice.schedule.repository.ScheduleRepository;
 import gwasuwonshot.tutice.user.dto.assembler.AccountAssembler;
 import gwasuwonshot.tutice.user.entity.Account;
 import gwasuwonshot.tutice.user.entity.Role;
@@ -46,6 +48,8 @@ public class LessonService {
     private final RegularScheduleRepository regularScheduleRepository;
     private final PaymentRecordAssembler paymentRecordAssembler;
     private final PaymentRecordRepository paymentRecordRepository;
+    private final ScheduleRepository scheduleRepository;
+
 
     @Transactional
     public GetLessonDetailByParentsResponseDto getLessonDetailByParents(Long userIdx,Long lessonIdx){
@@ -76,7 +80,7 @@ public class LessonService {
 
         //3. 해당 수업아이디가 있으면 정보 주기
         return GetLessonDetailByParentsResponseDto.of(lesson.getIdx(),lesson.getTeacher().getName(),
-                DateAndTimeConvert.dateConvertString(lesson.getStartDate()),lesson.getPayment().getValue(),
+                DateAndTimeConvert.localDateConvertString(lesson.getStartDate()),lesson.getPayment().getValue(),
                 lesson.getAmount(),
                 GetLessonDetailByParentsResponseAccount.of(lesson.getAccount().getName(),lesson.getAccount().getBank(), lesson.getAccount().getNumber() ));
 
@@ -138,7 +142,7 @@ public class LessonService {
                 request.getLesson().getCount(),
                 payment,
                 request.getLesson().getAmount(),
-                DateAndTimeConvert.stringConvertDate(request.getLesson().getStartDate())
+                DateAndTimeConvert.stringConvertLocalDate(request.getLesson().getStartDate())
 
         );
 
@@ -159,8 +163,8 @@ public class LessonService {
                 .map(rs->regularScheduleRepository.save(
                         regularScheduleAssembler.toEntity(
                                 lesson,
-                                DateAndTimeConvert.stringConvertTime(rs.getStartTime()),
-                                DateAndTimeConvert.stringConvertTime(rs.getEndTime()),
+                                DateAndTimeConvert.stringConvertLocalTime(rs.getStartTime()),
+                                DateAndTimeConvert.stringConvertLocalTime(rs.getEndTime()),
                                 DayOfWeek.getDayOfWeekByValue(rs.getDayOfWeek())
                         )
                 )).collect(Collectors.toList());
@@ -170,8 +174,9 @@ public class LessonService {
         });
 
 
-
-        //4. 스케쥴 자동생성 <- 이거는 나중에로직 추가
+        //4. 스케쥴 자동생성 (무조건 스케쥴 자동생성전에 가짜 paymentRecord 추가가 선행되어야함)
+        Schedule.autoCreateSchedule(lesson.getStartDate(),lesson.getCount(),lesson)
+                .forEach(acs->scheduleRepository.save(acs));
 
 
         return lesson.getIdx();

@@ -75,6 +75,17 @@ public class DateAndTimeConvert {
         return localDate.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN);
     }
 
+    public static String localDateConvertString(LocalDate localDate){
+        return localDate.toString();
+    }
+
+    public static String localTimeConvertString(LocalTime localTime){
+        return localTime.toString();
+    }
+
+    public static LocalDate stringConvertLocalDate(String stringDate){
+        return LocalDate.parse(stringDate, DateTimeFormatter.ISO_DATE);
+    }
 
     public static Date stringConvertStartMonthDate(String month) {
         return stringConvertDate(month + "-01");
@@ -97,4 +108,7 @@ public class DateAndTimeConvert {
         return localTime.format(DateTimeFormatter.ofPattern("HH:mm"));
     }
 
+    public static LocalTime stringConvertLocalTime(String stringTime) {
+        return LocalTime.parse(stringTime);
+    }
 }

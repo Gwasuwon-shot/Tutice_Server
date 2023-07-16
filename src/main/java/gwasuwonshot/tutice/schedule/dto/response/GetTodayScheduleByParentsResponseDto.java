@@ -4,7 +4,7 @@ import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
 import gwasuwonshot.tutice.schedule.entity.Schedule;
 import lombok.*;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,10 +23,10 @@ public class GetTodayScheduleByParentsResponseDto {
                 .build();
     }
 
-    public static GetTodayScheduleByParentsResponseDto ofTodaySchedule(String name, Date now, List<Schedule> scheduleList) {
+    public static GetTodayScheduleByParentsResponseDto ofTodaySchedule(String name, LocalDate now, List<Schedule> scheduleList) {
         return GetTodayScheduleByParentsResponseDto.builder()
                 .parentsName(name)
-                .today(TodayResponseDto.of(DateAndTimeConvert.dateConvertString(now), DateAndTimeConvert.dateConvertDayOfWeek(now)))
+                .today(TodayResponseDto.of(DateAndTimeConvert.localDateConvertString(now), DateAndTimeConvert.localDateConvertString(now)))
                 .scheduleList(scheduleList.stream().map(s -> ScheduleResponseDto.of(s.getIdx(), s.getLesson().getStudentName(), s.getLesson().getParents().getName(), s.getLesson().getSubject(), s.getStartTime(), s.getEndTime())).collect(Collectors.toList()))
                 .build();
     }

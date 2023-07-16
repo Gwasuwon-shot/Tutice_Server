@@ -17,7 +17,6 @@ import gwasuwonshot.tutice.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +36,7 @@ public class ScheduleService {
         // 유저가 부모님인지 확인
         if(!user.isMatchedRole(Role.PARENTS)) throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION,ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
         // 오늘의 수업 있는지 체크
-        Date now = Date.valueOf(LocalDate.now());
+        LocalDate now = LocalDate.now();
 
         // 학부모-레슨리스트 -> 스케줄 중 해당 레슨 있는지 + 오늘 날짜인지
         // TODO 부모님 수업 리스트 양방향 매핑으로 수정하기

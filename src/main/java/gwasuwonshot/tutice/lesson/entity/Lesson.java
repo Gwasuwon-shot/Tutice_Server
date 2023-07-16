@@ -11,7 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,7 +52,7 @@ public class Lesson extends AuditingTimeEntity {
     private Long amount;
 
     @Column(nullable = false)
-    private Date startDate;
+    private LocalDate startDate;
 
     @OneToMany(mappedBy = "lesson", cascade = {CascadeType.PERSIST})
     private List<PaymentRecord> paymenRecordList;
@@ -77,7 +77,7 @@ public class Lesson extends AuditingTimeEntity {
 
     @Builder
     public Lesson(User teacher, User parents, Account account, String subject, String studentName,
-                  Long count, Payment payment, Long amount, Date startDate){
+                  Long count, Payment payment, Long amount, LocalDate startDate){
         this.teacher = teacher;
         this.parents=parents;
         this.account=account;
