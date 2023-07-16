@@ -63,40 +63,22 @@ public class DateAndTimeConvert {
         return date.toString();
     }
 
-    public static String nowDateConvertString(){
+
+
+
+
+    public static String nowLocalDateConvertString(){
         //현재날짜를 'yyyy-mm-dd'에 형식의 string으로 만들어주기
         LocalDate nowDate = LocalDate.now();
         return nowDate.toString();
     }
 
-    public static String dateConvertDayOfWeek(Date date){
-        // 현재 날짜 -> 요일
-        LocalDate localDate = new java.sql.Date(date.getTime()).toLocalDate();
-        return localDate.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN);
-    }
-
     public static String localDateConvertString(LocalDate localDate){
         return localDate.toString();
-    }
-
-    public static String localTimeConvertString(LocalTime localTime){
-        return localTime.toString();
     }
 
     public static LocalDate stringConvertLocalDate(String stringDate){
         return LocalDate.parse(stringDate, DateTimeFormatter.ISO_DATE);
-    }
-
-    public static Date stringConvertStartMonthDate(String month) {
-        return stringConvertDate(month + "-01");
-    }
-
-    public static LocalDate stringConvertLocalDate(String stringLocalDate) {
-        return LocalDate.parse(stringLocalDate);
-    }
-
-    public static String localDateConvertString(LocalDate localDate){
-        return localDate.toString();
     }
 
     public static String localDateConvertDayOfWeek(LocalDate localDate) {
