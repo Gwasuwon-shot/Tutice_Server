@@ -3,6 +3,7 @@ package gwasuwonshot.tutice.lesson.controller;
 import gwasuwonshot.tutice.common.exception.SuccessStatus;
 import gwasuwonshot.tutice.common.resolver.userIdx.UserIdx;
 import gwasuwonshot.tutice.common.dto.ApiResponseDto;
+import gwasuwonshot.tutice.lesson.dto.request.CreateLessonMaintenanceRequestDto;
 import gwasuwonshot.tutice.lesson.dto.request.CreateLessonRequestDto;
 import gwasuwonshot.tutice.lesson.dto.request.UpdateLessonParentsRequestDto;
 import gwasuwonshot.tutice.lesson.dto.response.CreateLessonResponseDto;
@@ -71,6 +72,32 @@ public class LessonController {
 
         lessonService.updateLessonParents(userIdx, request.getLessonCode());
         return ApiResponseDto.success(SuccessStatus.UPDATE_LESSON_PARENTS_SUCCESS);
+
+    }
+
+    @PostMapping("/maintenance")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ApiResponseDto createLessonMaintenance(
+            @UserIdx final Long userIdx,
+            @Valid @RequestBody final CreateLessonMaintenanceRequestDto request) {
+
+//        //연장시
+//        //연장안할때
+//        유저가 선생이 맞는지 확인
+//        유효한 레슨인지, 선생의 레슨이 맞는지확인
+//        연장안하면 -> isFinished 만 true로 변경
+//                연장하면
+//        가짜 paymentRecord생성
+//        startDate는 해당 수업의 마지막 스케쥴날짜 +1
+        if(lessonService.createLessonMaintenance(userIdx,request.getLessonIdx(),request.getIsLessonMaintenance())){
+            return ApiResponseDto.success(SuccessStatus.AUTO_CREATE_SCHEDULE_FROM_LESSON_MAINTENANCE_SUCCESS);
+
+        }
+        else{
+            return ApiResponseDto.success(SuccessStatus.FINISH_LESSON_SUCCESS);
+
+        }
+
 
     }
 }
