@@ -8,5 +8,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
+    List<Schedule> findAllByDateBetweenAndLessonInOrderByDate(LocalDate startDate, LocalDate endDate, List<Lesson> lessonList);
     List<Schedule> findAllByDateAndLessonIn(LocalDate now, List<Lesson> lessonList);
 }

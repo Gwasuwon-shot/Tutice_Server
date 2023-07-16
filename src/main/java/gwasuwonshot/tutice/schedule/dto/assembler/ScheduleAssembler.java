@@ -10,6 +10,7 @@ import java.time.LocalTime;
 
 @Component
 public class ScheduleAssembler {
+
     public Schedule toEntity(Lesson lesson, LocalDate date, Long cycle,
                              LocalTime startTime, LocalTime endTime){
         return Schedule.builder()

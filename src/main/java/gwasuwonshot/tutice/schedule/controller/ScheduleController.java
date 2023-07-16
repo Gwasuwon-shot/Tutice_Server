@@ -3,6 +3,7 @@ package gwasuwonshot.tutice.schedule.controller;
 import gwasuwonshot.tutice.common.dto.ApiResponseDto;
 import gwasuwonshot.tutice.common.exception.SuccessStatus;
 import gwasuwonshot.tutice.common.resolver.userIdx.UserIdx;
+import gwasuwonshot.tutice.schedule.dto.response.GetScheduleByUserResponseDto;
 import gwasuwonshot.tutice.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,13 @@ public class ScheduleController {
  @ResponseStatus(HttpStatus.OK)
  public ApiResponseDto<?> getTodayScheduleByParents(@UserIdx final Long userIdx) {
   return ApiResponseDto.success(SuccessStatus.GET_TODAY_SCHEDULE_BY_PARENTS_SUCCESS, scheduleService.getTodayScheduleByParents(userIdx) );
+ }
+
+ @GetMapping("")
+ @ResponseStatus(HttpStatus.OK)
+ public ApiResponseDto<GetScheduleByUserResponseDto> getScheduleByUser(@UserIdx final Long userIdx,
+                                                                       @RequestParam final String month) {
+  return ApiResponseDto.success(SuccessStatus.GET_SCHEDULE_BY_USER_SUCCESS, scheduleService.getScheduleByUser(userIdx, month) );
  }
 
 }
