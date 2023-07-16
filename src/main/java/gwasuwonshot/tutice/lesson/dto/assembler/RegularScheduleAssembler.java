@@ -5,12 +5,12 @@ import gwasuwonshot.tutice.lesson.entity.RegularSchedule;
 import gwasuwonshot.tutice.lesson.entity.DayOfWeek;
 import org.springframework.stereotype.Component;
 
-import java.sql.Time;
+import java.time.LocalTime;
 
 @Component
 public class RegularScheduleAssembler {
 
-    public RegularSchedule toEntity(Lesson lesson, Time startTime, Time endTime, DayOfWeek dayOfWeek){
+    public RegularSchedule toEntity(Lesson lesson, LocalTime startTime, LocalTime endTime, DayOfWeek dayOfWeek){
         return RegularSchedule.builder()
                 .lesson(lesson)
                 .startTime(startTime)

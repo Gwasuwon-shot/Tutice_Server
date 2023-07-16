@@ -78,7 +78,7 @@ public class LessonService {
 
         //3. 해당 수업아이디가 있으면 정보 주기
         return GetLessonDetailByParentsResponseDto.of(lesson.getIdx(),lesson.getTeacher().getName(),
-                DateAndTimeConvert.dateConvertString(lesson.getStartDate()),lesson.getPayment().getValue(),
+                DateAndTimeConvert.localDateConvertString(lesson.getStartDate()),lesson.getPayment().getValue(),
                 lesson.getAmount(),
                 GetLessonDetailByParentsResponseAccount.of(lesson.getAccount().getName(),lesson.getAccount().getBank(), lesson.getAccount().getNumber() ));
 
@@ -140,7 +140,7 @@ public class LessonService {
                 request.getLesson().getCount(),
                 payment,
                 request.getLesson().getAmount(),
-                DateAndTimeConvert.stringConvertDate(request.getLesson().getStartDate())
+                DateAndTimeConvert.stringConvertLocalDate(request.getLesson().getStartDate())
 
         );
 
@@ -161,8 +161,8 @@ public class LessonService {
                 .map(rs->regularScheduleRepository.save(
                         regularScheduleAssembler.toEntity(
                                 lesson,
-                                DateAndTimeConvert.stringConvertTime(rs.getStartTime()),
-                                DateAndTimeConvert.stringConvertTime(rs.getEndTime()),
+                                DateAndTimeConvert.stringConvertLocalTime(rs.getStartTime()),
+                                DateAndTimeConvert.stringConvertLocalTime(rs.getEndTime()),
                                 DayOfWeek.getDayOfWeekByValue(rs.getDayOfWeek())
                         )
                 )).collect(Collectors.toList());

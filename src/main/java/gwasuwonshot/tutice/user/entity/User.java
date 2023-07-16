@@ -54,8 +54,10 @@ public class User extends AuditingTimeEntity {
     @OneToMany(mappedBy = "teacher", cascade = {CascadeType.REMOVE})
     private List<Account> accountList;
 
-    @OneToMany(mappedBy = "teacher", cascade = {CascadeType.PERSIST})
+    @OneToMany(mappedBy = "teacher", cascade = {CascadeType.ALL})
     private List<Lesson> lessonList;
+
+    // TODO '부모님'일 때, lessonList가 불러와지지 않는 이슈
 
     @OneToMany(mappedBy = "user")
     private List<NotificationLog> notificationLogList;

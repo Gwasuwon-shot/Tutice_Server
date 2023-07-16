@@ -8,6 +8,10 @@ import java.time.LocalDate;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
+import java.util.Locale;
 
 public class DateAndTimeConvert {
 
@@ -65,6 +69,26 @@ public class DateAndTimeConvert {
         return nowDate.toString();
     }
 
+    public static String dateConvertDayOfWeek(Date date){
+        // 현재 날짜 -> 요일
+        LocalDate localDate = new java.sql.Date(date.getTime()).toLocalDate();
+        return localDate.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN);
+    }
+
+    public static String localDateConvertString(LocalDate localDate){
+        return localDate.toString();
+    }
+
+    public static String localTimeConvertString(LocalTime localTime){
+        return localTime.toString();
+    }
+
+    public static LocalDate stringConvertLocalDate(String stringDate){
+        return LocalDate.parse(stringDate, DateTimeFormatter.ISO_DATE);
+    }
 
 
+    public static LocalTime stringConvertLocalTime(String stringTime) {
+        return LocalTime.parse(stringTime);
+    }
 }
