@@ -71,7 +71,11 @@ public class Schedule extends AuditingTimeEntity {
         regularScheduleList.forEach(lrs->System.out.println("수업의 요일들 : "+lrs.getDayOfWeek()));
 
 
-        List<RegularSchedule> sortedRegularScheduleList = RegularSchedule.createSortedReglarScheduleList(startDate,regularScheduleList);
+        // TODO 정기일정이 1개이면 근야 하면됨!!
+        if(regularScheduleList.size()>1){
+            List<RegularSchedule> sortedRegularScheduleList = RegularSchedule.createSortedReglarScheduleList(startDate,regularScheduleList);
+        }
+        List<RegularSchedule> sortedRegularScheduleList = regularScheduleList;
 
         //2. 1의 정렬된 리스트에서 count 만큼 반복해 스케쥴 생성
 

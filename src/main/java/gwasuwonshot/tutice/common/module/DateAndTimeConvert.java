@@ -15,34 +15,22 @@ import java.util.Locale;
 
 public class DateAndTimeConvert {
 
-    // TODO Time에 대한 포맷 validator를 지금은 여기에 두는데 나중엔 requestDto로 옮기기
-    public static Time stringConvertTime(String stringTime){ //"hh:mm:00" 형식이어야함
-        try{
-            return Time.valueOf(stringTime);
-        }catch (Exception e){
-            if (e instanceof IllegalArgumentException){
-                throw new InvalidTimeException(ErrorStatus.INVALID_TIME_EXCEPTION,ErrorStatus.INVALID_TIME_EXCEPTION.getMessage());
-            }
-            else{
-                System.out.println(e);
-                throw  e;
-            }
-
-        }
+    public static String nowLocalDateConvertString(){
+        //현재날짜를 'yyyy-mm-dd'에 형식의 string으로 만들어주기
+        LocalDate nowDate = LocalDate.now();
+        return nowDate.toString();
     }
 
-    public static String timeConvertString(Time time){
 
-        String timeFullString = time.toString();
-
-        return timeFullString.substring(0,timeFullString.length()-3); //HH:mm 형식으로 줌
+    public static String localDateConvertString(LocalDate localDate){
+        return localDate.toString();
     }
 
-    // TODO Date에 대한 포맷 validator를 지금은 여기에 두는데 나중엔 requestDto로 옮기기
-    public static Date stringConvertDate(String stringDate){ //"yyyy-mm-dd 형식이어야함
 
+    // TODO LocalDate에 대한 포맷 validator를 지금은 여기에 두는데 나중엔 requestDto로 옮기기
+    public static LocalDate stringConvertLocalDate(String stringDate){
         try{
-            return Date.valueOf(stringDate);
+            return LocalDate.parse(stringDate, DateTimeFormatter.ISO_DATE);
         }catch (Exception e){
             if (e instanceof IllegalArgumentException){
                 throw new InvalidDateException(ErrorStatus.INVALID_DATE_EXCEPTION,ErrorStatus.INVALID_DATE_EXCEPTION.getMessage());
@@ -53,32 +41,6 @@ public class DateAndTimeConvert {
             }
 
         }
-
-    }
-
-    public static String dateConvertString(Date date){
-
-        //import java.sql.Date;
-        //"yyyy-mm-dd 형식이어야함
-        return date.toString();
-    }
-
-
-
-
-
-    public static String nowLocalDateConvertString(){
-        //현재날짜를 'yyyy-mm-dd'에 형식의 string으로 만들어주기
-        LocalDate nowDate = LocalDate.now();
-        return nowDate.toString();
-    }
-
-    public static String localDateConvertString(LocalDate localDate){
-        return localDate.toString();
-    }
-
-    public static LocalDate stringConvertLocalDate(String stringDate){
-        return LocalDate.parse(stringDate, DateTimeFormatter.ISO_DATE);
     }
 
     public static String localDateConvertDayOfWeek(LocalDate localDate) {
@@ -90,7 +52,19 @@ public class DateAndTimeConvert {
         return localTime.format(DateTimeFormatter.ofPattern("HH:mm"));
     }
 
+    // TODO Time에 대한 포맷 validator를 지금은 여기에 두는데 나중엔 requestDto로 옮기기
     public static LocalTime stringConvertLocalTime(String stringTime) {
-        return LocalTime.parse(stringTime);
+        try{
+            return LocalTime.parse(stringTime);
+        }catch (Exception e){
+            if (e instanceof IllegalArgumentException){
+                throw new InvalidTimeException(ErrorStatus.INVALID_TIME_EXCEPTION,ErrorStatus.INVALID_TIME_EXCEPTION.getMessage());
+            }
+            else{
+                System.out.println(e);
+                throw  e;
+            }
+
+        }
     }
 }

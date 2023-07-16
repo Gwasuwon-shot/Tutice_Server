@@ -20,6 +20,7 @@ public enum ErrorStatus {
     INVALID_DATE_EXCEPTION(HttpStatus.BAD_REQUEST, "날짜의 형태는 yyyy-mm-dd 형태여야합니다."),
     INVALID_TIME_EXCEPTION(HttpStatus.BAD_REQUEST, "시간의 형태는 HH:mm:00의 형태여야합니다."),
     NULL_ACCESS_TOKEN_EXCEPTION(HttpStatus.BAD_REQUEST, "토큰 값이 없습니다."),
+    INVALID_LESSON_EXCEPTION(HttpStatus.BAD_REQUEST,"유효하지 않은 lesson 입니다."),
 
 
 
@@ -37,12 +38,15 @@ public enum ErrorStatus {
      */
     NOT_FOUND_USER_EXCEPTION(HttpStatus.NOT_FOUND, "존재하지 않는 유저입니다"),
     NOT_FOUND_LESSON_EXCEPTION(HttpStatus.NOT_FOUND, "수업을 찾을 수 없습니다."),
+    INVALID_LESSON_CODE_EXCEPTION(HttpStatus.NOT_FOUND,"유효하지 않은 레슨코드입니다."),
 
 
     /**
      * 409 CONFLICT
      */
     ALREADY_EXIST_USER_EXCEPTION(HttpStatus.CONFLICT, "이미 존재하는 유저입니다"),
+    ALREADY_EXIST_LESSON_PARENTS_EXCEPTION(HttpStatus.CONFLICT, "이미 학부모가 등록된 수업입니다."),
+    ALREADY_FINISHED_LESSON_EXCEPTION(HttpStatus.CONFLICT, "이미 종료된 수업입니다."),
 
 
     /**

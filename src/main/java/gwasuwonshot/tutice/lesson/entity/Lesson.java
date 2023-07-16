@@ -54,6 +54,9 @@ public class Lesson extends AuditingTimeEntity {
     @Column(nullable = false)
     private LocalDate startDate;
 
+    @Column(nullable = false)
+    private Boolean isFinished = false;
+
     @OneToMany(mappedBy = "lesson", cascade = {CascadeType.PERSIST})
     private List<PaymentRecord> paymenRecordList;
 
@@ -76,10 +79,9 @@ public class Lesson extends AuditingTimeEntity {
     }
 
     @Builder
-    public Lesson(User teacher, User parents, Account account, String subject, String studentName,
+    public Lesson(User teacher,  Account account, String subject, String studentName,
                   Long count, Payment payment, Long amount, LocalDate startDate){
         this.teacher = teacher;
-        this.parents=parents;
         this.account=account;
         this.subject=subject;
         this.studentName=studentName;
@@ -93,8 +95,19 @@ public class Lesson extends AuditingTimeEntity {
     }
 
 
+    public void connectParents(User parents) {
+        this.parents=parents;
+    }
 
 
+    public void finishLesson(){this.isFinished=true;}
+    public Boolean isMatchedParents(User parents){
+        return this.getParents().equals(parents);
+    }
+
+    public Boolean isMatchedTeacher(User teacher){
+        return this.getTeacher().equals(teacher);
+    }
 
     public Boolean isMatchedPayment(Payment matchedPayment){
         return this.getPayment().equals(matchedPayment);

@@ -3,7 +3,9 @@ package gwasuwonshot.tutice.lesson.controller;
 import gwasuwonshot.tutice.common.exception.SuccessStatus;
 import gwasuwonshot.tutice.common.resolver.userIdx.UserIdx;
 import gwasuwonshot.tutice.common.dto.ApiResponseDto;
+import gwasuwonshot.tutice.lesson.dto.request.CreateLessonMaintenanceRequestDto;
 import gwasuwonshot.tutice.lesson.dto.request.CreateLessonRequestDto;
+import gwasuwonshot.tutice.lesson.dto.request.UpdateLessonParentsRequestDto;
 import gwasuwonshot.tutice.lesson.dto.response.CreateLessonResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.GetLessonByUserResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.GetLessonDetailByParentsResponseDto;
@@ -27,22 +29,22 @@ public class LessonController {
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponseDto<CreateLessonResponseDto> createLesson(
             @UserIdx final Long userIdx,
-            @Valid @RequestBody  final CreateLessonRequestDto request ) {
+            @Valid @RequestBody final CreateLessonRequestDto request) {
 
         //레슨정보 생성
-        Long createdLessonId = lessonService.createLesson(userIdx,request);
+        Long createdLessonId = lessonService.createLesson(userIdx, request);
         //레슨코드 생성
         String createdLessonCode = lessonService.createLessonCode(createdLessonId);
 
-        return ApiResponseDto.success(SuccessStatus.CREATE_LESSON_SUCCESS ,CreateLessonResponseDto.of(createdLessonCode) );
+        return ApiResponseDto.success(SuccessStatus.CREATE_LESSON_SUCCESS, CreateLessonResponseDto.of(createdLessonCode));
 
     }
 
     @GetMapping("")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<GetLessonByUserResponseDto> getLessonByUser(@UserIdx final Long userIdx){
+    public ApiResponseDto<GetLessonByUserResponseDto> getLessonByUser(@UserIdx final Long userIdx) {
 
-        return ApiResponseDto.success(SuccessStatus.GET_LESSON_BY_USER_SUCCESS ,
+        return ApiResponseDto.success(SuccessStatus.GET_LESSON_BY_USER_SUCCESS,
                 lessonService.getLessonByUser(userIdx));
 
 
@@ -52,13 +54,51 @@ public class LessonController {
     @ResponseStatus(HttpStatus.OK)
     public ApiResponseDto<GetLessonDetailByParentsResponseDto> getLessonDetailByParents(
             @UserIdx final Long userIdx
-            ,@PathVariable final Long lessonIdx){
+            , @PathVariable final Long lessonIdx) {
 
 
-        return ApiResponseDto.success(SuccessStatus.GET_LESSON_DETAIL_BY_PARENTS_SUCCESS ,
-                lessonService.getLessonDetailByParents(userIdx,lessonIdx));
+        return ApiResponseDto.success(SuccessStatus.GET_LESSON_DETAIL_BY_PARENTS_SUCCESS,
+                lessonService.getLessonDetailByParents(userIdx, lessonIdx));
 
 
     }
 
+
+    @PatchMapping("/parents")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponseDto updateLessonParents(
+            @UserIdx final Long userIdx,
+            @Valid @RequestBody final UpdateLessonParentsRequestDto request) {
+
+        lessonService.updateLessonParents(userIdx, request.getLessonCode());
+        return ApiResponseDto.success(SuccessStatus.UPDATE_LESSON_PARENTS_SUCCESS);
+
+    }
+
+    @PostMapping("/maintenance")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ApiResponseDto createLessonMaintenance(
+            @UserIdx final Long userIdx,
+            @Valid @RequestBody final CreateLessonMaintenanceRequestDto request) {
+
+//        //연장시
+//        //연장안할때
+//        유저가 선생이 맞는지 확인
+//        유효한 레슨인지, 선생의 레슨이 맞는지확인
+//        연장안하면 -> isFinished 만 true로 변경
+//                연장하면
+//        가짜 paymentRecord생성
+//        startDate는 해당 수업의 마지막 스케쥴날짜 +1
+        if(lessonService.createLessonMaintenance(userIdx,request.getLessonIdx(),request.getIsLessonMaintenance())){
+            return ApiResponseDto.success(SuccessStatus.AUTO_CREATE_SCHEDULE_FROM_LESSON_MAINTENANCE_SUCCESS);
+
+        }
+        else{
+            return ApiResponseDto.success(SuccessStatus.FINISH_LESSON_SUCCESS);
+
+        }
+
+
+    }
 }
+

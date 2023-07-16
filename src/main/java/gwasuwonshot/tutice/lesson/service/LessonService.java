@@ -9,11 +9,8 @@ import gwasuwonshot.tutice.lesson.dto.request.CreateLessonRequestDto;
 import gwasuwonshot.tutice.lesson.dto.response.GetLessonByUserResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.GetLessonDetailByParentsResponseAccount;
 import gwasuwonshot.tutice.lesson.dto.response.GetLessonDetailByParentsResponseDto;
-import gwasuwonshot.tutice.lesson.entity.DayOfWeek;
-import gwasuwonshot.tutice.lesson.entity.Lesson;
-import gwasuwonshot.tutice.lesson.entity.Payment;
-import gwasuwonshot.tutice.lesson.entity.RegularSchedule;
-import gwasuwonshot.tutice.lesson.exception.NotFoundLessonException;
+import gwasuwonshot.tutice.lesson.entity.*;
+import gwasuwonshot.tutice.lesson.exception.*;
 import gwasuwonshot.tutice.lesson.repository.LessonRepository;
 import gwasuwonshot.tutice.lesson.repository.PaymentRecordRepository;
 import gwasuwonshot.tutice.lesson.repository.RegularScheduleRepository;
@@ -32,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.time.LocalDate;
 import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -75,8 +73,7 @@ public class LessonService {
                 .stream()
                 .filter(pl -> pl.getIdx().equals(lessonIdx))
                 .findFirst()
-                .orElseThrow(() -> new NotFoundLessonException(ErrorStatus.NOT_FOUND_LESSON_EXCEPTION,ErrorStatus.NOT_FOUND_LESSON_EXCEPTION.getMessage()));
-
+                .orElseThrow(() -> new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION,ErrorStatus.INVALID_LESSON_EXCEPTION.getMessage()));
 
         //3. 해당 수업아이디가 있으면 정보 주기
         return GetLessonDetailByParentsResponseDto.of(lesson.getIdx(),lesson.getTeacher().getName(),
@@ -87,6 +84,7 @@ public class LessonService {
 
     }
 
+    @Transactional
     public GetLessonByUserResponseDto getLessonByUser(final Long userIdx){
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
@@ -152,8 +150,11 @@ public class LessonService {
 
         //2.1 레슨이 선불일 경우 가짜 PaymentRecord 생성
         if(lesson.isMatchedPayment(Payment.PRE_PAYMENT)){
-            paymentRecordRepository.save(paymentRecordAssembler.toEntity(lesson, null));
+            PaymentRecord prePaymentRecord = paymentRecordAssembler.toEntity(lesson, null);
+            paymentRecordRepository.save(prePaymentRecord);
+            lesson.addPaymentRecord(prePaymentRecord);
         }
+
 
 
         //3. 해당 레슨 정기일정 생성
@@ -183,6 +184,91 @@ public class LessonService {
 
     }
 
+    @Transactional
+    public Boolean createLessonMaintenance(Long userIdx,Long lessonIdx, Boolean isLessonMaintenance){
+//        //연장시
+//        //연장안할때
+//        유저가 선생이 맞는지 확인
+//        유효한 레슨인지, 선생의 레슨이 맞는지확인
+//        연장안하면 -> isFinished 만 true로 변경
+//                연장하면
+//        가짜 paymentRecord생성
+//        startDate는 해당 수업의 마지막 스케쥴날짜 +1
+
+        User teacher = userRepository.findById(userIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+
+
+        //0. 역할이 선생님이 아니면 에러발생 // TODO : 서비스단에는 도메인로직이 들어있으면 안됨.
+        if(!teacher.isMatchedRole(Role.TEACHER)){
+            throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION,ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
+        }
+
+        Lesson lesson = lessonRepository.findById(lessonIdx)
+                .orElseThrow(() -> new NotFoundLessonException(ErrorStatus.NOT_FOUND_LESSON_EXCEPTION,ErrorStatus.NOT_FOUND_LESSON_EXCEPTION.getMessage()));
+
+        if(!lesson.isMatchedTeacher(teacher)){
+            throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION,ErrorStatus.INVALID_LESSON_EXCEPTION.getMessage());
+        }
+
+
+        if(isLessonMaintenance){
+            //연장하면
+            ////        가짜 paymentRecord생성
+            paymentRecordRepository.save(paymentRecordAssembler.toEntity(lesson, null));
+
+            ////        startDate는 해당 수업의 마지막 스케쥴날짜 +1
+            LocalDate maintenanceDate = scheduleRepository.findTopByLessonOrderByDateDesc(lesson).getDate().plusDays(1);
+
+            //연장...!
+            Schedule.autoCreateSchedule(maintenanceDate,lesson.getCount(),lesson)
+                    .forEach(acs->scheduleRepository.save(acs));;
+
+
+
+
+
+            return true;
+
+        }
+        else{//연장안하면, isFinished 만 true로 변경
+            if(lesson.getIsFinished()){
+                throw new AlreadyFinishedLessonException(ErrorStatus.ALREADY_FINISHED_LESSON_EXCEPTION,ErrorStatus.ALREADY_FINISHED_LESSON_EXCEPTION.getMessage());
+            }
+            lesson.finishLesson();
+            return false;
+        }
+    }
+
+    @Transactional
+    public void updateLessonParents(Long userIdx, String lessonCode){
+        //1. 유저가 학부모가 맞는지 보기
+        User parents = userRepository.findById(userIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+
+
+        //0. 역할이 선생님이 아니면 에러발생
+        if(!parents.isMatchedRole(Role.PARENTS)){
+            throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION,ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
+        }
+        //2. 레슨코드해석
+        Long lessonIdx = this.getLessonIdxFromLessonCode(lessonCode);
+        //3. 해석한 레슨아이디로 레슨찾기 -> 없으면 404
+        Lesson lesson = lessonRepository.findById(lessonIdx)
+                .orElseThrow(()->new NotFoundLessonException(ErrorStatus.NOT_FOUND_LESSON_EXCEPTION, ErrorStatus.NOT_FOUND_LESSON_EXCEPTION.getMessage()));
+        //4. 레슨에 연결된 학부모검사 -> 현유저가 아닌유저이면 409
+        if(lesson.getParents() == null){
+            lesson.connectParents(parents);
+
+        } else if (lesson.getParents().equals(parents)) {
+            //이미 같은유저가 연결된거면 성공으로 치기
+        }
+        else{
+            throw new AlreadyExistLessonParentsException(ErrorStatus.ALREADY_EXIST_LESSON_PARENTS_EXCEPTION, ErrorStatus.ALREADY_EXIST_LESSON_PARENTS_EXCEPTION.getMessage());
+        }
+
+    }
+
     public String createLessonCode(Long lessonIdx){
         //statless하게 lessonIdx의 정보를 가진 레슨코드를 생성하여 추후 레슨코드만 해석해도 어떤 레슨인지 알수있게
         byte[] lessonIdxBytes = (lessonIdx+"").getBytes();
@@ -192,11 +278,13 @@ public class LessonService {
     }
 
     public Long getLessonIdxFromLessonCode(String lessonCode){
-
-        byte[] lessonIdxBytes = Base64.getDecoder().decode(lessonCode);
-        Long lessonIdx = Long.parseLong(new String(lessonIdxBytes));
-
-        return lessonIdx;
+        try{
+            byte[] lessonIdxBytes = Base64.getDecoder().decode(lessonCode);
+            Long lessonIdx = Long.parseLong(new String(lessonIdxBytes));
+            return lessonIdx;
+        }catch (Exception e){
+            throw new InvalidLessonCodeException(ErrorStatus.INVALID_LESSON_CODE_EXCEPTION,ErrorStatus.INVALID_LESSON_CODE_EXCEPTION.getMessage());
+        }
 
     }
 
