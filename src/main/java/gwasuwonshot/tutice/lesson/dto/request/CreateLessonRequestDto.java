@@ -16,13 +16,13 @@ import javax.validation.constraints.Pattern;
 @Schema(description = "수업 생성 DTO")
 public class CreateLessonRequestDto {
     @Valid
-    @NotNull
+    @NotNull(message = "수업 정보가 없습니다.")
     @Schema(description = "수업 자체 정보")
     private CreateLessonRequestLesson lesson;
 
 
     @Valid
-    @NotNull
+    @NotNull(message = "계좌 정보가 없습니다.")
     @Schema(description = "선생님 계좌 정보")
     private CreateLessonRequestAccount account;
 
