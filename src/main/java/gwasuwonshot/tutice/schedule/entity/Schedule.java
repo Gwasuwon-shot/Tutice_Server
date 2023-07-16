@@ -59,11 +59,10 @@ public class Schedule extends AuditingTimeEntity {
         this.endTime=endTime;
     }
 
-    public static List<Schedule> autoCreateSchedule(LocalDate startDate, Long count, Lesson lesson){ //처음생성시는 lesson의 스타트데이트, 연장시는 마지막 회차+1일
+    public static List<Schedule> autoCreateSchedule(LocalDate startDate, Long count, Lesson lesson){
+        //처음생성시는 lesson의 스타트데이트, 연장시는 마지막 회차+1일
         //1. List를 startDate에서 가장 가까운 요일순으로 정렬
         List <RegularSchedule> regularScheduleList = lesson.getRegularScheduleList();
-
-
 
         //!!!  잘들어오나?
         System.out.println("시작날짜 : "+startDate);
@@ -72,73 +71,18 @@ public class Schedule extends AuditingTimeEntity {
         regularScheduleList.forEach(lrs->System.out.println("수업의 요일들 : "+lrs.getDayOfWeek()));
 
 
-
-        //일단 regularScheduleList를 요일순서로 정렬
-        Collections.sort( regularScheduleList, new Comparator<RegularSchedule>() {
-            @Override
-            public int compare(RegularSchedule o1, RegularSchedule o2) {
-                Long difference = o1.getDayOfWeek().getIndex() - o2.getDayOfWeek().getIndex();
-                return difference.intValue();
-            }
-        });
-
-        //!!! 월화수목금으로 정렬된
-        regularScheduleList.forEach(rs->System.out.println(rs.getDayOfWeek().getValue()));
-
-        //가장 가까운 요일 찾기, 같거나 큰 요일. 만약 key가 가장 큰 요일이면 첫번째 원소
-        System.out.println(startDate);
-
-        Long startDateDayOfWeek = Long.valueOf(startDate.getDayOfWeek().getValue()); //시작날짜 요일
-
-        System.out.println(startDate+"의 요일 : "+startDateDayOfWeek);
-
-
-
-        Integer low = 0;
-        Integer high = regularScheduleList.size()-1;
-        Integer mid = 0;
-        Integer latestDayOfWeekListIndex=7;
-
-        while(low<= high){
-            mid = (low + high) / 2;
-            if(startDateDayOfWeek.equals(regularScheduleList.get(mid).getDayOfWeek().getIndex())){
-                latestDayOfWeekListIndex=mid; //수업시작일이 요일일때의 regularSchedulList의 인덱스
-                break;
-            }else if(startDateDayOfWeek < regularScheduleList.get(mid).getDayOfWeek().getIndex()){
-                high = mid - 1;
-            }
-            else {
-                low = mid + 1;
-            }
-        }
-        // ex. startDate의 요일이 일요일이면 일 또는 월요일이 가장 가까운 날짜
-        if(latestDayOfWeekListIndex.equals(7)){ //위 로직에서 같은 요일이 없던경우
-            if(low>high){//시작날짜 요일이 가장큰경우
-                latestDayOfWeekListIndex=0;
-            }
-            latestDayOfWeekListIndex=low; //가장 가까운 큰 요일
-        }
-
-        List<RegularSchedule> sortedRegularScheduleList = regularScheduleList.subList(latestDayOfWeekListIndex,regularScheduleList.size());
-        sortedRegularScheduleList.addAll(regularScheduleList.subList(0,latestDayOfWeekListIndex));
-
-
-        //로그
-
-        System.out.println("시작날짜에서 가장 가까운 요일 : "+regularScheduleList.get(latestDayOfWeekListIndex).getDayOfWeek().getValue());
-        sortedRegularScheduleList.forEach(srsl -> System.out.println(srsl.getDayOfWeek().getValue()));
-
+        List<RegularSchedule> sortedRegularScheduleList = RegularSchedule.createSortedReglarScheduleList(startDate,regularScheduleList);
 
         //2. 1의 정렬된 리스트에서 count 만큼 반복해 스케쥴 생성
 
-        Long cycle;
+        Long cycle; //해당 레슨의 paymentRecord보기
         if(lesson.getPayment().equals(Payment.PRE_PAYMENT)){
             cycle = Long.valueOf(lesson.getPaymenRecordList().size());
         }
         else{
             cycle = Long.valueOf(lesson.getPaymenRecordList().size()+1);
-
         }
+
         List<Schedule> createdScheduleList = new ArrayList<>();
         for(int i =0 ; i < count; i++){
             int tempI = i%sortedRegularScheduleList.size();
@@ -164,10 +108,5 @@ public class Schedule extends AuditingTimeEntity {
 
     }
 
-    public static void main(String[] args) {
-        DayOfWeek[] a = DayOfWeek.values();
-        for(int i =0 ; i < a.length; i++){
-            System.out.println(i+" : "+a[i].getValue());
-        }
-    }
+
 }
