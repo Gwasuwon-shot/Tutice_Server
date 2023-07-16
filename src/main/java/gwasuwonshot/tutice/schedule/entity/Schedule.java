@@ -1,11 +1,10 @@
 package gwasuwonshot.tutice.schedule.entity;
 
 import gwasuwonshot.tutice.common.entity.AuditingTimeEntity;
-import gwasuwonshot.tutice.lesson.dto.assembler.RegularScheduleAssembler;
 import gwasuwonshot.tutice.lesson.entity.DayOfWeek;
 import gwasuwonshot.tutice.lesson.entity.Lesson;
+import gwasuwonshot.tutice.lesson.entity.Payment;
 import gwasuwonshot.tutice.lesson.entity.RegularSchedule;
-import gwasuwonshot.tutice.schedule.dto.assembler.ScheduleAssembler;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,15 +12,12 @@ import lombok.NoArgsConstructor;
 
 
 import javax.persistence.*;
-import java.sql.Date;
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Entity
@@ -54,17 +50,16 @@ public class Schedule extends AuditingTimeEntity {
 
 
     @Builder
-    public Schedule(Lesson lesson, LocalDate date, ScheduleStatus status,
+    public Schedule(Lesson lesson, LocalDate date,
                     Long cycle, LocalTime startTime, LocalTime endTime){
         this.lesson=lesson;
         this.date = date;
-        this.status = status;
         this.cycle=cycle;
         this.startTime = startTime;
         this.endTime=endTime;
     }
 
-    public static List<Schedule> autoCreateSchedule(Date startDate, Long count, Lesson lesson){ //처음생성시는 lesson의 스타트데이트, 연장시는 마지막 회차+1일
+    public static List<Schedule> autoCreateSchedule(LocalDate startDate, Long count, Lesson lesson){ //처음생성시는 lesson의 스타트데이트, 연장시는 마지막 회차+1일
         //1. List를 startDate에서 가장 가까운 요일순으로 정렬
         List <RegularSchedule> regularScheduleList = lesson.getRegularScheduleList();
 
@@ -91,14 +86,14 @@ public class Schedule extends AuditingTimeEntity {
         regularScheduleList.forEach(rs->System.out.println(rs.getDayOfWeek().getValue()));
 
         //가장 가까운 요일 찾기, 같거나 큰 요일. 만약 key가 가장 큰 요일이면 첫번째 원소
-        System.out.println(startDate+"의 년 : "+startDate.getYear());
-        System.out.println(startDate+"의 달 : "+startDate.getMonth());
-        System.out.println(startDate+"의 일 : "+startDate.getDay());
+        System.out.println(startDate);
 
-        LocalDate startLocalDate = LocalDate.of(startDate.getYear(),startDate.getMonth(),startDate.getDay());
-        Long startDateDayOfWeek = Long.valueOf(startLocalDate.getDayOfWeek().getValue()); //시작날짜 요일
+        Long startDateDayOfWeek = Long.valueOf(startDate.getDayOfWeek().getValue()); //시작날짜 요일
 
-        System.out.println(startLocalDate+"의 요일 : "+startDateDayOfWeek);
+        System.out.println(startDate+"의 요일 : "+startDateDayOfWeek);
+
+
+
         Integer low = 0;
         Integer high = regularScheduleList.size()-1;
         Integer mid = 0;
@@ -128,24 +123,41 @@ public class Schedule extends AuditingTimeEntity {
         sortedRegularScheduleList.addAll(regularScheduleList.subList(0,latestDayOfWeekListIndex));
 
 
+        //로그
+
+        System.out.println("시작날짜에서 가장 가까운 요일 : "+regularScheduleList.get(latestDayOfWeekListIndex).getDayOfWeek().getValue());
+        sortedRegularScheduleList.forEach(srsl -> System.out.println(srsl.getDayOfWeek().getValue()));
+
+
         //2. 1의 정렬된 리스트에서 count 만큼 반복해 스케쥴 생성
 
+        Long cycle;
+        if(lesson.getPayment().equals(Payment.PRE_PAYMENT)){
+            cycle = Long.valueOf(lesson.getPaymenRecordList().size());
+        }
+        else{
+            cycle = Long.valueOf(lesson.getPaymenRecordList().size()+1);
+
+        }
         List<Schedule> createdScheduleList = new ArrayList<>();
         for(int i =0 ; i < count; i++){
-            i = i%sortedRegularScheduleList.size();
+            int tempI = i%sortedRegularScheduleList.size();
             int week = i/sortedRegularScheduleList.size();
-            DayOfWeek dayOfWeek = sortedRegularScheduleList.get(i).getDayOfWeek();
-            Time startTime = sortedRegularScheduleList.get(i).getStartTime();
-            Time endTime = sortedRegularScheduleList.get(i).getEndTime();
-            Date date = Date.valueOf(startLocalDate.plusWeeks(week).with(TemporalAdjusters.next(java.time.DayOfWeek.of(dayOfWeek.getIndex().intValue()))));
+            DayOfWeek dayOfWeek = sortedRegularScheduleList.get(tempI).getDayOfWeek();
+            LocalTime startTime = sortedRegularScheduleList.get(tempI).getStartTime();
+            LocalTime endTime = sortedRegularScheduleList.get(tempI).getEndTime();
+            LocalDate date = startDate.plusWeeks(week).with(TemporalAdjusters.next(java.time.DayOfWeek.of(dayOfWeek.getIndex().intValue())));
             createdScheduleList.add(Schedule.builder()
                     .lesson(lesson)
                     .date(date)
+                    .cycle(cycle) //해당 레슨의 paymentRecord보기
                     .startTime(startTime)
                     .endTime(endTime)
                     .build());
 
         }
+
+        createdScheduleList.forEach(cs -> System.out.println(cs.getDate()));
 
         return createdScheduleList;
 
