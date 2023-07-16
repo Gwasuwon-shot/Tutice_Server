@@ -10,12 +10,11 @@ import java.time.LocalTime;
 
 @Component
 public class ScheduleAssembler {
-    public Schedule toEntity(Lesson lesson, LocalDate date, ScheduleStatus status,
-                             Long cycle, LocalTime startTime, LocalTime endTime){
+    public Schedule toEntity(Lesson lesson, LocalDate date, Long cycle,
+                             LocalTime startTime, LocalTime endTime){
         return Schedule.builder()
                 .lesson(lesson)
                 .date(date)
-                .status(status)
                 .cycle(cycle)
                 .startTime(startTime)
                 .endTime(endTime)
