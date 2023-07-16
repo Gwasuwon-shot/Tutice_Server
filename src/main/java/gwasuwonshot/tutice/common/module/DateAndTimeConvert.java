@@ -43,8 +43,6 @@ public class DateAndTimeConvert {
         }
     }
 
-
-
     public static String localDateConvertDayOfWeek(LocalDate localDate) {
         // 현재 날짜 -> 요일
         return localDate.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN);
