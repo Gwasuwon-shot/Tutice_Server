@@ -17,6 +17,7 @@ import gwasuwonshot.tutice.lesson.exception.NotFoundLessonException;
 import gwasuwonshot.tutice.lesson.repository.LessonRepository;
 import gwasuwonshot.tutice.lesson.repository.PaymentRecordRepository;
 import gwasuwonshot.tutice.lesson.repository.RegularScheduleRepository;
+import gwasuwonshot.tutice.schedule.entity.Schedule;
 import gwasuwonshot.tutice.user.dto.assembler.AccountAssembler;
 import gwasuwonshot.tutice.user.entity.Account;
 import gwasuwonshot.tutice.user.entity.Role;
@@ -46,6 +47,7 @@ public class LessonService {
     private final RegularScheduleRepository regularScheduleRepository;
     private final PaymentRecordAssembler paymentRecordAssembler;
     private final PaymentRecordRepository paymentRecordRepository;
+
 
     @Transactional
     public GetLessonDetailByParentsResponseDto getLessonDetailByParents(Long userIdx,Long lessonIdx){
@@ -171,7 +173,13 @@ public class LessonService {
 
 
 
+
+        lesson.getRegularScheduleList().forEach(lrs->System.out.println("수업의 요일들 : "+lrs.getDayOfWeek()));
+
+
+
         //4. 스케쥴 자동생성 <- 이거는 나중에로직 추가
+        Schedule.autoCreateSchedule(lesson.getStartDate(),lesson.getCount(),lesson);
 
 
         return lesson.getIdx();

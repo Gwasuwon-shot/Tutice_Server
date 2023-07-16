@@ -30,12 +30,12 @@ public class CreateLessonRequestLesson {
     private String payment;
 
     @NotNull
-    @Min(1)
     @Schema(description = "과외 금액")
     private Long amount;
 
     @NotNull
     @Schema(description = "과외 회차")
+    @Min(1)
     private Long count;
 
 

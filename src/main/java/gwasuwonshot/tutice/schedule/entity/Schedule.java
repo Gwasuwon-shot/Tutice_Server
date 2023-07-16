@@ -62,8 +62,19 @@ public class Schedule extends AuditingTimeEntity {
         this.endTime=endTime;
     }
 
-    public static List<Schedule> autoCreateSchedule(Date startDate, Long count, List<RegularSchedule> regularScheduleList){ //처음생성시는 lesson의 스타트데이트, 연장시는 마지막 회차+1일
+    public static List<Schedule> autoCreateSchedule(Date startDate, Long count, Lesson lesson){ //처음생성시는 lesson의 스타트데이트, 연장시는 마지막 회차+1일
         //1. List를 startDate에서 가장 가까운 요일순으로 정렬
+        List <RegularSchedule> regularScheduleList = lesson.getRegularScheduleList();
+
+
+
+        //!!!  잘들어오나?
+        System.out.println("시작날짜 : "+startDate);
+        System.out.println("회차 : "+count);
+        System.out.println("레슨아이디 : "+lesson.getIdx());
+        regularScheduleList.forEach(lrs->System.out.println("수업의 요일들 : "+lrs.getDayOfWeek()));
+
+
 
         //일단 regularScheduleList를 요일순서로 정렬
         Collections.sort( regularScheduleList, new Comparator<RegularSchedule>() {
@@ -74,9 +85,18 @@ public class Schedule extends AuditingTimeEntity {
             }
         });
 
+        //!!! 월화수목금으로 정렬된
+        regularScheduleList.forEach(rs->System.out.println(rs.getDayOfWeek().getValue()));
+
         //가장 가까운 요일 찾기, 같거나 큰 요일. 만약 key가 가장 큰 요일이면 첫번째 원소
+        System.out.println(startDate+"의 년 : "+startDate.getYear());
+        System.out.println(startDate+"의 달 : "+startDate.getMonth());
+        System.out.println(startDate+"의 일 : "+startDate.getDay());
+
         LocalDate startLocalDate = LocalDate.of(startDate.getYear(),startDate.getMonth(),startDate.getDay());
         Long startDateDayOfWeek = Long.valueOf(startLocalDate.getDayOfWeek().getValue()); //시작날짜 요일
+
+        System.out.println(startLocalDate+"의 요일 : "+startDateDayOfWeek);
         Integer low = 0;
         Integer high = regularScheduleList.size()-1;
         Integer mid = 0;
@@ -117,6 +137,7 @@ public class Schedule extends AuditingTimeEntity {
             Time endTime = sortedRegularScheduleList.get(i).getEndTime();
             Date date = Date.valueOf(startLocalDate.plusWeeks(week).with(TemporalAdjusters.next(java.time.DayOfWeek.of(dayOfWeek.getIndex().intValue()))));
             createdScheduleList.add(Schedule.builder()
+                    .lesson(lesson)
                     .date(date)
                     .startTime(startTime)
                     .endTime(endTime)
