@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -48,7 +50,7 @@ public class ScheduleController {
  @PatchMapping("")
  @ResponseStatus(HttpStatus.OK)
  public ApiResponseDto updateSchedule(@UserIdx final Long userIdx,
-                                      @RequestBody final UpdateScheduleRequestDto request) {
+                                      @RequestBody @Valid final UpdateScheduleRequestDto request) {
   scheduleService.updateSchedule(userIdx, request);
   return ApiResponseDto.success(SuccessStatus.UPDATE_SCHEDULE);
  }
