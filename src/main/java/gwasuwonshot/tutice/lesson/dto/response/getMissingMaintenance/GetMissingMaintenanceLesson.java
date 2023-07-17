@@ -1,11 +1,9 @@
-package gwasuwonshot.tutice.lesson.dto.response;
+package gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenance;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

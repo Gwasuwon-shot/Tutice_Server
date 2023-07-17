@@ -4,7 +4,9 @@ import gwasuwonshot.tutice.common.resolver.enumValue.EnumModel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 @Getter
 @RequiredArgsConstructor
@@ -22,5 +24,9 @@ public enum ScheduleStatus implements EnumModel {
         return Arrays.stream(ScheduleStatus.values())
                 .filter(s -> s.getValue().equals(value))
                 .findAny().orElseThrow();
+    }
+
+    public static List<ScheduleStatus> getAttendanceScheduleStatusList(){
+        return new ArrayList<>(Arrays.asList(ScheduleStatus.ABSENCE, ScheduleStatus.ATTENDANCE));
     }
 }

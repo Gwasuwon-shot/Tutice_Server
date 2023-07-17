@@ -1,6 +1,5 @@
-package gwasuwonshot.tutice.lesson.dto.response;
+package gwasuwonshot.tutice.lesson.dto.response.getLessonDetail;
 
-import gwasuwonshot.tutice.user.entity.Account;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

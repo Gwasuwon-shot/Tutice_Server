@@ -46,7 +46,7 @@ public class ScheduleService {
 
         // 학부모-레슨리스트 -> 스케줄 중 해당 레슨 있는지 + 오늘 날짜인지
         // TODO 부모님 수업 리스트 양방향 매핑으로 수정하기
-        List<Lesson> lessonList = lessonRepository.findAllByParentsIdx(userIdx);
+        List<Lesson> lessonList = lessonRepository.findAllByParentsIdxAndIsFinished(userIdx,false);
         List<Schedule> todayScheduleList = scheduleRepository.findAllByDateAndLessonIn(now, lessonList);
         if(todayScheduleList == null) return GetTodayScheduleByParentsResponseDto.of(user.getName());
         return GetTodayScheduleByParentsResponseDto.ofTodaySchedule(user.getName(), now, todayScheduleList);
@@ -65,9 +65,9 @@ public class ScheduleService {
         // 유저 역할 따라 스케줄 가져오기
         List<Lesson> lessonList;
         if (user.isMatchedRole(Role.PARENTS)) {
-            lessonList = lessonRepository.findAllByParentsIdx(userIdx);
+            lessonList = lessonRepository.findAllByParentsIdxAndIsFinished(userIdx,false);
         } else if (user.isMatchedRole(Role.TEACHER)) {
-            lessonList = lessonRepository.findAllByTeacherIdx(userIdx);
+            lessonList = lessonRepository.findAllByTeacherIdxAndIsFinished(userIdx,false);
         } else {
             return null;
         }
@@ -194,13 +194,18 @@ public class ScheduleService {
         return null;
     }
 
-    // 현재 스케줄이 몇 회차인지 구하는 로직
+    // 현재 스케줄이 이 스케쥴 사이클에서 몇 회차인지 구하는 로직
     private Integer getScheduleCount(Schedule schedule) {
+        scheduleRepository.findAllByLessonAndCycleAndStatusIn(schedule.getLesson(),schedule.getCycle(), ScheduleStatus.getAttendanceScheduleStatusList());
+
         Long lessonIdx = schedule.getLesson().getIdx();
-        List<ScheduleStatus> attendanceStatusList = new ArrayList<>((Arrays.asList(ScheduleStatus.ATTENDANCE, ScheduleStatus.ABSENCE)));
-        Integer count = scheduleRepository.countByLesson_IdxAndStatusIn(lessonIdx, attendanceStatusList);
+        Integer count = scheduleRepository.countByLesson_IdxAndStatusIn(lessonIdx, ScheduleStatus.getAttendanceScheduleStatusList());
+
         return count+1;
     }
+    // TODO : 단일스케쥴진짜회차정보: 파라미터로 들어오는 스케줄이 이 스케쥴 사이클에서 몇 회차인지 구하는 로직(스케쥴의 상태는 출석 OR 결석만 가능) 메소드 필요해지면 만들기
+
+
 
     public GetMissingAttendanceScheduleResponseDto getMissingAttendanceSchedule(Long userIdx) {
         // 유저 존재 여부

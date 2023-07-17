@@ -2,11 +2,17 @@ package gwasuwonshot.tutice.lesson.service;
 
 import gwasuwonshot.tutice.common.exception.ErrorStatus;
 import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
+import gwasuwonshot.tutice.common.module.ReturnLongMath;
 import gwasuwonshot.tutice.lesson.dto.assembler.LessonAssembler;
 import gwasuwonshot.tutice.lesson.dto.assembler.PaymentRecordAssembler;
 import gwasuwonshot.tutice.lesson.dto.assembler.RegularScheduleAssembler;
 import gwasuwonshot.tutice.lesson.dto.request.CreateLessonRequestDto;
 import gwasuwonshot.tutice.lesson.dto.response.*;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonByParents.GetLessonByParents;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonDetail.GetLessonDetailByParentsResponseAccount;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonDetail.GetLessonDetailByParentsResponseDto;
+import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenance.GetMissingMaintenanceLesson;
+import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenance.MissingMaintenanceLesson;
 import gwasuwonshot.tutice.lesson.entity.*;
 import gwasuwonshot.tutice.lesson.exception.*;
 import gwasuwonshot.tutice.lesson.repository.LessonRepository;
@@ -50,7 +56,7 @@ public class LessonService {
 
 
     @Transactional
-    public GetLessonDetailByParentsResponseDto getLessonDetailByParents(Long userIdx,Long lessonIdx){
+    public GetLessonDetailByParentsResponseDto getLessonDetailByParents(Long userIdx, Long lessonIdx){
         //1. 먼저 유저를 찾고 유저의 롤이 부모님확인
         User parents = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
@@ -69,7 +75,7 @@ public class LessonService {
 
 
 
-        Lesson lesson = lessonRepository.findAllByParentsIdx(parents.getIdx())
+        Lesson lesson = lessonRepository.findAllByParentsIdxAndIsFinished(parents.getIdx(),false)
                 .stream()
                 .filter(pl -> pl.getIdx().equals(lessonIdx))
                 .findFirst()
@@ -90,16 +96,52 @@ public class LessonService {
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
 
         if(user.isMatchedRole(Role.PARENTS)){
-            return GetLessonByUserResponseDto.of(!(lessonRepository.findAllByParentsIdx(user.getIdx()).isEmpty())
+            return GetLessonByUserResponseDto.of(!(lessonRepository.findAllByParentsIdxAndIsFinished(user.getIdx(), false).isEmpty())
                     ,user.getName());
 
         } else if (user.isMatchedRole(Role.TEACHER)) {
-            return GetLessonByUserResponseDto.of(!(lessonRepository.findAllByTeacherIdx(user.getIdx()).isEmpty())
+            return GetLessonByUserResponseDto.of(!(lessonRepository.findAllByTeacherIdxAndIsFinished(user.getIdx(),false).isEmpty())
                     ,user.getName());
         }
         else{
             return null; // 관리자 계정일경우..... 뭐하지??
         }
+    }
+
+    @Transactional
+    public List<GetLessonByParents> getLessonByParents(final Long userIdx){
+//        유저의 역할이 학부모인지 받기
+
+        List<GetLessonByParents> getLessonByParentsList = new ArrayList<>();
+
+        User parents = userRepository.findById(userIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+
+
+        //0. 역할이 선생님이 아니면 에러발생 // TODO : 서비스단에는 도메인로직이 들어있으면 안됨.
+        if(!parents.isMatchedRole(Role.PARENTS)){
+            throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION,ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
+        }
+
+//        유저에 연결된 수업리스트가져오기
+        lessonRepository.findAllByParentsIdxAndIsFinished(parents.getIdx(),false)
+                .forEach(pl->{
+
+                    //  현재 회차계산 : 이때 수업에 연결된 스케쥴중 현재사이클(수업에 연결된 paymentRecord개수(선불,후불+1))중 출석,결석만 카운트해서 현재카운트가져오기
+                    Long cycle = Long.valueOf(pl.getPaymenRecordList().size());
+                    if(pl.isMatchedPayment(Payment.POST_PAYMENT)){cycle +=1;} //후불은 paymentRecord 개수 + 1
+                    Long nowCount = scheduleRepository.countByLessonAndCycleAndStatusIn(pl,cycle,ScheduleStatus.getAttendanceScheduleStatusList());
+                    Long percent = ReturnLongMath.getPercentage(nowCount,pl.getCount());
+                    getLessonByParentsList.add(
+                            GetLessonByParents.of(
+                                    pl.getIdx(),pl.getTeacher().getName(),pl.getStudentName(),pl.getSubject(),pl.getCount(),nowCount,percent));
+                }
+        );
+
+
+        return getLessonByParentsList;
+
+
     }
 
     @Transactional
