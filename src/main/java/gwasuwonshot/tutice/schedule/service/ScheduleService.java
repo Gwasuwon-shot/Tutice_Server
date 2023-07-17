@@ -14,12 +14,12 @@ import gwasuwonshot.tutice.user.exception.userException.InvalidRoleException;
 import gwasuwonshot.tutice.user.exception.userException.NotFoundUserException;
 import gwasuwonshot.tutice.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -108,7 +108,7 @@ public class ScheduleService {
 
         // 오늘의 수업 있는지 체크
         LocalDate now = LocalDate.now();
-        List<Lesson> lessonList = user.getLessonList();
+        List<Lesson> lessonList = lessonRepository.findAllByTeacherIdxAndIsFinished(userIdx,false);
         List<Schedule> todayScheduleList = scheduleRepository.findAllByDateAndLessonInOrderByStartTime(now, lessonList);
 
         // 오늘의 수업 유무
@@ -122,13 +122,13 @@ public class ScheduleService {
         int i=0;
         int size = todayScheduleList.size();
         for(Schedule schedule : todayScheduleList) {
-            Integer scheduleCount = getScheduleCount(schedule);
+            Integer expectedCount = getExpectedScheduleCount(schedule);
             i++;
             // 수업 전
             if(nowTime.isBefore(schedule.getStartTime())) {
                 timeStatus=BEFORE_SCHEDULE;
                 // case 2
-                return GetTodayScheduleByTeacherResponseDto.ofTodaySchedule(user.getName(), schedule, timeStatus, scheduleCount);
+                return GetTodayScheduleByTeacherResponseDto.ofTodaySchedule(user.getName(), schedule, timeStatus, expectedCount);
             }
             // 수업 중
             else if(nowTime.equals(schedule.getStartTime()) || nowTime.isBefore(schedule.getEndTime())) {
@@ -136,7 +136,7 @@ public class ScheduleService {
                 // 수업 체크 여부
                 if(schedule.getStatus()==ScheduleStatus.NO_STATUS) {
                     // case 3
-                    return GetTodayScheduleByTeacherResponseDto.ofTodaySchedule(user.getName(), schedule, timeStatus, scheduleCount);
+                    return GetTodayScheduleByTeacherResponseDto.ofTodaySchedule(user.getName(), schedule, timeStatus, expectedCount);
                 } else {
                     // 다음 수업 여부
                     if(i==todayScheduleList.size()) {
@@ -156,13 +156,13 @@ public class ScheduleService {
                     // 다음 수업 여부
                     if(i==todayScheduleList.size()) {
                         // 수업X
-                        return GetTodayScheduleByTeacherResponseDto.ofTodaySchedule(user.getName(), schedule, timeStatus, scheduleCount);
+                        return GetTodayScheduleByTeacherResponseDto.ofTodaySchedule(user.getName(), schedule, timeStatus, expectedCount);
                     } else {
                         // 수업O
                         // 다음 수업 시작 여부
                         if(nowTime.isBefore(todayScheduleList.get(i).getStartTime())) {
                             // 시작X
-                            return GetTodayScheduleByTeacherResponseDto.ofTodaySchedule(user.getName(), schedule, timeStatus, scheduleCount);
+                            return GetTodayScheduleByTeacherResponseDto.ofTodaySchedule(user.getName(), schedule, timeStatus, expectedCount);
                         } else {
                             // 시작O
                             continue;
@@ -189,20 +189,20 @@ public class ScheduleService {
         List<Schedule> scheduleList = scheduleRepository.findAllByDateAndStatusAndLessonInOrderByStartTimeDesc(now, ScheduleStatus.NO_STATUS, lessonList);
         if(!scheduleList.isEmpty()) {
             Schedule schedule = scheduleList.get(0);
-            return GetTodayScheduleByTeacherResponseDto.ofTodaySchedule(user.getName(), schedule, AFTER_SCHEDULE, getScheduleCount(schedule));
+            return GetTodayScheduleByTeacherResponseDto.ofTodaySchedule(user.getName(), schedule, AFTER_SCHEDULE, getExpectedScheduleCount(schedule));
         }
         return null;
     }
 
-    // 현재 스케줄이 이 스케쥴 사이클에서 몇 회차인지 구하는 로직
-    private Integer getScheduleCount(Schedule schedule) {
-        scheduleRepository.findAllByLessonAndCycleAndStatusIn(schedule.getLesson(),schedule.getCycle(), ScheduleStatus.getAttendanceScheduleStatusList());
-
-        Long lessonIdx = schedule.getLesson().getIdx();
-        Integer count = scheduleRepository.countByLesson_IdxAndStatusIn(lessonIdx, ScheduleStatus.getAttendanceScheduleStatusList());
-
-        return count+1;
+    // 현재 스케줄로 기대 회차 구하기
+    private Integer getExpectedScheduleCount(Schedule schedule) {
+        // 스케줄 리스트 중 date, startTime 오름차순 정렬 후, 인덱스 찾기
+        Sort sort = Sort.by(Sort.Order.asc("date"), Sort.Order.asc("startTime"));
+        List<Schedule> scheduleList = scheduleRepository.findAllByLessonAndCycleAndStatusNot(schedule.getLesson(), schedule.getCycle(), ScheduleStatus.CANCEL, sort);
+        int index = scheduleList.indexOf(schedule);
+        return index+1;
     }
+
     // TODO : 단일스케쥴진짜회차정보: 파라미터로 들어오는 스케줄이 이 스케쥴 사이클에서 몇 회차인지 구하는 로직(스케쥴의 상태는 출석 OR 결석만 가능) 메소드 필요해지면 만들기
 
 
@@ -212,7 +212,7 @@ public class ScheduleService {
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
 
-        List<Lesson> lessonList = user.getLessonList();
+        List<Lesson> lessonList = lessonRepository.findAllByTeacherIdxAndIsFinished(userIdx,false);
 
         // 오늘 수업 시작&끝 체크 안 한 것
         List<Schedule> missingScheduleList = scheduleRepository.findAllByStatusAndDateAndStartTimeIsBeforeAndLessonIn(ScheduleStatus.NO_STATUS, LocalDate.now(), LocalTime.now(), lessonList);
@@ -240,7 +240,7 @@ public class ScheduleService {
                 scheduleList.clear();
                 scheduleCountList.clear();
             }
-            scheduleCountList.add(getScheduleCount(schedule));
+            scheduleCountList.add(getExpectedScheduleCount(schedule));
             scheduleList.add(schedule);
         }
         scheduleListByDateList.add(MissingScheduleByDate.of(DateAndTimeConvert.localDateConvertString(scheduleDate), DateAndTimeConvert.localDateConvertDayOfWeek(scheduleDate), scheduleList, scheduleCountList));
