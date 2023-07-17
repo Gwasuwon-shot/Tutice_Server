@@ -8,8 +8,9 @@ import gwasuwonshot.tutice.lesson.dto.request.CreateLessonRequestDto;
 import gwasuwonshot.tutice.lesson.dto.request.UpdateLessonParentsRequestDto;
 import gwasuwonshot.tutice.lesson.dto.response.CreateLessonResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.GetLessonByUserResponseDto;
-import gwasuwonshot.tutice.lesson.dto.response.GetLessonDetailByParentsResponseDto;
-import gwasuwonshot.tutice.lesson.dto.response.GetMissingMaintenanceLessonDto;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonByParents.GetLessonByParentsResponseDto;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonDetail.GetLessonDetailByParentsResponseDto;
+import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenance.GetMissingMaintenanceLessonResponseDto;
 import gwasuwonshot.tutice.lesson.service.LessonService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -65,6 +66,18 @@ public class LessonController {
     }
 
 
+    @GetMapping("/parents")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponseDto<GetLessonByParentsResponseDto> getLessonByParents(@UserIdx final Long userIdx) {
+
+
+        return ApiResponseDto.success(SuccessStatus.GET_LESSON_BY_PARENTS_SUCCESS,
+                GetLessonByParentsResponseDto.of(lessonService.getLessonByParents(userIdx))
+        );
+
+
+    }
+
     @PatchMapping("/parents")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponseDto updateLessonParents(
@@ -107,14 +120,17 @@ public class LessonController {
 
     @GetMapping("/maintenance/missing")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<GetMissingMaintenanceLessonDto> getMissingMaintenanceLesson(@UserIdx final Long userIdx) {
+    public ApiResponseDto<GetMissingMaintenanceLessonResponseDto> getMissingMaintenanceLesson(@UserIdx final Long userIdx) {
 
 
         return ApiResponseDto.success(SuccessStatus.GET_MISSING_MAINTENANCE_LESSON_SUCCESS,
-                GetMissingMaintenanceLessonDto.of(lessonService.getMissingMaintenanceLesson(userIdx))
+                GetMissingMaintenanceLessonResponseDto.of(lessonService.getMissingMaintenanceLesson(userIdx))
         );
 
 
     }
+
+
+
 }
 
