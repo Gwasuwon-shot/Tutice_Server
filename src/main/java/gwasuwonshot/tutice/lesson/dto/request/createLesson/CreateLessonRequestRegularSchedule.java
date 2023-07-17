@@ -1,4 +1,4 @@
-package gwasuwonshot.tutice.lesson.dto.request;
+package gwasuwonshot.tutice.lesson.dto.request.createLesson;
 
 import gwasuwonshot.tutice.common.resolver.enumValue.Enum;
 import gwasuwonshot.tutice.lesson.entity.DayOfWeek;
