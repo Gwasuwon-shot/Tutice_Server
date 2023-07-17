@@ -198,11 +198,9 @@ public class ScheduleService {
 
         Integer totalCount = 0;
         // 오늘 이전 + 취소 뺴고 다
-        totalCount += scheduleRepository.countByDateIsBeforeAndLessonAndCycleAndStatusNot(LocalDate.now(), schedule.getLesson(), schedule.getCycle(), ScheduleStatus.CANCLE);
-        System.out.println("totalCount = " + totalCount);
+        totalCount += scheduleRepository.countByDateIsBeforeAndLessonAndCycleAndStatusNot(LocalDate.now(), schedule.getLesson(), schedule.getCycle(), ScheduleStatus.CANCEL);
         // 오늘 + 미래 뺴고 + 취소 빼고 다
-        totalCount += scheduleRepository.countByDateAndLessonAndCycleAndStartTimeIsBeforeAndStatusNot(LocalDate.now(), schedule.getLesson(), schedule.getCycle(), LocalTime.now(), ScheduleStatus.CANCLE);
-        System.out.println("totalCount = " + totalCount);
+        totalCount += scheduleRepository.countByDateAndLessonAndCycleAndStartTimeIsBeforeAndStatusNot(LocalDate.now(), schedule.getLesson(), schedule.getCycle(), LocalTime.now(), ScheduleStatus.CANCEL);
 
         return totalCount+1;
     }
