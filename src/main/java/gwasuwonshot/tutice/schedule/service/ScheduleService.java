@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -108,7 +107,7 @@ public class ScheduleService {
 
         // 오늘의 수업 있는지 체크
         LocalDate now = LocalDate.now();
-        List<Lesson> lessonList = user.getLessonList();
+        List<Lesson> lessonList = lessonRepository.findAllByTeacherIdxAndIsFinished(userIdx,false);
         List<Schedule> todayScheduleList = scheduleRepository.findAllByDateAndLessonInOrderByStartTime(now, lessonList);
 
         // 오늘의 수업 유무
@@ -122,7 +121,7 @@ public class ScheduleService {
         int i=0;
         int size = todayScheduleList.size();
         for(Schedule schedule : todayScheduleList) {
-            Integer scheduleCount = getScheduleCount(schedule);
+            Integer scheduleCount = getExpectedScheduleCount(schedule);
             i++;
             // 수업 전
             if(nowTime.isBefore(schedule.getStartTime())) {
@@ -189,14 +188,15 @@ public class ScheduleService {
         List<Schedule> scheduleList = scheduleRepository.findAllByDateAndStatusAndLessonInOrderByStartTimeDesc(now, ScheduleStatus.NO_STATUS, lessonList);
         if(!scheduleList.isEmpty()) {
             Schedule schedule = scheduleList.get(0);
-            return GetTodayScheduleByTeacherResponseDto.ofTodaySchedule(user.getName(), schedule, AFTER_SCHEDULE, getScheduleCount(schedule));
+            return GetTodayScheduleByTeacherResponseDto.ofTodaySchedule(user.getName(), schedule, AFTER_SCHEDULE, getExpectedScheduleCount(schedule));
         }
         return null;
     }
 
     // 현재 스케줄이 이 스케쥴 사이클에서 몇 회차인지 구하는 로직
-    private Integer getScheduleCount(Schedule schedule) {
-        scheduleRepository.findAllByLessonAndCycleAndStatusIn(schedule.getLesson(),schedule.getCycle(), ScheduleStatus.getAttendanceScheduleStatusList());
+    private Integer getExpectedScheduleCount(Schedule schedule) {
+        if(schedule.getStatus())
+        scheduleRepository.findAllByLessonAndCycleAndStatusIn(schedule.getLesson(), schedule.getCycle(), ScheduleStatus.getAttendanceScheduleStatusList());
 
         Long lessonIdx = schedule.getLesson().getIdx();
         Integer count = scheduleRepository.countByLesson_IdxAndStatusIn(lessonIdx, ScheduleStatus.getAttendanceScheduleStatusList());
@@ -212,7 +212,7 @@ public class ScheduleService {
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
 
-        List<Lesson> lessonList = user.getLessonList();
+        List<Lesson> lessonList = lessonRepository.findAllByTeacherIdxAndIsFinished(userIdx,false);
 
         // 오늘 수업 시작&끝 체크 안 한 것
         List<Schedule> missingScheduleList = scheduleRepository.findAllByStatusAndDateAndStartTimeIsBeforeAndLessonIn(ScheduleStatus.NO_STATUS, LocalDate.now(), LocalTime.now(), lessonList);
@@ -240,7 +240,7 @@ public class ScheduleService {
                 scheduleList.clear();
                 scheduleCountList.clear();
             }
-            scheduleCountList.add(getScheduleCount(schedule));
+            scheduleCountList.add(getExpectedScheduleCount(schedule));
             scheduleList.add(schedule);
         }
         scheduleListByDateList.add(MissingScheduleByDate.of(DateAndTimeConvert.localDateConvertString(scheduleDate), DateAndTimeConvert.localDateConvertDayOfWeek(scheduleDate), scheduleList, scheduleCountList));
