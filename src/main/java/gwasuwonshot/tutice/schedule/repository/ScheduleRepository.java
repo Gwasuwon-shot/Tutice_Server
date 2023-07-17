@@ -19,7 +19,9 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     List<Schedule> findAllByStatusAndDateAndStartTimeIsBeforeAndLessonIn(ScheduleStatus scheduleStatus, LocalDate now, LocalTime now1, List<Lesson> lessonList);
 
     Schedule findTopByLessonAndStatusNotOrderByDateDesc(Lesson lesson,ScheduleStatus status);
+    Schedule findTopByLessonAndCycleAndStatusNotOrderByDateDesc(Lesson lesson, Long cycle, ScheduleStatus scheduleStatus);
 
+    Schedule findTopByLessonAndCycleAndStatusNotOrderByDateAsc(Lesson lesson, Long cycle, ScheduleStatus scheduleStatus);
 
     Integer countByLesson_IdxAndStatusIn(Long lessonIdx, List<ScheduleStatus> attendanceStatusList);
 
