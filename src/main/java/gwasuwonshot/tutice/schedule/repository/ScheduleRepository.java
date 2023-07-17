@@ -20,5 +20,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     Schedule findTopByLessonOrderByDateDesc(Lesson lesson);
 
+    Schedule findTopByLessonAndStatusNotOrderByDateDesc(Lesson lesson,ScheduleStatus status);
+
 
 }
