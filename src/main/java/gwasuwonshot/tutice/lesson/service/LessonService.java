@@ -6,15 +6,14 @@ import gwasuwonshot.tutice.lesson.dto.assembler.LessonAssembler;
 import gwasuwonshot.tutice.lesson.dto.assembler.PaymentRecordAssembler;
 import gwasuwonshot.tutice.lesson.dto.assembler.RegularScheduleAssembler;
 import gwasuwonshot.tutice.lesson.dto.request.CreateLessonRequestDto;
-import gwasuwonshot.tutice.lesson.dto.response.GetLessonByUserResponseDto;
-import gwasuwonshot.tutice.lesson.dto.response.GetLessonDetailByParentsResponseAccount;
-import gwasuwonshot.tutice.lesson.dto.response.GetLessonDetailByParentsResponseDto;
+import gwasuwonshot.tutice.lesson.dto.response.*;
 import gwasuwonshot.tutice.lesson.entity.*;
 import gwasuwonshot.tutice.lesson.exception.*;
 import gwasuwonshot.tutice.lesson.repository.LessonRepository;
 import gwasuwonshot.tutice.lesson.repository.PaymentRecordRepository;
 import gwasuwonshot.tutice.lesson.repository.RegularScheduleRepository;
 import gwasuwonshot.tutice.schedule.entity.Schedule;
+import gwasuwonshot.tutice.schedule.entity.ScheduleStatus;
 import gwasuwonshot.tutice.schedule.repository.ScheduleRepository;
 import gwasuwonshot.tutice.user.dto.assembler.AccountAssembler;
 import gwasuwonshot.tutice.user.entity.Account;
@@ -30,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -240,6 +240,41 @@ public class LessonService {
         }
     }
 
+    @Transactional
+    public List<GetMissingMaintenanceLesson> getMissingMaintenanceLesson(Long userIdx){
+
+        //1.  유저가져와서 역할검사
+        User teacher = userRepository.findById(userIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+
+        if(!teacher.isMatchedRole(Role.TEACHER)){
+            throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION,ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
+        }
+
+
+        List<GetMissingMaintenanceLesson> getMissingMaintenanceLessonList = new ArrayList<>();
+
+        //2. 유저에 연결된 레슨가져오기
+        //2.1 레슨이 isFinished가 false이고00
+        lessonRepository.findAllByTeacherIdxAndIsFinished(teacher.getIdx(),false)
+                .forEach(lfn -> {
+                    // 2.2 간단플래그 : 가장 최근 스케쥴의 상태가 상태없음이 아닐경우 (사실 최근스케쥴은 출석 or 결석만 되긴함)
+                    Schedule endSchedule = scheduleRepository.findTopByLessonAndStatusNotOrderByDateDesc(lfn, ScheduleStatus.NO_STATUS);
+                    if(endSchedule != null){
+                        getMissingMaintenanceLessonList.add(GetMissingMaintenanceLesson.of(
+                                MissingMaintenanceLesson.of(
+                                        lfn.getIdx(), lfn.getStudentName(), lfn.getSubject(), lfn.getCount())
+                                ,DateAndTimeConvert.localDateConvertString(endSchedule.getDate()))
+
+                        );
+                    }
+
+                });
+
+        return getMissingMaintenanceLessonList;
+
+
+    }
     @Transactional
     public void updateLessonParents(Long userIdx, String lessonCode){
         //1. 유저가 학부모가 맞는지 보기
