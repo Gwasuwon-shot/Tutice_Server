@@ -12,10 +12,10 @@ public class TodaySchedule {
     private TodayScheduleDetailByTeacher schedule;
     private Integer timeStatus;
 
-    public static TodaySchedule of(Schedule schedule, Integer timeStatus, Integer scheduleCount) {
+    public static TodaySchedule of(Schedule schedule, Integer timeStatus, Integer expectedCount) {
         return TodaySchedule.builder()
                 .lesson(TodayScheduleByTeacher.of(schedule.getLesson().getIdx(), schedule.getLesson().getStudentName(), schedule.getLesson().getSubject()))
-                .schedule(TodayScheduleDetailByTeacher.of(schedule.getIdx(), schedule.getStatus().getValue(), scheduleCount))
+                .schedule(TodayScheduleDetailByTeacher.of(schedule.getIdx(), schedule.getStatus().getValue(), expectedCount))
                 .timeStatus(timeStatus)
                 .build();
     }
