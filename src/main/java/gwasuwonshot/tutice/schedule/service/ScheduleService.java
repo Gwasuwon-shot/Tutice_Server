@@ -14,6 +14,7 @@ import gwasuwonshot.tutice.user.exception.userException.InvalidRoleException;
 import gwasuwonshot.tutice.user.exception.userException.NotFoundUserException;
 import gwasuwonshot.tutice.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -195,14 +196,11 @@ public class ScheduleService {
 
     // 현재 스케줄로 기대 회차 구하기
     private Integer getExpectedScheduleCount(Schedule schedule) {
-
-        Integer totalCount = 0;
-        // 오늘 이전 + 취소 뺴고 다
-        totalCount += scheduleRepository.countByDateIsBeforeAndLessonAndCycleAndStatusNot(LocalDate.now(), schedule.getLesson(), schedule.getCycle(), ScheduleStatus.CANCEL);
-        // 오늘 + 미래 뺴고 + 취소 빼고 다
-        totalCount += scheduleRepository.countByDateAndLessonAndCycleAndStartTimeIsBeforeAndStatusNot(LocalDate.now(), schedule.getLesson(), schedule.getCycle(), LocalTime.now(), ScheduleStatus.CANCEL);
-
-        return totalCount+1;
+        // 스케줄 리스트 중 date, startTime 오름차순 정렬 후, 인덱스 찾기
+        Sort sort = Sort.by(Sort.Order.asc("date"), Sort.Order.asc("startTime"));
+        List<Schedule> scheduleList = scheduleRepository.findAllByLessonAndCycleAndStatusNot(schedule.getLesson(), schedule.getCycle(), ScheduleStatus.CANCEL, sort);
+        int index = scheduleList.indexOf(schedule);
+        return index+1;
     }
 
     // TODO : 단일스케쥴진짜회차정보: 파라미터로 들어오는 스케줄이 이 스케쥴 사이클에서 몇 회차인지 구하는 로직(스케쥴의 상태는 출석 OR 결석만 가능) 메소드 필요해지면 만들기
