@@ -4,7 +4,6 @@ import gwasuwonshot.tutice.lesson.entity.Lesson;
 import gwasuwonshot.tutice.schedule.entity.Schedule;
 import gwasuwonshot.tutice.schedule.entity.ScheduleStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -30,4 +29,8 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     List<Schedule> findAllByLessonAndCycleAndStatusIn(Lesson lesson, Long cycle, List<ScheduleStatus> statusList);
 
 
+    Integer countByDateIsBeforeAndLessonAndCycleAndStatusNot(LocalDate now, Lesson lesson, Long cycle, ScheduleStatus scheduleStatus);
+
+
+    Integer countByDateAndLessonAndCycleAndStartTimeIsBeforeAndStatusNot(LocalDate now, Lesson lesson, Long cycle, LocalTime now1, ScheduleStatus scheduleStatus);
 }

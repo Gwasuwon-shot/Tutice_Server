@@ -193,16 +193,20 @@ public class ScheduleService {
         return null;
     }
 
-    // 현재 스케줄이 이 스케쥴 사이클에서 몇 회차인지 구하는 로직
+    // 현재 스케줄로 기대 회차 구하기
     private Integer getExpectedScheduleCount(Schedule schedule) {
-        if(schedule.getStatus())
-        scheduleRepository.findAllByLessonAndCycleAndStatusIn(schedule.getLesson(), schedule.getCycle(), ScheduleStatus.getAttendanceScheduleStatusList());
 
-        Long lessonIdx = schedule.getLesson().getIdx();
-        Integer count = scheduleRepository.countByLesson_IdxAndStatusIn(lessonIdx, ScheduleStatus.getAttendanceScheduleStatusList());
+        Integer totalCount = 0;
+        // 오늘 이전 + 취소 뺴고 다
+        totalCount += scheduleRepository.countByDateIsBeforeAndLessonAndCycleAndStatusNot(LocalDate.now(), schedule.getLesson(), schedule.getCycle(), ScheduleStatus.CANCLE);
+        System.out.println("totalCount = " + totalCount);
+        // 오늘 + 미래 뺴고 + 취소 빼고 다
+        totalCount += scheduleRepository.countByDateAndLessonAndCycleAndStartTimeIsBeforeAndStatusNot(LocalDate.now(), schedule.getLesson(), schedule.getCycle(), LocalTime.now(), ScheduleStatus.CANCLE);
+        System.out.println("totalCount = " + totalCount);
 
-        return count+1;
+        return totalCount+1;
     }
+
     // TODO : 단일스케쥴진짜회차정보: 파라미터로 들어오는 스케줄이 이 스케쥴 사이클에서 몇 회차인지 구하는 로직(스케쥴의 상태는 출석 OR 결석만 가능) 메소드 필요해지면 만들기
 
 
