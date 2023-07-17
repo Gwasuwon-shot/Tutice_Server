@@ -5,9 +5,6 @@ import gwasuwonshot.tutice.lesson.exception.InvalidDateException;
 import gwasuwonshot.tutice.lesson.exception.InvalidTimeException;
 
 import java.time.LocalDate;
-
-import java.sql.Date;
-import java.sql.Time;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
@@ -16,7 +13,7 @@ import java.util.Locale;
 public class DateAndTimeConvert {
 
     public static String nowLocalDateConvertString(){
-        //현재날짜를 'yyyy-mm-dd'에 형식의 string으로 만들어주기
+        //현재날짜를 'yyyy-mm-dd' 형식의 string으로 만들어주기
         LocalDate nowDate = LocalDate.now();
         return nowDate.toString();
     }

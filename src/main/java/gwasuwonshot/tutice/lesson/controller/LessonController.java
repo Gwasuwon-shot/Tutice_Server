@@ -9,6 +9,7 @@ import gwasuwonshot.tutice.lesson.dto.request.UpdateLessonParentsRequestDto;
 import gwasuwonshot.tutice.lesson.dto.response.CreateLessonResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.GetLessonByUserResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.GetLessonDetailByParentsResponseDto;
+import gwasuwonshot.tutice.lesson.dto.response.GetMissingMaintenanceLessonDto;
 import gwasuwonshot.tutice.lesson.service.LessonService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -97,6 +98,21 @@ public class LessonController {
             return ApiResponseDto.success(SuccessStatus.FINISH_LESSON_SUCCESS);
 
         }
+
+
+    }
+
+
+
+
+    @GetMapping("/maintenance/missing")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponseDto<GetMissingMaintenanceLessonDto> getMissingMaintenanceLesson(@UserIdx final Long userIdx) {
+
+
+        return ApiResponseDto.success(SuccessStatus.GET_MISSING_MAINTENANCE_LESSON_SUCCESS,
+                GetMissingMaintenanceLessonDto.of(lessonService.getMissingMaintenanceLesson(userIdx))
+        );
 
 
     }

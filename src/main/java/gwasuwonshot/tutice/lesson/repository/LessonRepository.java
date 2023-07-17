@@ -10,5 +10,7 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
 
     List<Lesson> findAllByParentsIdx(Long parentsIdx);
 
+    List<Lesson> findAllByTeacherIdxAndIsFinished(Long teacherIdx, Boolean isFinished);
+
 }
 

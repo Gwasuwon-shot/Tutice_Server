@@ -21,15 +21,16 @@ public enum SuccessStatus {
     GET_TODAY_SCHEDULE_BY_TEACHER_SUCCESS(HttpStatus.OK, "선생님 메인 뷰의 오늘의 수업 배너를 가져오는데 성공했습니다."),
     GET_SCHEDULE_BY_USER_SUCCESS(HttpStatus.OK, "스케줄 메인 뷰를 가져오는데 성공했습니다."),
     GET_MISSING_ATTENDANCE_SCHEDULE_SUCCESS(HttpStatus.OK, "선생님의 출결 누락 뷰를 가져오는데 성공했습니다."),
-    AUTO_CREATE_SCHEDULE_FROM_LESSON_MAINTENANCE_SUCCESS(HttpStatus.CREATED,"수업 연장으로 다음 사이클 스케쥴 자동생성 성공"),
-    FINISH_LESSON_SUCCESS(HttpStatus.CREATED,"수업 종료 성공"),
+    GET_MISSING_MAINTENANCE_LESSON_SUCCESS(HttpStatus.OK, "연장여부를 알려주지 않은 수업 리스트 가져오기 성공"),
+
 
     /**
      * 201 CREATED
      */
     SIGNUP_SUCCESS(HttpStatus.CREATED, "회원가입이 완료됐습니다."),
     CREATE_LESSON_SUCCESS(HttpStatus.CREATED, "수업 생성이 완료됐습니다."),
-
+    AUTO_CREATE_SCHEDULE_FROM_LESSON_MAINTENANCE_SUCCESS(HttpStatus.CREATED,"수업 연장으로 다음 사이클 스케쥴 자동생성 성공"),
+    FINISH_LESSON_SUCCESS(HttpStatus.CREATED,"수업 종료 성공"),
     ;
 
     private final HttpStatus httpStatus;
