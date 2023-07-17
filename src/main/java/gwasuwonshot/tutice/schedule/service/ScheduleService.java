@@ -122,13 +122,13 @@ public class ScheduleService {
         int i=0;
         int size = todayScheduleList.size();
         for(Schedule schedule : todayScheduleList) {
-            Integer scheduleCount = getExpectedScheduleCount(schedule);
+            Integer expectedCount = getExpectedScheduleCount(schedule);
             i++;
             // 수업 전
             if(nowTime.isBefore(schedule.getStartTime())) {
                 timeStatus=BEFORE_SCHEDULE;
                 // case 2
-                return GetTodayScheduleByTeacherResponseDto.ofTodaySchedule(user.getName(), schedule, timeStatus, scheduleCount);
+                return GetTodayScheduleByTeacherResponseDto.ofTodaySchedule(user.getName(), schedule, timeStatus, expectedCount);
             }
             // 수업 중
             else if(nowTime.equals(schedule.getStartTime()) || nowTime.isBefore(schedule.getEndTime())) {
@@ -136,7 +136,7 @@ public class ScheduleService {
                 // 수업 체크 여부
                 if(schedule.getStatus()==ScheduleStatus.NO_STATUS) {
                     // case 3
-                    return GetTodayScheduleByTeacherResponseDto.ofTodaySchedule(user.getName(), schedule, timeStatus, scheduleCount);
+                    return GetTodayScheduleByTeacherResponseDto.ofTodaySchedule(user.getName(), schedule, timeStatus, expectedCount);
                 } else {
                     // 다음 수업 여부
                     if(i==todayScheduleList.size()) {
@@ -156,13 +156,13 @@ public class ScheduleService {
                     // 다음 수업 여부
                     if(i==todayScheduleList.size()) {
                         // 수업X
-                        return GetTodayScheduleByTeacherResponseDto.ofTodaySchedule(user.getName(), schedule, timeStatus, scheduleCount);
+                        return GetTodayScheduleByTeacherResponseDto.ofTodaySchedule(user.getName(), schedule, timeStatus, expectedCount);
                     } else {
                         // 수업O
                         // 다음 수업 시작 여부
                         if(nowTime.isBefore(todayScheduleList.get(i).getStartTime())) {
                             // 시작X
-                            return GetTodayScheduleByTeacherResponseDto.ofTodaySchedule(user.getName(), schedule, timeStatus, scheduleCount);
+                            return GetTodayScheduleByTeacherResponseDto.ofTodaySchedule(user.getName(), schedule, timeStatus, expectedCount);
                         } else {
                             // 시작O
                             continue;

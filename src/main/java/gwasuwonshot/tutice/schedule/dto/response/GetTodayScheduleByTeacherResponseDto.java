@@ -21,11 +21,11 @@ public class GetTodayScheduleByTeacherResponseDto {
     }
 
     // case 2,3,4
-    public static GetTodayScheduleByTeacherResponseDto ofTodaySchedule(String name, Schedule schedule, Integer timeStatus, Integer scheduleCount) {
+    public static GetTodayScheduleByTeacherResponseDto ofTodaySchedule(String name, Schedule schedule, Integer timeStatus, Integer expectedCount) {
         return GetTodayScheduleByTeacherResponseDto.builder()
                 .teacherName(name)
                 .isTodaySchedule(true)
-                .todaySchedule(TodaySchedule.of(schedule, timeStatus, scheduleCount))
+                .todaySchedule(TodaySchedule.of(schedule, timeStatus, expectedCount))
                 .build();
     }
 

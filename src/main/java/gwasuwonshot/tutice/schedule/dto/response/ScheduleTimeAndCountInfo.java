@@ -11,14 +11,14 @@ public class ScheduleTimeAndCountInfo {
     private Long idx;
     private String startTime;
     private String endTime;
-    private Integer count;
+    private Integer expectedCount;
 
-    public static ScheduleTimeAndCountInfo of(Long idx, String startTime, String endTime, Integer count) {
+    public static ScheduleTimeAndCountInfo of(Long idx, String startTime, String endTime, Integer expectedCount) {
         return ScheduleTimeAndCountInfo.builder()
                 .idx(idx)
                 .startTime(startTime)
                 .endTime(endTime)
-                .count(count)
+                .expectedCount(expectedCount)
                 .build();
     }
 }

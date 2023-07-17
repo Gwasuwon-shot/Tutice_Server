@@ -9,13 +9,13 @@ import lombok.*;
 public class TodayScheduleDetailByTeacher {
     private Long idx;
     private String status;
-    private Integer count;
+    private Integer expectedCount;
 
-    public static TodayScheduleDetailByTeacher of(Long idx, String status, Integer count) {
+    public static TodayScheduleDetailByTeacher of(Long idx, String status, Integer expectedCount) {
         return TodayScheduleDetailByTeacher.builder()
                 .idx(idx)
                 .status(status)
-                .count(count)
+                .expectedCount(expectedCount)
                 .build();
     }
 }
