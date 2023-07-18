@@ -149,7 +149,7 @@ public class LessonService {
     }
 
     @Transactional
-    public Long createLesson(
+    public CreateLessonResponseDto createLesson(
             final Long userIdx, final CreateLessonRequestDto request){
 
         User teacher = userRepository.findById(userIdx)
@@ -195,12 +195,14 @@ public class LessonService {
 
 
         //2.1 레슨이 선불일 경우 가짜 PaymentRecord 생성
+        Long prePaymentRecordIdx = -1L;
         if(lesson.isMatchedPayment(Payment.PRE_PAYMENT)){
             PaymentRecord prePaymentRecord = paymentRecordAssembler.toEntity(lesson
 
             );
             paymentRecordRepository.save(prePaymentRecord);
             lesson.addPaymentRecord(prePaymentRecord);
+            prePaymentRecordIdx=prePaymentRecord.getIdx();
         }
 
 
@@ -228,7 +230,16 @@ public class LessonService {
                 .forEach(acs->scheduleRepository.save(acs));
 
 
-        return lesson.getIdx();
+        //레슨코드 생성
+        String createdLessonCode = this.createLessonCode(lesson.getIdx());
+
+        if(lesson.isMatchedPayment(Payment.PRE_PAYMENT)){
+            //선불인경우만 payment와 lessonIdx 주기
+            //제대로 오나?
+            return CreateLessonResponseDto.of(createdLessonCode, prePaymentRecordIdx);
+
+        }
+        return CreateLessonResponseDto.of(createdLessonCode,null);
 
     }
 
