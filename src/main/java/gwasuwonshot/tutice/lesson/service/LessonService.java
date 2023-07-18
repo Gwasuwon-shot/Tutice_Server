@@ -315,9 +315,9 @@ public class LessonService {
         //2.1 레슨이 isFinished가 false이고00
         lessonRepository.findAllByTeacherIdxAndIsFinished(teacher.getIdx(),false)
                 .forEach(lfn -> {
-                    // 2.2 간단플래그 : 가장 최근 스케쥴의 상태가 상태없음이 아닐경우 (사실 최근스케쥴은 출석 or 결석만 되긴함)
-                    Schedule endSchedule = scheduleRepository.findTopByLessonAndStatusNotOrderByDateDesc(lfn, ScheduleStatus.NO_STATUS);
-                    if(endSchedule != null){
+                    // 2.2 간단플래그 : 현재사이클의 가장 최근 스케쥴의 상태가 상태없음이 아닐경우 (사실 최근스케쥴은 출석 or 결석만 되긴함)
+                    Schedule endSchedule = scheduleRepository.findTopByLessonAndCycleAndStatusNotOrderByDateDesc(lfn, lfn.getCycle(),ScheduleStatus.CANCEL);
+                    if(!endSchedule.isMatchedStatus(ScheduleStatus.NO_STATUS)){
                         getMissingMaintenanceLessonList.add(GetMissingMaintenanceLesson.of(
                                 MissingMaintenanceLesson.of(
                                         lfn.getIdx(), lfn.getStudentName(), lfn.getSubject(), lfn.getCount())
