@@ -27,6 +27,7 @@ public enum SuccessStatus {
     GET_PAYMENT_RECORD_POST_VIEW_SUCCESS(HttpStatus.OK,"입금 등록 뷰 정보 가져오기 성공"),
     UPDATE_PAYMENT_RECORD_SUCCESS(HttpStatus.OK,"입금 등록 성공"),
     GET_PAYMENT_RECORD_SUCCESS(HttpStatus.OK,"입금 내역 가져오기 성공"),
+    UPDATE_SCHEDULE_ATTENDANCE_SUCCESS(HttpStatus.OK,"출석 상태 변경 성공"),
 
 
 
