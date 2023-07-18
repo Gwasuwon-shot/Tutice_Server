@@ -3,21 +3,32 @@ package gwasuwonshot.tutice.config.jwt;
 import gwasuwonshot.tutice.common.exception.BasicException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import gwasuwonshot.tutice.common.exception.ErrorStatus;
 
 import javax.annotation.PostConstruct;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.time.Duration;
 import java.util.Base64;
 import java.util.Date;
 
+
 @Service
+@RequiredArgsConstructor
 public class JwtService {
 
     @Value("${jwt.secret}")
     private String jwtSecret;
+
+    private final long accessTokenExpiryTime = 5184000;
+    private final long refreshTokenExpiryTime = 120 * 60 * 7 * 1000L;
+    private final String CLAIM_NAME = "userIdx";
+
+    private final RedisTemplate<String, String> redisTemplate;
 
     @PostConstruct
     protected void init() {
@@ -25,21 +36,31 @@ public class JwtService {
                 .encodeToString(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
 
+    // Access Token 발급
+    public String issuedAccessToken(String userIdx) {
+        return issuedToken("access_token", accessTokenExpiryTime, userIdx);
+    }
+
+    // Refresh Token 발급
+    public String issuedRefreshToken(String userIdx) {
+        String refreshToken = issuedToken("refresh_token", refreshTokenExpiryTime, userIdx);
+        redisTemplate.opsForValue().set(String.valueOf(userIdx), refreshToken, Duration.ofMillis(refreshTokenExpiryTime));
+        return refreshToken;
+    }
+
     // JWT 토큰 발급
-    public String issuedToken(String userId) {
+    public String issuedToken(String tokenName, long expiryTime, String userIdx) {
         final Date now = new Date();
 
-        // 클레임 생성
         final Claims claims = Jwts.claims()
-                .setSubject("access_token")
+                .setSubject(tokenName)
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + 120 * 60 * 1000L));
+                .setExpiration(new Date(now.getTime() + expiryTime));
 
-        //private claim 등록
-        claims.put("userId", userId);
+        claims.put(CLAIM_NAME, userIdx);
 
         return Jwts.builder()
-                .setHeaderParam(Header.TYPE , Header.JWT_TYPE)
+                .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
                 .setClaims(claims)
                 .signWith(getSigningKey())
                 .compact();
@@ -76,7 +97,7 @@ public class JwtService {
     // JWT 토큰 내용 확인
     public String getJwtContents(String token) {
         final Claims claims = getBody(token);
-        return (String) claims.get("userId");
+        return (String) claims.get(CLAIM_NAME);
     }
 
 }

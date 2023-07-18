@@ -17,21 +17,21 @@ public class Account extends AuditingTimeEntity {
     private Long idx;
 
     @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "techer_idx", nullable = false)
+    @JoinColumn(name = "techer_idx", nullable = false,  foreignKey = @ForeignKey(ConstraintMode.CONSTRAINT))
     private User teacher;
 
     @Column(nullable = false)
     private String name;
 
-    @Enumerated(EnumType.STRING)
+
     @Column(nullable = false)
-    private Bank bank;
+    private String bank;
 
     @Column(nullable = false)
     private String number;
 
 
-    @Builder Account( User teacher, String name, Bank bank, String number){
+    @Builder Account( User teacher, String name, String bank, String number){
         this.teacher=teacher;
         this.name=name;
         this.bank=bank;

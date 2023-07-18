@@ -4,8 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.common.net.HttpHeaders;
 import gwasuwonshot.tutice.external.firebase.domain.FCMMessage;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import okhttp3.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,8 +20,15 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class FCMService {
-    private final String API_URL = "https://fcm.googleapis.com/v1/projects/tutice-29eef/messages:send";
-    // api_url 추후 보안 분리
+
+    @Value("${firebase.api-url}")
+    private String API_URL;
+    // TODO : constants들 class 내부 상수로 정리
+
+    @Value("${firebase.config-path}")
+    private String FIREBASE_CONFIG_PATH;
+
+
     private final ObjectMapper objectMapper;
 
     public Response sendMessage(String deviceToken,String title, String body) throws IOException {
@@ -37,10 +47,8 @@ public class FCMService {
     }
 
     private String getAccessToken() throws IOException {
-        String firebaseConfigPath = "gwasuoneshot-firebase.json";
-        // firebaseConfigPath 추후 보안 분리
         GoogleCredentials googleCredentials = GoogleCredentials
-                .fromStream(new ClassPathResource(firebaseConfigPath).getInputStream())
+                .fromStream(new ClassPathResource(FIREBASE_CONFIG_PATH).getInputStream())
                 .createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
         googleCredentials.refreshIfExpired();
         return googleCredentials.getAccessToken().getTokenValue();

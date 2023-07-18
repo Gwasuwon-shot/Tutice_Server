@@ -1,6 +1,10 @@
-package gwasuwonshot.tutice.common.resolver.userId;
+package gwasuwonshot.tutice.common.resolver.userIdx;
 
 
+import gwasuwonshot.tutice.common.exception.ErrorStatus;
+import gwasuwonshot.tutice.user.exception.authException.InvalidAccessTokenException;
+import gwasuwonshot.tutice.user.exception.authException.NullAccessTokenException;
+import gwasuwonshot.tutice.user.exception.userException.NotFoundUserException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -15,13 +19,13 @@ import javax.validation.constraints.NotNull;
 
 @RequiredArgsConstructor
 @Component
-public class UserIdResolver implements HandlerMethodArgumentResolver {
+public class UserIdxResolver implements HandlerMethodArgumentResolver {
 
     private final JwtService jwtService;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(UserId.class) && Long.class.equals(parameter.getParameterType());
+        return parameter.hasParameterAnnotation(UserIdx.class) && Long.class.equals(parameter.getParameterType());
     }
 
     @Override
@@ -29,21 +33,26 @@ public class UserIdResolver implements HandlerMethodArgumentResolver {
 
         final HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
 
-
-        final String token = request.getHeader("Authorization");
+        String header = request.getHeader("Authorization");
+        if (header==null) {
+            throw new NullAccessTokenException(ErrorStatus.NULL_ACCESS_TOKEN_EXCEPTION, ErrorStatus.NULL_ACCESS_TOKEN_EXCEPTION.getMessage());
+        }
+        final String token = header.substring(7);        //배리어 타입으로 토큰을 받기때문에 앞의 'Bearer ' 없애기
 
         // 토큰 검증
         if (!jwtService.verifyToken(token)) {
-            throw new RuntimeException(String.format("USER_ID를 가져오지 못했습니다. (%s - %s)", parameter.getClass(), parameter.getMethod()));
+            //토큰검증실패에러로
+            throw new InvalidAccessTokenException(ErrorStatus.INVALID_ACCESS_TOKEN_EXCEPTION, ErrorStatus.INVALID_ACCESS_TOKEN_EXCEPTION.getMessage());
         }
 
 
         // 유저 아이디 반환
         final String tokenContents = jwtService.getJwtContents(token);
+
         try {
             return Long.parseLong(tokenContents);
         } catch (NumberFormatException e) {
-            throw new RuntimeException(String.format("USER_ID를 가져오지 못했습니다. (%s - %s)", parameter.getClass(), parameter.getMethod()));
+            throw new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage());
         }
 
 
