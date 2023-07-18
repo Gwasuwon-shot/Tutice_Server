@@ -10,6 +10,7 @@ import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecordView.GetPaymentRe
 import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecordView.GetPaymentRecordViewLesson;
 import gwasuwonshot.tutice.lesson.entity.Lesson;
 import gwasuwonshot.tutice.lesson.entity.PaymentRecord;
+import gwasuwonshot.tutice.lesson.entity.RegularSchedule;
 import gwasuwonshot.tutice.lesson.exception.invalid.InvalidLessonException;
 import gwasuwonshot.tutice.lesson.exception.invalid.InvalidPaymentRecordException;
 import gwasuwonshot.tutice.lesson.exception.notfound.NotFoundLessonException;
@@ -32,6 +33,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.Comparator;
 
 @Service
 @RequiredArgsConstructor
@@ -48,7 +51,7 @@ public class PaymentRecordService {
     private final ScheduleRepository scheduleRepository;
 
     @Transactional
-    public GetPaymentRecordViewLesson getPaymentRecordView(Long userIdx, Long lessonIdx){
+    public GetPaymentRecordViewLesson getPaymentRecordView(Long userIdx, Long lessonIdx, Long paymentRecordIdx){
         //1. 유저가 선생님인지 확인
         User teacher = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
@@ -67,11 +70,52 @@ public class PaymentRecordService {
 
         }
         // 해당레슨의 사이클 확인,  레슨 사이클의 처음스케쥴데이트 가장 늦은 스케쥴데이트 가져오기
-        Schedule endSchedule = scheduleRepository.findTopByLessonAndCycleAndStatusNotOrderByDateDesc(lesson,lesson.getCycle(), ScheduleStatus.CANCEL);
-        Schedule startSchedule = scheduleRepository.findTopByLessonAndCycleAndStatusNotOrderByDateAsc(lesson,lesson.getCycle(), ScheduleStatus.CANCEL);
+        Long cycle;
+        if(paymentRecordIdx==null){
+            cycle=lesson.getCycle();
+        }
+        else {
+            //레슨과 페이먼트레코드가 연결된것인지확인
+
+            System.out.println(paymentRecordIdx);
+            PaymentRecord paymentRecord = paymentRecordRepository.findById(paymentRecordIdx)
+                    .orElseThrow(() -> new NotFoundPaymentRecordException(ErrorStatus.NOT_FOUND_PAYMENT_RECORD_EXCEPTION,ErrorStatus.NOT_FOUND_PAYMENT_RECORD_EXCEPTION.getMessage()));
+
+            //들아오는 paymentRecord로 사이클판단
+            lesson.getPaymenRecordList().forEach((a)->{
+                System.out.println("정렬전 : "+a.getCreatedAt());
+            });
+
+            //regularScheduleList를 요일순서로 정렬
+            Collections.sort( lesson.getPaymenRecordList(), new Comparator<PaymentRecord>() {
+                @Override
+                public int compare(PaymentRecord o1, PaymentRecord o2) {
+                    //정렬목표 : 오름차순 : 오래된순
+                    if(o1.getCreatedAt().isAfter(o2.getCreatedAt())){
+                        return 1;
+                    }
+                    return -1;
+                }
+            });
+            lesson.getPaymenRecordList().forEach((a)->{
+                System.out.println("정렬후 : "+a.getCreatedAt());
+            });
+
+
+            cycle = Long.valueOf(lesson.getPaymenRecordList().indexOf(paymentRecord))+1;
+            System.out.println(cycle);
+
+            if(cycle == -1){
+                throw new InvalidPaymentRecordException(ErrorStatus.UNCONNECTED_LESSON_PAYMENT_RECORD_EXCEPTION,ErrorStatus.UNCONNECTED_LESSON_PAYMENT_RECORD_EXCEPTION.getMessage());
+            }
+
+
+        }
+        Schedule endSchedule = scheduleRepository.findTopByLessonAndCycleAndStatusNotOrderByDateDesc(lesson,cycle, ScheduleStatus.CANCEL);
+        Schedule startSchedule = scheduleRepository.findTopByLessonAndCycleAndStatusNotOrderByDateAsc(lesson,cycle, ScheduleStatus.CANCEL);
 
         return GetPaymentRecordViewLesson.of(lesson.getIdx(), lesson.getStudentName(), lesson.getSubject(),
-                GetPaymentRecordViewCycle.of(lesson.getCycle(),
+                GetPaymentRecordViewCycle.of(cycle,
                         DateAndTimeConvert.localDateConvertString(startSchedule.getDate()),
                         DateAndTimeConvert.localDateConvertString(endSchedule.getDate())));
 

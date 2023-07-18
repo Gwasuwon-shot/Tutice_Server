@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,15 +39,27 @@ public class PaymentRecordController {
     }
 
 
-
-    @GetMapping("/{lessonIdx}")
+    @GetMapping("/info")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponseDto<GetPaymentRecordViewResponseDto> getPaymentRecordView(
             @UserIdx final Long userIdx,
-            @PathVariable final Long lessonIdx) {
+            @RequestParam final Long lessonIdx,
+            @RequestParam String paymentRecordIdx) { //ToDo : 원래는 400 에러 커스텀해서 안들어올때도 되게해야햐지만...
+
+
+        System.out.println("레슨아이디"+lessonIdx);
+        System.out.println("입금기록아이디"+paymentRecordIdx);
+
+        if(paymentRecordIdx.equals("null")){
+            paymentRecordIdx=null;
+
+            return ApiResponseDto.success(SuccessStatus.GET_PAYMENT_RECORD_POST_VIEW_SUCCESS,
+                    GetPaymentRecordViewResponseDto.of(paymentRecordService.getPaymentRecordView(userIdx, lessonIdx,null),
+                            DateAndTimeConvert.nowLocalDateConvertString()));
+        }
 
         return ApiResponseDto.success(SuccessStatus.GET_PAYMENT_RECORD_POST_VIEW_SUCCESS,
-                GetPaymentRecordViewResponseDto.of(paymentRecordService.getPaymentRecordView(userIdx, lessonIdx),
+                GetPaymentRecordViewResponseDto.of(paymentRecordService.getPaymentRecordView(userIdx, lessonIdx,Long.parseLong(paymentRecordIdx)),
                         DateAndTimeConvert.nowLocalDateConvertString()));
 
 
