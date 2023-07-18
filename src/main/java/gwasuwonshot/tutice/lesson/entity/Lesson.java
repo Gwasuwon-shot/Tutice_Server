@@ -111,6 +111,7 @@ public class Lesson extends AuditingTimeEntity {
 
     public void finishLesson(){this.isFinished=true;}
     public Boolean isMatchedParents(User parents){
+        if(this.getParents() == null ){return false;}
         return this.getParents().equals(parents);
     }
 
