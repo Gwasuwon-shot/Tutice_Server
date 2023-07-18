@@ -63,8 +63,8 @@ public class PaymentRecordService {
 
         }
         // 해당레슨의 사이클 확인,  레슨 사이클의 처음스케쥴데이트 가장 늦은 스케쥴데이트 가져오기
-        Schedule endSchedule = scheduleRepository.findTopByLessonAndCycleAndStatusNotOrderByDateDesc(lesson,lesson.getCycle(), ScheduleStatus.CANCLE);
-        Schedule startSchedule = scheduleRepository.findTopByLessonAndCycleAndStatusNotOrderByDateAsc(lesson,lesson.getCycle(), ScheduleStatus.CANCLE);
+        Schedule endSchedule = scheduleRepository.findTopByLessonAndCycleAndStatusNotOrderByDateDesc(lesson,lesson.getCycle(), ScheduleStatus.CANCEL);
+        Schedule startSchedule = scheduleRepository.findTopByLessonAndCycleAndStatusNotOrderByDateAsc(lesson,lesson.getCycle(), ScheduleStatus.CANCEL);
 
         return GetPaymentRecordViewLesson.of(lesson.getIdx(), lesson.getStudentName(), lesson.getSubject(),
                 GetPaymentRecordViewCycle.of(lesson.getCycle(),
