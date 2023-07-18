@@ -13,9 +13,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class CreateLessonResponseDto {
     private String lessonCode;
+    private Long paymentRecordIdx;
 
-    public static CreateLessonResponseDto of(String lessonCode) {
-        return new CreateLessonResponseDto(lessonCode);
+    public static CreateLessonResponseDto of(String lessonCode, Long paymentRecordIdx) {
+        return new CreateLessonResponseDto(lessonCode, paymentRecordIdx);
     }
 
 

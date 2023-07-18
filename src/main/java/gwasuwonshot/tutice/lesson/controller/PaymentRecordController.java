@@ -39,27 +39,15 @@ public class PaymentRecordController {
     }
 
 
-    @GetMapping("/info")
+    @GetMapping("/{paymentRecordIdx}")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponseDto<GetPaymentRecordViewResponseDto> getPaymentRecordView(
             @UserIdx final Long userIdx,
-            @RequestParam final Long lessonIdx,
-            @RequestParam String paymentRecordIdx) { //ToDo : 원래는 400 에러 커스텀해서 안들어올때도 되게해야햐지만...
+            @PathVariable final Long paymentRecordIdx) {
 
-
-        System.out.println("레슨아이디"+lessonIdx);
-        System.out.println("입금기록아이디"+paymentRecordIdx);
-
-        if(paymentRecordIdx.equals("null")){
-            paymentRecordIdx=null;
-
-            return ApiResponseDto.success(SuccessStatus.GET_PAYMENT_RECORD_POST_VIEW_SUCCESS,
-                    GetPaymentRecordViewResponseDto.of(paymentRecordService.getPaymentRecordView(userIdx, lessonIdx,null),
-                            DateAndTimeConvert.nowLocalDateConvertString()));
-        }
 
         return ApiResponseDto.success(SuccessStatus.GET_PAYMENT_RECORD_POST_VIEW_SUCCESS,
-                GetPaymentRecordViewResponseDto.of(paymentRecordService.getPaymentRecordView(userIdx, lessonIdx,Long.parseLong(paymentRecordIdx)),
+                GetPaymentRecordViewResponseDto.of(paymentRecordService.getPaymentRecordView(userIdx, paymentRecordIdx),
                         DateAndTimeConvert.nowLocalDateConvertString()));
 
 

@@ -33,12 +33,8 @@ public class LessonController {
             @UserIdx final Long userIdx,
             @Valid @RequestBody final CreateLessonRequestDto request) {
 
-        //레슨정보 생성
-        Long createdLessonId = lessonService.createLesson(userIdx, request);
-        //레슨코드 생성
-        String createdLessonCode = lessonService.createLessonCode(createdLessonId);
 
-        return ApiResponseDto.success(SuccessStatus.CREATE_LESSON_SUCCESS, CreateLessonResponseDto.of(createdLessonCode));
+        return ApiResponseDto.success(SuccessStatus.CREATE_LESSON_SUCCESS, lessonService.createLesson(userIdx, request));
 
     }
 

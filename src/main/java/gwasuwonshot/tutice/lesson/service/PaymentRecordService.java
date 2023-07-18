@@ -51,7 +51,7 @@ public class PaymentRecordService {
     private final ScheduleRepository scheduleRepository;
 
     @Transactional
-    public GetPaymentRecordViewLesson getPaymentRecordView(Long userIdx, Long lessonIdx, Long paymentRecordIdx){
+    public GetPaymentRecordViewLesson getPaymentRecordView(Long userIdx, Long paymentRecordIdx){
         //1. 유저가 선생님인지 확인
         User teacher = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
@@ -60,36 +60,23 @@ public class PaymentRecordService {
             throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION,ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
         }
 
-        //2. 파라미터로 들어오는 lessonIdx가 존재하는지 확인
-        Lesson lesson=lessonRepository.findById(lessonIdx)
-                .orElseThrow(()-> new NotFoundLessonException(ErrorStatus.NOT_FOUND_LESSON_EXCEPTION, ErrorStatus.NOT_FOUND_LESSON_EXCEPTION.getMessage()));
+        //2. 파라미터로 들어오는 paymentRecordIdx가 존재하는지 확인
+        PaymentRecord paymentRecord = paymentRecordRepository.findById(paymentRecordIdx)
+                .orElseThrow(() -> new NotFoundPaymentRecordException(ErrorStatus.NOT_FOUND_PAYMENT_RECORD_EXCEPTION,ErrorStatus.NOT_FOUND_PAYMENT_RECORD_EXCEPTION.getMessage()));
 
-        //3. 이 레슨이 선생님의 레슨인지 확인
+        Lesson lesson= paymentRecord.getLesson();
+
+
+        //3. paymentRecordIdx의 레슨이 선생님의 레슨인지 확인
         if(!lesson.isMatchedTeacher(teacher)){
             throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION,ErrorStatus.INVALID_LESSON_EXCEPTION.getMessage());
 
         }
         // 해당레슨의 사이클 확인,  레슨 사이클의 처음스케쥴데이트 가장 늦은 스케쥴데이트 가져오기
-        Long cycle;
-        if(paymentRecordIdx==null){
-            cycle=lesson.getCycle();
-        }
-        else {
-            //레슨과 페이먼트레코드가 연결된것인지확인
-
-            System.out.println(paymentRecordIdx);
-            PaymentRecord paymentRecord = paymentRecordRepository.findById(paymentRecordIdx)
-                    .orElseThrow(() -> new NotFoundPaymentRecordException(ErrorStatus.NOT_FOUND_PAYMENT_RECORD_EXCEPTION,ErrorStatus.NOT_FOUND_PAYMENT_RECORD_EXCEPTION.getMessage()));
-
-            //들아오는 paymentRecord로 사이클판단
-            lesson.getPaymenRecordList().forEach((a)->{
-                System.out.println("정렬전 : "+a.getCreatedAt());
-            });
-
             //regularScheduleList를 요일순서로 정렬
-            Collections.sort( lesson.getPaymenRecordList(), new Comparator<PaymentRecord>() {
-                @Override
-                public int compare(PaymentRecord o1, PaymentRecord o2) {
+        Collections.sort( lesson.getPaymenRecordList(), new Comparator<PaymentRecord>() {
+            @Override
+            public int compare(PaymentRecord o1, PaymentRecord o2) {
                     //정렬목표 : 오름차순 : 오래된순
                     if(o1.getCreatedAt().isAfter(o2.getCreatedAt())){
                         return 1;
@@ -97,20 +84,14 @@ public class PaymentRecordService {
                     return -1;
                 }
             });
-            lesson.getPaymenRecordList().forEach((a)->{
-                System.out.println("정렬후 : "+a.getCreatedAt());
-            });
 
-
-            cycle = Long.valueOf(lesson.getPaymenRecordList().indexOf(paymentRecord))+1;
-            System.out.println(cycle);
+        // 들아오는 paymentRecord로 사이클판단
+            Long cycle = Long.valueOf(lesson.getPaymenRecordList().indexOf(paymentRecord))+1;
 
             if(cycle == -1){
                 throw new InvalidPaymentRecordException(ErrorStatus.UNCONNECTED_LESSON_PAYMENT_RECORD_EXCEPTION,ErrorStatus.UNCONNECTED_LESSON_PAYMENT_RECORD_EXCEPTION.getMessage());
             }
 
-
-        }
         Schedule endSchedule = scheduleRepository.findTopByLessonAndCycleAndStatusNotOrderByDateDesc(lesson,cycle, ScheduleStatus.CANCEL);
         Schedule startSchedule = scheduleRepository.findTopByLessonAndCycleAndStatusNotOrderByDateAsc(lesson,cycle, ScheduleStatus.CANCEL);
 
@@ -124,7 +105,7 @@ public class PaymentRecordService {
 
 
     @Transactional
-    public void updatePaymentRecord(Long userIdx, Long paymentRecordIdx, LocalDate paymentDate){
+    public void updatePaymentRecordView(Long userIdx, Long paymentRecordIdx, LocalDate paymentDate){
 //        유저의 역할이 선생님이 맞나요?
         User teacher = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
