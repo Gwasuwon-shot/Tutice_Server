@@ -1,12 +1,13 @@
 package gwasuwonshot.tutice.common.module;
 
 import gwasuwonshot.tutice.common.exception.ErrorStatus;
-import gwasuwonshot.tutice.lesson.exception.InvalidDateException;
-import gwasuwonshot.tutice.lesson.exception.InvalidTimeException;
+import gwasuwonshot.tutice.lesson.exception.invalid.InvalidDateException;
+import gwasuwonshot.tutice.lesson.exception.invalid.InvalidTimeException;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
@@ -29,7 +30,7 @@ public class DateAndTimeConvert {
         try{
             return LocalDate.parse(stringDate, DateTimeFormatter.ISO_DATE);
         }catch (Exception e){
-            if (e instanceof IllegalArgumentException){
+            if (e instanceof DateTimeParseException){
                 throw new InvalidDateException(ErrorStatus.INVALID_DATE_EXCEPTION,ErrorStatus.INVALID_DATE_EXCEPTION.getMessage());
             }
             else{
@@ -54,7 +55,7 @@ public class DateAndTimeConvert {
         try{
             return LocalTime.parse(stringTime);
         }catch (Exception e){
-            if (e instanceof IllegalArgumentException){
+            if (e instanceof DateTimeParseException){
                 throw new InvalidTimeException(ErrorStatus.INVALID_TIME_EXCEPTION,ErrorStatus.INVALID_TIME_EXCEPTION.getMessage());
             }
             else{

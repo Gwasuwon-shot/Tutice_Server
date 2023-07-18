@@ -1,4 +1,4 @@
-package gwasuwonshot.tutice.lesson.exception;
+package gwasuwonshot.tutice.lesson.exception.notfound;
 
 import gwasuwonshot.tutice.common.exception.BasicException;
 import gwasuwonshot.tutice.common.exception.ErrorStatus;

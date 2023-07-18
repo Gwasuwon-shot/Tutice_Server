@@ -25,6 +25,7 @@ public enum SuccessStatus {
     GET_LESSON_BY_PARENTS_SUCCESS(HttpStatus.OK,"학부모 메인 뷰의 수업관리 조회 성공"),
     UPDATE_SCHEDULE(HttpStatus.OK,"스케줄 수정에 성공했습니다."),
     GET_PAYMENT_RECORD_POST_VIEW_SUCCESS(HttpStatus.OK,"입금 등록 뷰 정보 가져오기 성공"),
+    UPDATE_PAYMENT_RECORD_SUCCESS(HttpStatus.OK,"입금 등록 성공"),
 
 
     /**
