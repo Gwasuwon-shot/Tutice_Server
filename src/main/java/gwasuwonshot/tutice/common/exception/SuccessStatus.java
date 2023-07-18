@@ -24,6 +24,7 @@ public enum SuccessStatus {
     GET_MISSING_MAINTENANCE_LESSON_SUCCESS(HttpStatus.OK, "연장여부를 알려주지 않은 수업 리스트 가져오기 성공"),
     GET_LESSON_BY_PARENTS_SUCCESS(HttpStatus.OK,"학부모 메인 뷰의 수업관리 조회 성공"),
     GET_PAYMENT_RECORD_POST_VIEW_SUCCESS(HttpStatus.OK,"입금 등록 뷰 정보 가져오기 성공"),
+    UPDATE_PAYMENT_RECORD_SUCCESS(HttpStatus.OK,"입금 등록 성공"),
 
 
 
