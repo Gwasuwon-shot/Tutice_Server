@@ -1,8 +1,7 @@
-package gwasuwonshot.tutice.lesson.dto.request;
+package gwasuwonshot.tutice.lesson.dto.request.createLesson;
 
 import gwasuwonshot.tutice.common.resolver.enumValue.Enum;
 import gwasuwonshot.tutice.lesson.entity.Payment;
-import gwasuwonshot.tutice.user.entity.Role;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Getter;

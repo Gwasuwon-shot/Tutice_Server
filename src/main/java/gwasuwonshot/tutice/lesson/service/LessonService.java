@@ -6,7 +6,7 @@ import gwasuwonshot.tutice.common.module.ReturnLongMath;
 import gwasuwonshot.tutice.lesson.dto.assembler.LessonAssembler;
 import gwasuwonshot.tutice.lesson.dto.assembler.PaymentRecordAssembler;
 import gwasuwonshot.tutice.lesson.dto.assembler.RegularScheduleAssembler;
-import gwasuwonshot.tutice.lesson.dto.request.CreateLessonRequestDto;
+import gwasuwonshot.tutice.lesson.dto.request.createLesson.CreateLessonRequestDto;
 import gwasuwonshot.tutice.lesson.dto.response.*;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonByParents.GetLessonByParents;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonDetail.GetLessonDetailByParentsResponseAccount;
@@ -128,9 +128,9 @@ public class LessonService {
                 .forEach(pl->{
 
                     //  현재 회차계산 : 이때 수업에 연결된 스케쥴중 현재사이클(수업에 연결된 paymentRecord개수(선불,후불+1))중 출석,결석만 카운트해서 현재카운트가져오기
-                    Long cycle = Long.valueOf(pl.getPaymenRecordList().size());
-                    if(pl.isMatchedPayment(Payment.POST_PAYMENT)){cycle +=1;} //후불은 paymentRecord 개수 + 1
-                    Long nowCount = scheduleRepository.countByLessonAndCycleAndStatusIn(pl,cycle,ScheduleStatus.getAttendanceScheduleStatusList());
+
+
+                    Long nowCount = scheduleRepository.countByLessonAndCycleAndStatusIn(pl,pl.getCycle(),ScheduleStatus.getAttendanceScheduleStatusList());
                     Long percent = ReturnLongMath.getPercentage(nowCount,pl.getCount());
                     getLessonByParentsList.add(
                             GetLessonByParents.of(
@@ -267,9 +267,6 @@ public class LessonService {
                     .forEach(acs->scheduleRepository.save(acs));;
 
 
-
-
-
             return true;
 
         }
@@ -296,6 +293,7 @@ public class LessonService {
 
         List<GetMissingMaintenanceLesson> getMissingMaintenanceLessonList = new ArrayList<>();
 
+        // TODO : 아래의 로직좀더 효율적으로 리팩하기
         //2. 유저에 연결된 레슨가져오기
         //2.1 레슨이 isFinished가 false이고00
         lessonRepository.findAllByTeacherIdxAndIsFinished(teacher.getIdx(),false)
