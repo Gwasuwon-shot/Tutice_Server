@@ -4,6 +4,7 @@ import gwasuwonshot.tutice.common.dto.ApiResponseDto;
 import gwasuwonshot.tutice.common.exception.SuccessStatus;
 import gwasuwonshot.tutice.common.resolver.userIdx.UserIdx;
 import gwasuwonshot.tutice.schedule.dto.request.UpdateScheduleRequestDto;
+import gwasuwonshot.tutice.schedule.dto.response.GetLatestScheduleByTeacherResponseDto;
 import gwasuwonshot.tutice.schedule.dto.response.GetMissingAttendanceScheduleResponseDto;
 import gwasuwonshot.tutice.schedule.dto.response.GetScheduleByUserResponseDto;
 import gwasuwonshot.tutice.schedule.dto.response.GetTodayScheduleByTeacherResponseDto;
@@ -53,6 +54,12 @@ public class ScheduleController {
                                       @RequestBody @Valid final UpdateScheduleRequestDto request) {
   scheduleService.updateSchedule(userIdx, request);
   return ApiResponseDto.success(SuccessStatus.UPDATE_SCHEDULE);
+ }
+
+ @GetMapping("/latest")
+ @ResponseStatus(HttpStatus.OK)
+ public ApiResponseDto<GetLatestScheduleByTeacherResponseDto> getLatestScheduleByTeacher(@UserIdx final Long userIdx) {
+  return ApiResponseDto.success(SuccessStatus.GET_LATEST_SCHEDULE_BY_TEACHER, scheduleService.getLatestScheduleByTeacher(userIdx) );
  }
 
 }
