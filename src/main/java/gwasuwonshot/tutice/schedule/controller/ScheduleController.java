@@ -3,6 +3,7 @@ package gwasuwonshot.tutice.schedule.controller;
 import gwasuwonshot.tutice.common.dto.ApiResponseDto;
 import gwasuwonshot.tutice.common.exception.SuccessStatus;
 import gwasuwonshot.tutice.common.resolver.userIdx.UserIdx;
+import gwasuwonshot.tutice.schedule.dto.request.UpdateScheduleRequestDto;
 import gwasuwonshot.tutice.schedule.dto.response.GetMissingAttendanceScheduleResponseDto;
 import gwasuwonshot.tutice.schedule.dto.response.GetScheduleByUserResponseDto;
 import gwasuwonshot.tutice.schedule.dto.response.GetTodayScheduleByTeacherResponseDto;
@@ -10,6 +11,8 @@ import gwasuwonshot.tutice.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 
 @RestController
@@ -42,6 +45,14 @@ public class ScheduleController {
  @ResponseStatus(HttpStatus.OK)
  public ApiResponseDto<GetMissingAttendanceScheduleResponseDto> getMissingAttendanceSchedule(@UserIdx final Long userIdx) {
   return ApiResponseDto.success(SuccessStatus.GET_MISSING_ATTENDANCE_SCHEDULE_SUCCESS, scheduleService.getMissingAttendanceSchedule(userIdx) );
+ }
+
+ @PatchMapping("")
+ @ResponseStatus(HttpStatus.OK)
+ public ApiResponseDto updateSchedule(@UserIdx final Long userIdx,
+                                      @RequestBody @Valid final UpdateScheduleRequestDto request) {
+  scheduleService.updateSchedule(userIdx, request);
+  return ApiResponseDto.success(SuccessStatus.UPDATE_SCHEDULE);
  }
 
 }
