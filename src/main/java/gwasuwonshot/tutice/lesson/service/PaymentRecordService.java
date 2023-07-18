@@ -6,12 +6,14 @@ import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
 import gwasuwonshot.tutice.lesson.dto.assembler.LessonAssembler;
 import gwasuwonshot.tutice.lesson.dto.assembler.PaymentRecordAssembler;
 import gwasuwonshot.tutice.lesson.dto.assembler.RegularScheduleAssembler;
-import gwasuwonshot.tutice.lesson.dto.response.getLessonDetail.GetLessonDetailByParentsResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecordView.GetPaymentRecordViewCycle;
 import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecordView.GetPaymentRecordViewLesson;
 import gwasuwonshot.tutice.lesson.entity.Lesson;
-import gwasuwonshot.tutice.lesson.exception.InvalidLessonException;
-import gwasuwonshot.tutice.lesson.exception.NotFoundLessonException;
+import gwasuwonshot.tutice.lesson.entity.PaymentRecord;
+import gwasuwonshot.tutice.lesson.exception.invalid.InvalidLessonException;
+import gwasuwonshot.tutice.lesson.exception.invalid.InvalidPaymentRecordException;
+import gwasuwonshot.tutice.lesson.exception.notfound.NotFoundLessonException;
+import gwasuwonshot.tutice.lesson.exception.notfound.NotFoundPaymentRecordException;
 import gwasuwonshot.tutice.lesson.repository.LessonRepository;
 import gwasuwonshot.tutice.lesson.repository.PaymentRecordRepository;
 import gwasuwonshot.tutice.lesson.repository.RegularScheduleRepository;
@@ -28,6 +30,8 @@ import gwasuwonshot.tutice.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
@@ -70,6 +74,39 @@ public class PaymentRecordService {
                 GetPaymentRecordViewCycle.of(lesson.getCycle(),
                         DateAndTimeConvert.localDateConvertString(startSchedule.getDate()),
                         DateAndTimeConvert.localDateConvertString(endSchedule.getDate())));
+
+    }
+
+
+
+    @Transactional
+    public void updatePaymentRecord(Long userIdx, Long paymentRecordIdx, LocalDate paymentDate){
+//        유저의 역할이 선생님이 맞나요?
+        User teacher = userRepository.findById(userIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+
+        if(!teacher.isMatchedRole(Role.TEACHER)){
+            throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION,ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
+        }
+//        들어오는 페이먼트레코드 아이디가 존재하고 해당 레코드의 레슨이 선생님것이 맞나요?
+
+        PaymentRecord paymentRecord =paymentRecordRepository.findById(paymentRecordIdx)
+                .orElseThrow(()-> new NotFoundPaymentRecordException(ErrorStatus.NOT_FOUND_PAYMENT_RECORD_EXCEPTION, ErrorStatus.NOT_FOUND_PAYMENT_RECORD_EXCEPTION.getMessage()));
+
+        //3. 이 레슨이 선생님의 레슨인지 확인
+        if(!paymentRecord.getLesson().isMatchedTeacher(teacher)){
+            throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION,ErrorStatus.INVALID_LESSON_EXCEPTION.getMessage());
+        }
+
+        // paymentRecord가 이미 입금되었는지 여부
+        if(paymentRecord.isRecorded()){
+            throw new InvalidPaymentRecordException(ErrorStatus.INVALID_PAYMENT_RECORD_EXCEPTION,ErrorStatus.INVALID_PAYMENT_RECORD_EXCEPTION.getMessage());
+        }
+
+
+//                페이먼트레코드의 date update
+
+        paymentRecord.recordDate(paymentDate);
 
     }
 }
