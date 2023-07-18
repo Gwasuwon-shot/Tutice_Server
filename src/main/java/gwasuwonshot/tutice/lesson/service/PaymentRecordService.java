@@ -105,7 +105,7 @@ public class PaymentRecordService {
 
 
     @Transactional
-    public void updatePaymentRecordView(Long userIdx, Long paymentRecordIdx, LocalDate paymentDate){
+    public void updatePaymentRecord(Long userIdx, Long paymentRecordIdx, LocalDate paymentDate){
 //        유저의 역할이 선생님이 맞나요?
         User teacher = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
