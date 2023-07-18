@@ -1,6 +1,6 @@
 package gwasuwonshot.tutice.schedule.exception.advice;
 
-import gwasuwonshot.tutice.common.dto.ApiResponse;
+import gwasuwonshot.tutice.common.dto.ApiResponseDto;
 import gwasuwonshot.tutice.common.exception.BasicException;
 import gwasuwonshot.tutice.schedule.controller.ScheduleController;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +14,9 @@ public class ScheduleControllerExceptionAdvice {
      * Tutice Custom  Error : 그중 Lesson 관련 에러
      */
     @ExceptionHandler(/* lesson custom 에러 */)
-    protected ResponseEntity<ApiResponse> handleLessonCustomException(BasicException e) {
+    protected ResponseEntity<ApiResponseDto> handleLessonCustomException(BasicException e) {
         return ResponseEntity.status(e.getHttpStatus())
-                .body(ApiResponse.error(e.getErrorStatus(), e.getMessage()));
+                .body(ApiResponseDto.error(e.getErrorStatus(), e.getMessage()));
     }
 }
 

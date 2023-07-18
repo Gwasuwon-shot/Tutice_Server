@@ -1,12 +1,13 @@
 package gwasuwonshot.tutice.user.entity;
 
 import gwasuwonshot.tutice.common.entity.AuditingTimeEntity;
+import gwasuwonshot.tutice.common.exception.ErrorStatus;
 import gwasuwonshot.tutice.lesson.entity.Lesson;
+import gwasuwonshot.tutice.user.exception.userException.InvalidRoleException;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.br.CPF;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ public class User extends AuditingTimeEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "provider", nullable = false)
-    private Provider provider = Provider.LOKAL;
+    private Provider provider = Provider.LOCAL;
 
     private String password;
 
@@ -53,8 +54,10 @@ public class User extends AuditingTimeEntity {
     @OneToMany(mappedBy = "teacher", cascade = {CascadeType.REMOVE})
     private List<Account> accountList;
 
-    @OneToMany(mappedBy = "teacher", cascade = {CascadeType.PERSIST})
+    @OneToMany(mappedBy = "teacher", cascade = {CascadeType.ALL})
     private List<Lesson> lessonList;
+
+    // TODO '부모님'일 때, lessonList가 불러와지지 않는 이슈
 
     @OneToMany(mappedBy = "user")
     private List<NotificationLog> notificationLogList;
@@ -87,4 +90,14 @@ public class User extends AuditingTimeEntity {
     }
 
 
+
+
+
+    public Boolean isMatchedRole(Role matchRole){
+        return this.getRole().equals(matchRole);
+    }
+
+    public void setDeviceToken(String deviceToken) {
+        this.deviceToken = deviceToken;
+    }
 }

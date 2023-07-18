@@ -6,22 +6,22 @@ import gwasuwonshot.tutice.user.entity.Account;
 import gwasuwonshot.tutice.user.entity.User;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
 
 @Component
 public class LessonAssembler {
 
-    public Lesson toEntity(User teacher, User parents, Account account, String subject, String studentName,
-                                    Long count, Payment payment, Long amount){
+    public Lesson toEntity(User teacher, Account account, String subject, String studentName,
+                           Long count, Payment payment, Long amount, LocalDate startDate){
         return Lesson.builder()
                 .teacher(teacher)
-                .parents(parents)
                 .account(account)
                 .subject(subject)
                 .studentName(studentName)
                 .count(count)
                 .payment(payment)
                 .amount(amount)
+                .startDate(startDate)
                 .build();
     }
 }
