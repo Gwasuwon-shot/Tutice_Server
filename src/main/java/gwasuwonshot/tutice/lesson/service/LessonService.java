@@ -14,7 +14,11 @@ import gwasuwonshot.tutice.lesson.dto.response.getLessonDetail.GetLessonDetailBy
 import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenance.GetMissingMaintenanceLesson;
 import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenance.MissingMaintenanceLesson;
 import gwasuwonshot.tutice.lesson.entity.*;
-import gwasuwonshot.tutice.lesson.exception.*;
+import gwasuwonshot.tutice.lesson.exception.conflict.AlreadyExistLessonParentsException;
+import gwasuwonshot.tutice.lesson.exception.conflict.AlreadyFinishedLessonException;
+import gwasuwonshot.tutice.lesson.exception.invalid.InvalidLessonCodeException;
+import gwasuwonshot.tutice.lesson.exception.invalid.InvalidLessonException;
+import gwasuwonshot.tutice.lesson.exception.notfound.NotFoundLessonException;
 import gwasuwonshot.tutice.lesson.repository.LessonRepository;
 import gwasuwonshot.tutice.lesson.repository.PaymentRecordRepository;
 import gwasuwonshot.tutice.lesson.repository.RegularScheduleRepository;
@@ -192,7 +196,9 @@ public class LessonService {
 
         //2.1 레슨이 선불일 경우 가짜 PaymentRecord 생성
         if(lesson.isMatchedPayment(Payment.PRE_PAYMENT)){
-            PaymentRecord prePaymentRecord = paymentRecordAssembler.toEntity(lesson, null);
+            PaymentRecord prePaymentRecord = paymentRecordAssembler.toEntity(lesson
+
+            );
             paymentRecordRepository.save(prePaymentRecord);
             lesson.addPaymentRecord(prePaymentRecord);
         }
@@ -257,7 +263,7 @@ public class LessonService {
         if(isLessonMaintenance){
             //연장하면
             ////        가짜 paymentRecord생성
-            paymentRecordRepository.save(paymentRecordAssembler.toEntity(lesson, null));
+            paymentRecordRepository.save(paymentRecordAssembler.toEntity(lesson));
 
             ////        startDate는 해당 수업의 마지막 스케쥴날짜 +1
             LocalDate maintenanceDate = scheduleRepository.findTopByLessonOrderByDateDesc(lesson).getDate().plusDays(1);
