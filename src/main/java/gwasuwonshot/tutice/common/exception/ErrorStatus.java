@@ -21,6 +21,8 @@ public enum ErrorStatus {
     INVALID_TIME_EXCEPTION(HttpStatus.BAD_REQUEST, "시간의 형태는 HH:mm:00의 형태여야합니다."),
     NULL_ACCESS_TOKEN_EXCEPTION(HttpStatus.BAD_REQUEST, "토큰 값이 없습니다."),
     INVALID_LESSON_EXCEPTION(HttpStatus.BAD_REQUEST,"유효하지 않은 lesson 입니다."),
+    ALREADY_UPDATE_SCHEDULE_ATTENDANCE_EXCEPTION(HttpStatus.BAD_REQUEST,"출결상태가 존재하는 스케줄입니다."),
+    INVALID_SCHEDULE_DATE_EXCEPTION(HttpStatus.BAD_REQUEST,"출결상태가 존재하는 스케쥴 이전으로는 날짜를 변경할 수 없습니다."),
 
 
 
@@ -39,6 +41,7 @@ public enum ErrorStatus {
     NOT_FOUND_USER_EXCEPTION(HttpStatus.NOT_FOUND, "존재하지 않는 유저입니다"),
     NOT_FOUND_LESSON_EXCEPTION(HttpStatus.NOT_FOUND, "수업을 찾을 수 없습니다."),
     INVALID_LESSON_CODE_EXCEPTION(HttpStatus.NOT_FOUND,"유효하지 않은 레슨코드입니다."),
+    NOT_FOUND_SCHEDULE_EXCEPTION(HttpStatus.NOT_FOUND,"스케줄을 찾을 수 없습니다."),
 
 
     /**

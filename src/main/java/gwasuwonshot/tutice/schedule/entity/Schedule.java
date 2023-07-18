@@ -15,8 +15,6 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.time.LocalTime;
 
@@ -105,5 +103,10 @@ public class Schedule extends AuditingTimeEntity {
 
     }
 
+    public void updateSchedule(LocalDate date, LocalTime startTime, LocalTime endTime) {
+        this.date = date;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
 
 }
