@@ -268,7 +268,7 @@ public class ScheduleService {
         if(!schedule.getStatus().equals(ScheduleStatus.NO_STATUS))
             throw new AlreadyUpdateScheduleAttendanceException(ErrorStatus.ALREADY_UPDATE_SCHEDULE_ATTENDANCE_EXCEPTION, ErrorStatus.ALREADY_UPDATE_SCHEDULE_ATTENDANCE_EXCEPTION.getMessage());
         // 출결 완료 상태 스케줄 보다 이전 날짜로 변경 불가
-        Schedule recentUpdateStatusSchedule = scheduleRepository.findTop1ByLessonAndCycleAndStatusNotOrderByDateDesc(schedule.getLesson(), schedule.getCycle(), ScheduleStatus.NO_STATUS);
+        Schedule recentUpdateStatusSchedule = scheduleRepository.findTopByLessonAndCycleAndStatusNotOrderByDateDesc(schedule.getLesson(), schedule.getCycle(), ScheduleStatus.NO_STATUS);
         if(recentUpdateStatusSchedule!=null && recentUpdateStatusSchedule.getDate().isAfter(DateAndTimeConvert.stringConvertLocalDate(request.getSchedule().getDate()))){
             System.out.println(recentUpdateStatusSchedule.getDate());
             throw new InvalidScheduleDateException(ErrorStatus.INVALID_SCHEDULE_DATE_EXCEPTION, ErrorStatus.INVALID_SCHEDULE_DATE_EXCEPTION.getMessage());

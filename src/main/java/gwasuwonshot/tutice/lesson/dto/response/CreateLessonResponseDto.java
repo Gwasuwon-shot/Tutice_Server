@@ -19,5 +19,4 @@ public class CreateLessonResponseDto {
         return new CreateLessonResponseDto(lessonCode, paymentRecordIdx);
     }
 
-
 }
