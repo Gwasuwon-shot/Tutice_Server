@@ -77,13 +77,6 @@ public class Schedule extends AuditingTimeEntity {
 
         //2. 1의 정렬된 리스트에서 count 만큼 반복해 스케쥴 생성
 
-        Long cycle; //해당 레슨의 paymentRecord보기
-        if(lesson.getPayment().equals(Payment.PRE_PAYMENT)){
-            cycle = Long.valueOf(lesson.getPaymenRecordList().size());
-        }
-        else{
-            cycle = Long.valueOf(lesson.getPaymenRecordList().size()+1);
-        }
 
         List<Schedule> createdScheduleList = new ArrayList<>();
         for(int i =0 ; i < count; i++){
@@ -96,7 +89,7 @@ public class Schedule extends AuditingTimeEntity {
             createdScheduleList.add(Schedule.builder()
                     .lesson(lesson)
                     .date(date)
-                    .cycle(cycle) //해당 레슨의 paymentRecord보기
+                    .cycle(lesson.getCycle()) //해당 레슨의 paymentRecord보기
                     .startTime(startTime)
                     .endTime(endTime)
                     .build());

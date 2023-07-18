@@ -100,6 +100,15 @@ public class Lesson extends AuditingTimeEntity {
     }
 
 
+    public Long getCycle(){
+        if(this.isMatchedPayment(Payment.PRE_PAYMENT)){
+            return Long.valueOf(this.getPaymenRecordList().size());
+        }
+        return Long.valueOf(this.getPaymenRecordList().size()+1);
+
+
+    }
+
     public void finishLesson(){this.isFinished=true;}
     public Boolean isMatchedParents(User parents){
         return this.getParents().equals(parents);
