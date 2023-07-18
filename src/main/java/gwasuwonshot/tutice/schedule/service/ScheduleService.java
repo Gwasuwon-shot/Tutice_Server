@@ -3,10 +3,15 @@ package gwasuwonshot.tutice.schedule.service;
 import gwasuwonshot.tutice.common.exception.ErrorStatus;
 import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
 import gwasuwonshot.tutice.lesson.entity.Lesson;
+import gwasuwonshot.tutice.lesson.exception.AlreadyFinishedLessonException;
+import gwasuwonshot.tutice.lesson.exception.InvalidDateException;
 import gwasuwonshot.tutice.lesson.repository.LessonRepository;
+import gwasuwonshot.tutice.schedule.dto.request.UpdateScheduleRequestDto;
 import gwasuwonshot.tutice.schedule.dto.response.*;
 import gwasuwonshot.tutice.schedule.entity.Schedule;
 import gwasuwonshot.tutice.schedule.entity.ScheduleStatus;
+import gwasuwonshot.tutice.schedule.exception.AlreadyUpdateScheduleAttendanceException;
+import gwasuwonshot.tutice.schedule.exception.InvalidScheduleDateException;
 import gwasuwonshot.tutice.schedule.repository.ScheduleRepository;
 import gwasuwonshot.tutice.user.entity.Role;
 import gwasuwonshot.tutice.user.entity.User;
@@ -16,6 +21,7 @@ import gwasuwonshot.tutice.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -245,5 +251,28 @@ public class ScheduleService {
         }
         scheduleListByDateList.add(MissingScheduleByDate.of(DateAndTimeConvert.localDateConvertString(scheduleDate), DateAndTimeConvert.localDateConvertDayOfWeek(scheduleDate), scheduleList, scheduleCountList));
         return GetMissingAttendanceScheduleResponseDto.ofSchedule(scheduleListByDateList);
+    }
+
+    @Transactional
+    public void updateSchedule(Long userIdx, UpdateScheduleRequestDto request) {
+        // 유저 존재 여부
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+        // 스케줄 존재 여부
+        Schedule schedule = scheduleRepository.findById(request.getSchedule().getIdx())
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_SCHEDULE_EXCEPTION, ErrorStatus.NOT_FOUND_SCHEDULE_EXCEPTION.getMessage()));
+        // 출결 상태가 존재하는 스케줄 체크
+        if(!schedule.getStatus().equals(ScheduleStatus.NO_STATUS))
+            throw new AlreadyUpdateScheduleAttendanceException(ErrorStatus.ALREADY_UPDATE_SCHEDULE_ATTENDANCE_EXCEPTION, ErrorStatus.ALREADY_UPDATE_SCHEDULE_ATTENDANCE_EXCEPTION.getMessage());
+        // 출결 완료 상태 스케줄 보다 이전 날짜로 변경 불가
+        Schedule recentUpdateStatusSchedule = scheduleRepository.findTop1ByLessonAndCycleAndStatusNotOrderByDateDesc(schedule.getLesson(), schedule.getCycle(), ScheduleStatus.NO_STATUS);
+        if(recentUpdateStatusSchedule!=null && recentUpdateStatusSchedule.getDate().isAfter(DateAndTimeConvert.stringConvertLocalDate(request.getSchedule().getDate()))){
+            System.out.println(recentUpdateStatusSchedule.getDate());
+            throw new InvalidScheduleDateException(ErrorStatus.INVALID_SCHEDULE_DATE_EXCEPTION, ErrorStatus.INVALID_SCHEDULE_DATE_EXCEPTION.getMessage());
+        }
+        schedule.updateSchedule(
+                DateAndTimeConvert.stringConvertLocalDate(request.getSchedule().getDate()),
+                DateAndTimeConvert.stringConvertLocalTime(request.getSchedule().getStartTime()),
+                DateAndTimeConvert.stringConvertLocalTime(request.getSchedule().getEndTime()));
     }
 }
