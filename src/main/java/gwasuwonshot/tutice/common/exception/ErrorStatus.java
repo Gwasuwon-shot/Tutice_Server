@@ -24,6 +24,7 @@ public enum ErrorStatus {
     ALREADY_UPDATE_SCHEDULE_ATTENDANCE_EXCEPTION(HttpStatus.BAD_REQUEST,"출결상태가 존재하는 스케줄입니다."),
     INVALID_SCHEDULE_DATE_EXCEPTION(HttpStatus.BAD_REQUEST,"출결상태가 존재하는 스케쥴 이전으로는 날짜를 변경할 수 없습니다."),
     INVALID_PAYMENT_RECORD_EXCEPTION(HttpStatus.BAD_REQUEST,"이미 입금된 기록은 수정할 수 없습니다."),
+    UNCONNECTED_LESSON_PAYMENT_RECORD_EXCEPTION(HttpStatus.BAD_REQUEST,"레슨과 입금기록이 연결되지 않았습니다."),
 
 
 
