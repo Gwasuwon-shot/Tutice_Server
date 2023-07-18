@@ -57,6 +57,13 @@ public class Schedule extends AuditingTimeEntity {
         this.endTime=endTime;
     }
 
+    public Boolean isMatchedStatus(ScheduleStatus status){
+        if(this.status.equals(status)){
+            return true;
+        }
+        return false;
+    }
+
     public static List<Schedule> autoCreateSchedule(LocalDate startDate, Long count, Lesson lesson){
         //처음생성시는 lesson의 스타트데이트, 연장시는 마지막 회차+1일
         //1. List를 startDate에서 가장 가까운 요일순으로 정렬
