@@ -6,12 +6,12 @@ import gwasuwonshot.tutice.lesson.entity.Lesson;
 import gwasuwonshot.tutice.lesson.exception.conflict.AlreadyFinishedLessonException;
 import gwasuwonshot.tutice.lesson.exception.invalid.InvalidDateException;
 import gwasuwonshot.tutice.lesson.repository.LessonRepository;
+import gwasuwonshot.tutice.schedule.dto.request.UpdateScheduleAttendanceRequestDto;
 import gwasuwonshot.tutice.schedule.dto.request.UpdateScheduleRequestDto;
 import gwasuwonshot.tutice.schedule.dto.response.*;
 import gwasuwonshot.tutice.schedule.entity.Schedule;
 import gwasuwonshot.tutice.schedule.entity.ScheduleStatus;
-import gwasuwonshot.tutice.schedule.exception.AlreadyUpdateScheduleAttendanceException;
-import gwasuwonshot.tutice.schedule.exception.InvalidScheduleDateException;
+import gwasuwonshot.tutice.schedule.exception.*;
 import gwasuwonshot.tutice.schedule.repository.ScheduleRepository;
 import gwasuwonshot.tutice.user.entity.Role;
 import gwasuwonshot.tutice.user.entity.User;
@@ -274,5 +274,35 @@ public class ScheduleService {
                 DateAndTimeConvert.stringConvertLocalDate(request.getSchedule().getDate()),
                 DateAndTimeConvert.stringConvertLocalTime(request.getSchedule().getStartTime()),
                 DateAndTimeConvert.stringConvertLocalTime(request.getSchedule().getEndTime()));
+    }
+
+    @Transactional
+    public UpdateScheduleAttendanceResponseDto updateScheduleAttendance(Long userIdx, UpdateScheduleAttendanceRequestDto request) {
+        // 유저 존재 여부
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+        // 유저가 선생님인지 확인
+        if(!user.isMatchedRole(Role.TEACHER)) throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION,ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
+        // 스케줄 존재 여부
+        Schedule schedule = scheduleRepository.findById(request.getSchedule().getIdx())
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_SCHEDULE_EXCEPTION, ErrorStatus.NOT_FOUND_SCHEDULE_EXCEPTION.getMessage()));
+        // 미래 스케줄은 수정 불가
+        if(schedule.getDate().isAfter(LocalDate.now())) throw new InvalidAttendanceDateException(ErrorStatus.INVALID_ATTENDANCE_DATE_EXCEPTION, ErrorStatus.INVALID_ATTENDANCE_DATE_EXCEPTION.getMessage());
+        // 취소 상태에서는 수정 불가
+        if(schedule.getStatus().equals(ScheduleStatus.CANCEL)) throw new InvalidAttendanceStatusException(ErrorStatus.INVALID_ATTENDANCE_STATUS_EXCEPTION, ErrorStatus.INVALID_ATTENDANCE_STATUS_EXCEPTION.getMessage());
+        // 이전 스케줄 누락되면 불가
+        boolean isAfterMissingAttendance = scheduleRepository.existsByLessonAndCycleAndStatusAndDateIsBefore(schedule.getLesson(), schedule.getCycle(), ScheduleStatus.NO_STATUS, schedule.getDate());
+        boolean isTodayMissingAttendance = scheduleRepository.existsByLessonAndCycleAndStatusAndDateAndStartTimeLessThanEqualAndIdxNot(schedule.getLesson(), schedule.getCycle(), ScheduleStatus.NO_STATUS, schedule.getDate(), schedule.getStartTime(), schedule.getIdx());
+        if(isAfterMissingAttendance || isTodayMissingAttendance) throw new InvalidAttendanceScheduleException(ErrorStatus.INVALID_ATTENDANCE_SCHEDULE_EXCEPTION, ErrorStatus.INVALID_ATTENDANCE_SCHEDULE_EXCEPTION.getMessage());
+
+        // 스케줄 업데이트
+        schedule.updateScheduleAttendance(request.getSchedule().getStatus());
+        // 취소로 변경되면 스케줄 자동 생성
+        Schedule lastSchedule = scheduleRepository.findTopByLessonAndCycleOrderByDateDesc(schedule.getLesson(), schedule.getCycle());
+        if(schedule.getStatus().equals(ScheduleStatus.CANCEL)) scheduleRepository.saveAll(Schedule.autoCreateSchedule(lastSchedule.getDate().plusDays(1), 1L, schedule.getLesson()));
+
+        // 진짜 마지막 회차인지 여부 (마지막 스케줄인지)
+        boolean isLastCount = !scheduleRepository.existsByLessonAndCycleAndStatus(schedule.getLesson(), schedule.getCycle(), ScheduleStatus.NO_STATUS);
+        return UpdateScheduleAttendanceResponseDto.of(isLastCount, LocalDate.now());
     }
 }

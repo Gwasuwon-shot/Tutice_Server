@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
 
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     List<Schedule> findAllByDateBetweenAndLessonInOrderByDate(LocalDate startDate, LocalDate endDate, List<Lesson> lessonList);
@@ -27,4 +26,9 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     Long countByLessonAndCycleAndStatusIn(Lesson lesson, Long cycle, List<ScheduleStatus> statusList);
     List<Schedule> findAllByLessonAndCycleAndStatusIn(Lesson lesson, Long cycle, List<ScheduleStatus> statusList);
     List<Schedule> findAllByLessonAndCycleAndStatusNot(Lesson lesson, Long cycle, ScheduleStatus scheduleStatus, Sort sort);
+    boolean existsByLessonAndCycleAndStatusAndDateIsBefore(Lesson lesson, Long cycle, ScheduleStatus scheduleStatus, LocalDate now);
+    boolean existsByLessonAndCycleAndStatus(Lesson lesson, Long cycle, ScheduleStatus scheduleStatus);
+    boolean existsByLessonAndCycleAndStatusAndDateAndStartTimeLessThanEqualAndIdxNot(Lesson lesson, Long cycle, ScheduleStatus scheduleStatus, LocalDate date, LocalTime startTime, Long idx);
+    Schedule findTopByLessonAndCycleOrderByDateDesc(Lesson lesson, Long cycle);
 }
+
