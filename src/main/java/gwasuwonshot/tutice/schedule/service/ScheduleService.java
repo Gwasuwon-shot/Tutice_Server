@@ -294,7 +294,7 @@ public class ScheduleService {
         boolean isTodayMissingAttendance = scheduleRepository.existsByStatusAndDateAndStartTimeLessThanEqualAndLessonInOrderByDate(ScheduleStatus.NO_STATUS, LocalDate.now(), LocalTime.now(), lessonList);
         if(isAfterMissingAttendance || isTodayMissingAttendance) isMissingAttendance = true;
         // 수업연장 여부 유무
-        boolean isMissingMaintenance = scheduleRepository.existsByLessonInAndStatusNotOrderByDateDesc(lessonList, ScheduleStatus.NO_STATUS);
+        boolean isMissingMaintenance = scheduleRepository.existsByLessonInAndStatusNot(lessonList, ScheduleStatus.CANCEL);
         // 오늘인지 체크
         if(scheduleList.isEmpty()) return GetLatestScheduleByTeacherResponseDto.of(isMissingAttendance, isMissingMaintenance);
         boolean isTodaySchedule = scheduleList.get(0).getDate().equals(LocalDate.now());
