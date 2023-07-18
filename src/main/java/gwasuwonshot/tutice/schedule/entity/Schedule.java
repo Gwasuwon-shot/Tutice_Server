@@ -3,7 +3,6 @@ package gwasuwonshot.tutice.schedule.entity;
 import gwasuwonshot.tutice.common.entity.AuditingTimeEntity;
 import gwasuwonshot.tutice.lesson.entity.DayOfWeek;
 import gwasuwonshot.tutice.lesson.entity.Lesson;
-import gwasuwonshot.tutice.lesson.entity.Payment;
 import gwasuwonshot.tutice.lesson.entity.RegularSchedule;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -114,6 +113,10 @@ public class Schedule extends AuditingTimeEntity {
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
+    }
+
+    public void updateScheduleAttendance(String status) {
+        this.status = ScheduleStatus.getScheduleStatusByValue(status);
     }
 
 }
