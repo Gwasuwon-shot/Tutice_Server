@@ -2,6 +2,7 @@ package gwasuwonshot.tutice.schedule.service;
 
 import gwasuwonshot.tutice.common.exception.ErrorStatus;
 import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
+import gwasuwonshot.tutice.external.firebase.service.FCMService;
 import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenance.GetMissingMaintenanceLesson;
 import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenance.MissingMaintenanceLesson;
 import gwasuwonshot.tutice.lesson.entity.Lesson;
@@ -15,18 +16,24 @@ import gwasuwonshot.tutice.schedule.entity.Schedule;
 import gwasuwonshot.tutice.schedule.entity.ScheduleStatus;
 import gwasuwonshot.tutice.schedule.exception.*;
 import gwasuwonshot.tutice.schedule.repository.ScheduleRepository;
+import gwasuwonshot.tutice.user.dto.assembler.NotificationLogAssembler;
+import gwasuwonshot.tutice.user.entity.NotificationConstant;
 import gwasuwonshot.tutice.user.entity.Role;
 import gwasuwonshot.tutice.user.entity.User;
 import gwasuwonshot.tutice.user.exception.userException.InvalidRoleException;
 import gwasuwonshot.tutice.user.exception.userException.NotFoundUserException;
+import gwasuwonshot.tutice.user.repository.NotificationLogRepository;
 import gwasuwonshot.tutice.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -40,9 +47,12 @@ public class ScheduleService {
     private final Integer ONGOING_SCHEDULE = 2;
     private final Integer AFTER_SCHEDULE = 3;
 
+    private final FCMService fcmService;
     private final UserRepository userRepository;
     private final ScheduleRepository scheduleRepository;
     private final LessonRepository lessonRepository;
+    private final NotificationLogRepository notificationLogRepository;
+    private final NotificationLogAssembler notificationLogAssembler;
 
     public GetTodayScheduleByParentsResponseDto getTodayScheduleByParents(Long userIdx) {
         // 유저 존재 여부 확인
@@ -352,5 +362,21 @@ public class ScheduleService {
         }
         latestScheduleList.sort(Comparator.comparing(Schedule::getStartTime));
         return GetLatestScheduleByTeacherResponseDto.ofSchedule(isMissingAttendance, isMissingMaintenance, isTodaySchedule, standardDate, latestScheduleList);
+    }
+
+    @Transactional
+    public void postImmediateMissingAttendance() throws IOException {
+        // 스케줄 중 date 오늘이고 endTime인 것
+        List<Schedule> immediateScheduleList = scheduleRepository.findAllByDateAndEndTimeAndStatus(LocalDate.now(), LocalTime.now(), ScheduleStatus.NO_STATUS);
+        if(immediateScheduleList.isEmpty()) return;
+        for(Schedule schedule: immediateScheduleList) {
+            User user = schedule.getLesson().getTeacher();
+            if(user.getDeviceToken()!=null){
+                String title = NotificationConstant.ATTENDANCE_IMMEDIATE_CHECK.getTitle();
+                String body = NotificationConstant.ATTENDANCE_IMMEDIATE_CHECK.getContent();
+                fcmService.sendMessage(user.getDeviceToken(), title, body);
+                notificationLogRepository.save(notificationLogAssembler.toEntity(schedule.getLesson().getParents(), title, body));
+            }
+        }
     }
 }
