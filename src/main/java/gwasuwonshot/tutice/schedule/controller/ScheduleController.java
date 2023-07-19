@@ -13,9 +13,11 @@ import gwasuwonshot.tutice.schedule.dto.response.UpdateScheduleAttendanceRespons
 import gwasuwonshot.tutice.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 
 
 @RestController
@@ -69,6 +71,12 @@ public class ScheduleController {
  public ApiResponseDto<UpdateScheduleAttendanceResponseDto> updateScheduleAttendance(@UserIdx final Long userIdx,
                                                                                      @RequestBody @Valid final UpdateScheduleAttendanceRequestDto request) {
   return ApiResponseDto.success(SuccessStatus.UPDATE_SCHEDULE_ATTENDANCE_SUCCESS, scheduleService.updateScheduleAttendance(userIdx, request));
+ }
+
+ @Scheduled(cron="0 0/30 * * * ?", zone="GMT+9:00")
+ public void postMissingAttendance() throws IOException {
+  scheduleService.postImmediateMissingAttendance();
+  scheduleService.postMissingAttendance();
  }
 
 }
