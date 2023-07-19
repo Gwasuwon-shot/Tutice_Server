@@ -1,6 +1,7 @@
 package gwasuwonshot.tutice.user.entity;
 
 import gwasuwonshot.tutice.common.resolver.enumValue.EnumModel;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

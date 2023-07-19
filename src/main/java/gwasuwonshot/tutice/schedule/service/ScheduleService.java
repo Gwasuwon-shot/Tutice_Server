@@ -372,8 +372,8 @@ public class ScheduleService {
         for(Schedule schedule: immediateScheduleList) {
             User user = schedule.getLesson().getTeacher();
             if(user.getDeviceToken()!=null){
-                String title = NotificationConstant.ATTENDANCE_IMMEDIATE_CHECK.getTitle();
-                String body = NotificationConstant.ATTENDANCE_IMMEDIATE_CHECK.getContent();
+                String title = NotificationConstant.getAttendanceImmediateCheckTitle();
+                String body = NotificationConstant.getAttendanceImmediateCheckContent();
                 fcmService.sendMessage(user.getDeviceToken(), title, body);
                 notificationLogRepository.save(notificationLogAssembler.toEntity(schedule.getLesson().getParents(), title, body));
             }
@@ -390,8 +390,8 @@ public class ScheduleService {
         for(Schedule schedule: missingScheduleList) {
             User user = schedule.getLesson().getTeacher();
             if(user.getDeviceToken()!=null){
-                String title = NotificationConstant.ATTENDANCE_LATE_CHECK.getTitle();
-                String body = NotificationConstant.ATTENDANCE_LATE_CHECK.getContent();
+                String title = NotificationConstant.getAttendanceLateCheckTitle();
+                String body = NotificationConstant.getAttendanceLateCheckContent();
                 fcmService.sendMessage(user.getDeviceToken(), title, body);
                 notificationLogRepository.save(notificationLogAssembler.toEntity(schedule.getLesson().getParents(), title, body));
             }
