@@ -5,6 +5,7 @@ import gwasuwonshot.tutice.common.exception.SuccessStatus;
 import gwasuwonshot.tutice.common.resolver.userIdx.UserIdx;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonSchedule.GetLessonScheduleByUserResponseDto;
 import gwasuwonshot.tutice.user.dto.response.RequestAttendanceNotificationResponseDto;
+import gwasuwonshot.tutice.user.dto.response.RequestPaymentRecordNotificationResponseDto;
 import gwasuwonshot.tutice.user.entity.Role;
 import gwasuwonshot.tutice.user.service.NotificationService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,6 +32,18 @@ public class NotificationController {
                         notificationService.requestAttendanceNotification(userIdx,scheduleIdx)
                 ));
 
+    }
+
+    @GetMapping("/payment-record/{lessonIdx}")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponseDto<RequestPaymentRecordNotificationResponseDto> requestPaymentRecordNotification(
+            @UserIdx final Long userIdx,
+            @PathVariable final Long lessonIdx) {
+
+        return ApiResponseDto.success(SuccessStatus.REQUEST_PAYMENT_RECORD_NOTIFICATION_SUCCESS,
+                RequestPaymentRecordNotificationResponseDto.of(
+                        notificationService.requestPaymentRecordNotification(userIdx,lessonIdx)
+                ));
 
     }
 }
