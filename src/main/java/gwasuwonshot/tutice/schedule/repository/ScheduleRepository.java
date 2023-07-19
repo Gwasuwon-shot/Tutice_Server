@@ -9,11 +9,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
 
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
-
-    List<Schedule> findAllByLessonAndCycleOrderByDateDesc(Lesson lesson, Long cycle);
     List<Schedule> findAllByDateBetweenAndLessonInOrderByDate(LocalDate startDate, LocalDate endDate, List<Lesson> lessonList);
     List<Schedule> findAllByDateAndLessonIn(LocalDate now, List<Lesson> lessonList);
     List<Schedule> findAllByDateAndLessonInOrderByStartTime(LocalDate now, List<Lesson> lessonList);
@@ -33,4 +30,8 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     boolean existsByStatusAndDateIsBeforeAndLessonIn(ScheduleStatus scheduleStatus, LocalDate now, List<Lesson> lessonList);
     boolean existsByStatusAndDateAndStartTimeLessThanEqualAndLessonInOrderByDate(ScheduleStatus scheduleStatus, LocalDate now, LocalTime now1, List<Lesson> lessonList);
     boolean existsByLessonAndCycleAndStatus(Lesson lesson, Long cycle, ScheduleStatus scheduleStatus);
+    boolean existsByLessonAndCycleAndStatusAndDateIsBefore(Lesson lesson, Long cycle, ScheduleStatus scheduleStatus, LocalDate now);
+    boolean existsByLessonAndCycleAndStatusAndDateAndStartTimeLessThanEqualAndIdxNot(Lesson lesson, Long cycle, ScheduleStatus scheduleStatus, LocalDate date, LocalTime startTime, Long idx);
+    Schedule findTopByLessonAndCycleOrderByDateDesc(Lesson lesson, Long cycle);
+    List<Schedule> findAllByLessonAndCycleOrderByDateDesc(Lesson lesson, Long cycle);
 }

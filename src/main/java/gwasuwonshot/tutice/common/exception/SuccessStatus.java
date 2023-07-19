@@ -32,7 +32,10 @@ public enum SuccessStatus {
     UPDATE_DEVICE_TOKEN_SUCCESS(HttpStatus.OK, "디바이스 토큰 업데이트 성공"),
     UPDATE_LESSON_PARENTS_SUCCESS(HttpStatus.OK, "수업과 학부모 연결 성공"),
     UPDATE_SCHEDULE(HttpStatus.OK,"스케줄 수정에 성공했습니다."),
-    UPDATE_PAYMENT_RECORD_SUCCESS(HttpStatus.OK,"입금 등록 성공"),
+    UPDATE_SCHEDULE_ATTENDANCE_SUCCESS(HttpStatus.OK,"출석 상태 변경 성공"),
+
+
+
 
     /**
      * 201 CREATED

@@ -4,7 +4,6 @@ import gwasuwonshot.tutice.common.entity.AuditingTimeEntity;
 import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
 import gwasuwonshot.tutice.lesson.entity.DayOfWeek;
 import gwasuwonshot.tutice.lesson.entity.Lesson;
-import gwasuwonshot.tutice.lesson.entity.Payment;
 import gwasuwonshot.tutice.lesson.entity.RegularSchedule;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -149,4 +148,8 @@ public class Schedule extends AuditingTimeEntity {
 //
 //        }
 //    }
+    public void updateScheduleAttendance(String status) {
+        this.status = ScheduleStatus.getScheduleStatusByValue(status);
+    }
+
 }
