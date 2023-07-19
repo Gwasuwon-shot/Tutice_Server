@@ -10,8 +10,10 @@ import gwasuwonshot.tutice.lesson.dto.response.CreateLessonResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.GetLessonByUserResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonByParents.GetLessonByParentsResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonDetail.GetLessonDetailByParentsResponseDto;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonSchedule.GetLessonScheduleByUserResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenance.GetMissingMaintenanceLessonResponseDto;
 import gwasuwonshot.tutice.lesson.service.LessonService;
+import gwasuwonshot.tutice.user.entity.Role;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -44,6 +46,30 @@ public class LessonController {
 
         return ApiResponseDto.success(SuccessStatus.GET_LESSON_BY_USER_SUCCESS,
                 lessonService.getLessonByUser(userIdx));
+
+
+    }
+
+    @GetMapping("/schedule/parents/{lessonIdx}")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponseDto<GetLessonScheduleByUserResponseDto> getLessonScheduleByParents(
+            @UserIdx final Long userIdx,
+            @PathVariable final Long lessonIdx) {
+
+        return ApiResponseDto.success(SuccessStatus.GET_LESSON_SCHEDULE_SUCCESS,
+                lessonService.getLessonScheduleByUser(Role.PARENTS,userIdx,lessonIdx));
+
+
+    }
+
+    @GetMapping("/schedule/teacher/{lessonIdx}")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponseDto<GetLessonScheduleByUserResponseDto> getLessonScheduleByTeacher(
+            @UserIdx final Long userIdx,
+            @PathVariable final Long lessonIdx) {
+
+        return ApiResponseDto.success(SuccessStatus.GET_LESSON_SCHEDULE_SUCCESS,
+                lessonService.getLessonScheduleByUser(Role.TEACHER,userIdx,lessonIdx));
 
 
     }
