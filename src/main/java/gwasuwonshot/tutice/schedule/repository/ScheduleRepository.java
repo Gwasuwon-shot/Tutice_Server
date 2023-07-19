@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
+
+    List<Schedule> findAllByLessonAndCycleOrderByDateDesc(Lesson lesson, Long cycle);
     List<Schedule> findAllByDateBetweenAndLessonInOrderByDate(LocalDate startDate, LocalDate endDate, List<Lesson> lessonList);
     List<Schedule> findAllByDateAndLessonIn(LocalDate now, List<Lesson> lessonList);
     List<Schedule> findAllByDateAndLessonInOrderByStartTime(LocalDate now, List<Lesson> lessonList);
