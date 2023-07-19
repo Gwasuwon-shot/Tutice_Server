@@ -1,6 +1,7 @@
 package gwasuwonshot.tutice.schedule.entity;
 
 import gwasuwonshot.tutice.common.entity.AuditingTimeEntity;
+import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
 import gwasuwonshot.tutice.lesson.entity.DayOfWeek;
 import gwasuwonshot.tutice.lesson.entity.Lesson;
 import gwasuwonshot.tutice.lesson.entity.Payment;
@@ -84,15 +85,32 @@ public class Schedule extends AuditingTimeEntity {
 
         //2. 1의 정렬된 리스트에서 count 만큼 반복해 스케쥴 생성
 
+        System.out.println("sortedRegularScheduleList.forEach");
+        sortedRegularScheduleList.forEach(srs->System.out.println(srs.getDayOfWeek()));
+        System.out.println("---------------------------------");
+
+
 
         List<Schedule> createdScheduleList = new ArrayList<>();
         for(int i =0 ; i < count; i++){
+            System.out.println("i : "+i);
+            System.out.println("sortedRegularScheduleList.size() : "+sortedRegularScheduleList.size());
+
             int tempI = i%sortedRegularScheduleList.size();
+            System.out.println("tempI : "+tempI);
+
             int week = i/sortedRegularScheduleList.size();
+            System.out.println("week : "+week);
+
             DayOfWeek dayOfWeek = sortedRegularScheduleList.get(tempI).getDayOfWeek();
+            System.out.println("dayOfWeek : "+dayOfWeek.getValue());
+
             LocalTime startTime = sortedRegularScheduleList.get(tempI).getStartTime();
             LocalTime endTime = sortedRegularScheduleList.get(tempI).getEndTime();
             LocalDate date = startDate.plusWeeks(week).with(TemporalAdjusters.next(java.time.DayOfWeek.of(dayOfWeek.getIndex().intValue())));
+            System.out.println("date : "+DateAndTimeConvert.localDateConvertString(date));
+            System.out.println();
+
             createdScheduleList.add(Schedule.builder()
                     .lesson(lesson)
                     .date(date)
@@ -116,4 +134,19 @@ public class Schedule extends AuditingTimeEntity {
         this.endTime = endTime;
     }
 
+//    public static void main(String[] args) {
+//        LocalDate startDate = DateAndTimeConvert.stringConvertLocalDate("2023-07-16");
+//        for(int i =0 ; i < 9; i++){
+//            System.out.println("i : "+i);
+//            int tempI = i%2;
+//            int week = i/2;
+//            System.out.println("tempI : "+tempI);
+//            System.out.println("week : "+week);
+//            LocalDate date = startDate.plusWeeks(week).with(TemporalAdjusters.next(java.time.DayOfWeek.of(dayOfWeek.getIndex().intValue())));
+//
+//
+//
+//
+//        }
+//    }
 }
