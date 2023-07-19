@@ -9,6 +9,7 @@ import gwasuwonshot.tutice.lesson.dto.assembler.RegularScheduleAssembler;
 import gwasuwonshot.tutice.lesson.dto.request.createLesson.CreateLessonRequestDto;
 import gwasuwonshot.tutice.lesson.dto.response.*;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonByParents.GetLessonByParents;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonByTeacher.GetLessonByTeacher;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonDetail.GetLessonDetailByParentsResponseAccount;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonDetail.GetLessonDetailByParentsResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenance.GetMissingMaintenanceLesson;
@@ -112,6 +113,46 @@ public class LessonService {
         }
     }
 
+
+    @Transactional
+    public List<GetLessonByTeacher> getLessonByTeacher(final Long userIdx){
+        List<GetLessonByTeacher> getLessonByTeacherList= new ArrayList<>();
+
+//        유저가 존재하고 선생님이 맞는지 확인
+        User teacher = userRepository.findById(userIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+
+
+        //0. 역할이 선생님이 아니면 에러발생 // TODO : 서비스단에는 도메인로직이 들어있으면 안됨.
+        if(!teacher.isMatchedRole(Role.TEACHER)){
+            throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION,ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
+        }
+
+//        유저에 연결된 레슨리스트 다가져오기
+        teacher.getLessonList().forEach(l->{
+//        각레슨의 정기스케쥴 가져와 일주일순서로 정렬
+            List<String> dayOfWeekList = new ArrayList<>();
+            RegularSchedule.dayOfWeekSortedReglarScheduleList(l.getRegularScheduleList());
+            l.getRegularScheduleList()
+                    .forEach(rs->dayOfWeekList.add(rs.getDayOfWeek().getValue()));
+//        각레슨의 진짜회차를 계산해 percent 계산
+            // TODO : nowCount - percent 로직 겹침. 모듈로 빼기
+//        - [ ] nowCount : 진짜 카운트 : 현재 사이클의 스케쥴중 출결정보가 있는스케쥴개수
+            Long nowCount = scheduleRepository.countByLessonAndCycleAndStatusIn(l,l.getCycle(),ScheduleStatus.getAttendanceScheduleStatusList());
+            //                - [ ] percent : 전체카운트와 진짜카운트의 백분율
+            Long percent = ReturnLongMath.getPercentage(nowCount,l.getCount());
+
+            getLessonByTeacherList.add(GetLessonByTeacher.of(l.getIdx(),l.getStudentName(), l.getSubject(),percent,dayOfWeekList));
+
+
+        });
+
+        return getLessonByTeacherList;
+    }
+
+
+
+
     @Transactional
     public List<GetLessonByParents> getLessonByParents(final Long userIdx){
 //        유저의 역할이 학부모인지 받기
@@ -122,7 +163,7 @@ public class LessonService {
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
 
 
-        //0. 역할이 선생님이 아니면 에러발생 // TODO : 서비스단에는 도메인로직이 들어있으면 안됨.
+        //0. 역할이 부모님이 아니면 에러발생 // TODO : 서비스단에는 도메인로직이 들어있으면 안됨.
         if(!parents.isMatchedRole(Role.PARENTS)){
             throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION,ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
         }
@@ -226,8 +267,8 @@ public class LessonService {
 
 
         //4. 스케쥴 자동생성 (무조건 스케쥴 자동생성전에 가짜 paymentRecord 추가가 선행되어야함)
-        Schedule.autoCreateSchedule(lesson.getStartDate(),lesson.getCount(),lesson)
-                .forEach(acs->scheduleRepository.save(acs));
+       scheduleRepository.saveAll(Schedule.autoCreateSchedule(lesson.getStartDate(),lesson.getCount(),lesson));
+
 
 
         //레슨코드 생성
