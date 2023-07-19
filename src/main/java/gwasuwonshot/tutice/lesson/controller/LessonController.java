@@ -9,6 +9,8 @@ import gwasuwonshot.tutice.lesson.dto.request.UpdateLessonParentsRequestDto;
 import gwasuwonshot.tutice.lesson.dto.response.CreateLessonResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.GetLessonByUserResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonByParents.GetLessonByParentsResponseDto;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonByTeacher.GetLessonByTeacher;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonByTeacher.GetLessonByTeacherResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonDetail.GetLessonDetailByParentsResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonSchedule.GetLessonScheduleByUserResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenance.GetMissingMaintenanceLessonResponseDto;
@@ -83,6 +85,19 @@ public class LessonController {
 
         return ApiResponseDto.success(SuccessStatus.GET_LESSON_DETAIL_BY_PARENTS_SUCCESS,
                 lessonService.getLessonDetailByParents(userIdx, lessonIdx));
+
+
+    }
+
+
+    @GetMapping("/teacher")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponseDto<GetLessonByTeacherResponseDto> getLessonByTeacher(@UserIdx final Long userIdx) {
+
+
+        return ApiResponseDto.success(SuccessStatus.GET_LESSON_BY_TEACHER_SUCCESS,
+                GetLessonByTeacherResponseDto.of(lessonService.getLessonByTeacher(userIdx))
+        );
 
 
     }
