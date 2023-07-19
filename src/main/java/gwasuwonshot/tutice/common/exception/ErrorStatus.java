@@ -28,6 +28,9 @@ public enum ErrorStatus {
     INVALID_ATTENDANCE_DATE_EXCEPTION(HttpStatus.BAD_REQUEST,"미래 출결 상태를 미리 변경할 수 없습니다."),
     INVALID_ATTENDANCE_STATUS_EXCEPTION(HttpStatus.BAD_REQUEST,"취소 상태의 스케줄은 수정할 수 없습니다."),
     INVALID_ATTENDANCE_SCHEDULE_EXCEPTION(HttpStatus.BAD_REQUEST,"출결이 누락된 수업 출석체크를 먼저 진행해야 합니다."),
+    INVALID_SCHEDULE_EXCEPTION(HttpStatus.BAD_REQUEST,"유효하지 않은 schedule 입니다."),
+    INVALID_LESSON_CODE_EXCEPTION(HttpStatus.BAD_REQUEST,"유효하지 않은 레슨코드입니다."),
+    NOTIFICATION_FAIL_EXCEPTION(HttpStatus.BAD_REQUEST, "알림 발송에 실패했습니다."),
 
 
 
@@ -46,8 +49,11 @@ public enum ErrorStatus {
     NOT_FOUND_USER_EXCEPTION(HttpStatus.NOT_FOUND, "존재하지 않는 유저입니다"),
     NOT_FOUND_PAYMENT_RECORD_EXCEPTION(HttpStatus.NOT_FOUND, "존재하지 않는 입금기록입니다"),
     NOT_FOUND_LESSON_EXCEPTION(HttpStatus.NOT_FOUND, "수업을 찾을 수 없습니다."),
-    INVALID_LESSON_CODE_EXCEPTION(HttpStatus.NOT_FOUND,"유효하지 않은 레슨코드입니다."),
     NOT_FOUND_SCHEDULE_EXCEPTION(HttpStatus.NOT_FOUND,"스케줄을 찾을 수 없습니다."),
+    NOT_FOUND_LESSON_PARENTS_EXCEPTION(HttpStatus.NOT_FOUND, "레슨에 학부모가 연결되지 않았습니다."),
+    NOT_ALLOWED_NOTIFICATION_EXCEPTION(HttpStatus.NOT_FOUND, "푸쉬알림 상대가 알림을 허용하지 않았습니다."),
+
+
 
 
     /**
