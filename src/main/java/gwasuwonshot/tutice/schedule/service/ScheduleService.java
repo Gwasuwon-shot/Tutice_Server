@@ -379,4 +379,22 @@ public class ScheduleService {
             }
         }
     }
+
+    @Transactional
+    public void postMissingAttendance() throws IOException {
+        // 누락 출결 수업 종료 후 30분까지
+        LocalTime now = LocalTime.now();
+        LocalTime targetTime = LocalTime.of(now.getHour(),now.getMinute(),0,0).minusMinutes(30);
+        List<Schedule> missingScheduleList = scheduleRepository.findAllByDateAndEndTimeAndStatus(LocalDate.now(), targetTime, ScheduleStatus.NO_STATUS);
+        if(missingScheduleList.isEmpty()) return;
+        for(Schedule schedule: missingScheduleList) {
+            User user = schedule.getLesson().getTeacher();
+            if(user.getDeviceToken()!=null){
+                String title = NotificationConstant.ATTENDANCE_LATE_CHECK.getTitle();
+                String body = NotificationConstant.ATTENDANCE_LATE_CHECK.getContent();
+                fcmService.sendMessage(user.getDeviceToken(), title, body);
+                notificationLogRepository.save(notificationLogAssembler.toEntity(schedule.getLesson().getParents(), title, body));
+            }
+        }
+    }
 }
