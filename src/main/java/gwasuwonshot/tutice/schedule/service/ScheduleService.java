@@ -289,8 +289,8 @@ public class ScheduleService {
         // 스케줄 존재 여부
         Schedule schedule = scheduleRepository.findById(request.getSchedule().getIdx())
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_SCHEDULE_EXCEPTION, ErrorStatus.NOT_FOUND_SCHEDULE_EXCEPTION.getMessage()));
-        // 미래 스케줄은 수정 불가
-        if(schedule.getDate().isAfter(LocalDate.now()) || schedule.getDate().isEqual(LocalDate.now()) && schedule.getStartTime().isAfter(LocalTime.now())) throw new InvalidAttendanceDateException(ErrorStatus.INVALID_ATTENDANCE_DATE_EXCEPTION, ErrorStatus.INVALID_ATTENDANCE_DATE_EXCEPTION.getMessage());
+        // 출결 가능 이전 스케줄은 수정 불가
+        if(schedule.getDate().isAfter(LocalDate.now()) || (schedule.getDate().isEqual(LocalDate.now()) && schedule.getStartTime().isAfter(LocalTime.now()))) throw new InvalidAttendanceDateException(ErrorStatus.INVALID_ATTENDANCE_DATE_EXCEPTION, ErrorStatus.INVALID_ATTENDANCE_DATE_EXCEPTION.getMessage());
         // 취소 상태에서는 수정 불가
         if(schedule.getStatus().equals(ScheduleStatus.CANCEL)) throw new InvalidAttendanceStatusException(ErrorStatus.INVALID_ATTENDANCE_STATUS_EXCEPTION, ErrorStatus.INVALID_ATTENDANCE_STATUS_EXCEPTION.getMessage());
         // 이전 스케줄 누락되면 불가
