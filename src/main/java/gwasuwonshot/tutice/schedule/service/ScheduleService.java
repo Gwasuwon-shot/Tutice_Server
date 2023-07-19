@@ -215,7 +215,7 @@ public class ScheduleService {
     }
 
     // 현재 스케줄로 기대 회차 구하기
-    private Integer getExpectedScheduleCount(Schedule schedule) {
+    public Integer getExpectedScheduleCount(Schedule schedule) {
         // 스케줄 리스트 중 date, startTime 오름차순 정렬 후, 인덱스 찾기
         Sort sort = Sort.by(Sort.Order.asc("date"), Sort.Order.asc("startTime"));
         List<Schedule> scheduleList = scheduleRepository.findAllByLessonAndCycleAndStatusNot(schedule.getLesson(), schedule.getCycle(), ScheduleStatus.CANCEL, sort);
