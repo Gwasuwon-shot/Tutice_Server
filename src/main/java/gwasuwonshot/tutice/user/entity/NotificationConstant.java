@@ -12,7 +12,7 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public enum NotificationConstant{
     //TODO : 리팩 진짜 꼭 해라!
-    ATTENDANCE_IMMEDIATE_CHECK("출결 체크할 시간이에요.","수업이 종료되었네요! 출결을 입력해주세요."),
+    ATTENDANCE_IMMEDIATE_CHECK("출결체크할 시간이에요.","수업이 종료되었네요! 출결을 입력해주세요."),
     ATTENDANCE_LATE_CHECK("아직 출결체크가 되지 않았어요!","출결체크, 더 잊기 전에 지금 체크해보세요."),
     REQUEST_ATTENDANCE(null,"나무를 통해 출결 현황을 확인해보세요!"),
     REQUEST_PAYMENT_RECORD(null,null);

@@ -34,4 +34,5 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     boolean existsByLessonAndCycleAndStatusAndDateAndStartTimeLessThanEqualAndIdxNot(Lesson lesson, Long cycle, ScheduleStatus scheduleStatus, LocalDate date, LocalTime startTime, Long idx);
     Schedule findTopByLessonAndCycleOrderByDateDesc(Lesson lesson, Long cycle);
     List<Schedule> findAllByLessonAndCycleOrderByDateDesc(Lesson lesson, Long cycle);
+    List<Schedule> findAllByDateAndEndTimeAndStatus(LocalDate now, LocalTime now1, ScheduleStatus scheduleStatus);
 }
