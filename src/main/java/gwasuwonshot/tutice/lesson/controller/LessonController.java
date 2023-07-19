@@ -9,9 +9,13 @@ import gwasuwonshot.tutice.lesson.dto.request.UpdateLessonParentsRequestDto;
 import gwasuwonshot.tutice.lesson.dto.response.CreateLessonResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.GetLessonByUserResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonByParents.GetLessonByParentsResponseDto;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonByTeacher.GetLessonByTeacher;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonByTeacher.GetLessonByTeacherResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonDetail.GetLessonDetailByParentsResponseDto;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonSchedule.GetLessonScheduleByUserResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenance.GetMissingMaintenanceLessonResponseDto;
 import gwasuwonshot.tutice.lesson.service.LessonService;
+import gwasuwonshot.tutice.user.entity.Role;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -48,6 +52,30 @@ public class LessonController {
 
     }
 
+    @GetMapping("/schedule/parents/{lessonIdx}")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponseDto<GetLessonScheduleByUserResponseDto> getLessonScheduleByParents(
+            @UserIdx final Long userIdx,
+            @PathVariable final Long lessonIdx) {
+
+        return ApiResponseDto.success(SuccessStatus.GET_LESSON_SCHEDULE_SUCCESS,
+                lessonService.getLessonScheduleByUser(Role.PARENTS,userIdx,lessonIdx));
+
+
+    }
+
+    @GetMapping("/schedule/teacher/{lessonIdx}")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponseDto<GetLessonScheduleByUserResponseDto> getLessonScheduleByTeacher(
+            @UserIdx final Long userIdx,
+            @PathVariable final Long lessonIdx) {
+
+        return ApiResponseDto.success(SuccessStatus.GET_LESSON_SCHEDULE_SUCCESS,
+                lessonService.getLessonScheduleByUser(Role.TEACHER,userIdx,lessonIdx));
+
+
+    }
+
     @GetMapping("/detail/parents/{lessonIdx}")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponseDto<GetLessonDetailByParentsResponseDto> getLessonDetailByParents(
@@ -57,6 +85,19 @@ public class LessonController {
 
         return ApiResponseDto.success(SuccessStatus.GET_LESSON_DETAIL_BY_PARENTS_SUCCESS,
                 lessonService.getLessonDetailByParents(userIdx, lessonIdx));
+
+
+    }
+
+
+    @GetMapping("/teacher")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponseDto<GetLessonByTeacherResponseDto> getLessonByTeacher(@UserIdx final Long userIdx) {
+
+
+        return ApiResponseDto.success(SuccessStatus.GET_LESSON_BY_TEACHER_SUCCESS,
+                GetLessonByTeacherResponseDto.of(lessonService.getLessonByTeacher(userIdx))
+        );
 
 
     }

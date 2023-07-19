@@ -9,8 +9,13 @@ import gwasuwonshot.tutice.lesson.dto.assembler.RegularScheduleAssembler;
 import gwasuwonshot.tutice.lesson.dto.request.createLesson.CreateLessonRequestDto;
 import gwasuwonshot.tutice.lesson.dto.response.*;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonByParents.GetLessonByParents;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonByTeacher.GetLessonByTeacher;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonDetail.GetLessonDetailByParentsResponseAccount;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonDetail.GetLessonDetailByParentsResponseDto;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonSchedule.GetLessonSchedule;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonSchedule.GetLessonScheduleByParents;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonSchedule.GetLessonScheduleByTeacher;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonSchedule.GetLessonScheduleByUserResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenance.GetMissingMaintenanceLesson;
 import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenance.MissingMaintenanceLesson;
 import gwasuwonshot.tutice.lesson.entity.*;
@@ -58,6 +63,78 @@ public class LessonService {
     private final PaymentRecordRepository paymentRecordRepository;
     private final ScheduleRepository scheduleRepository;
 
+
+    @Transactional
+    public GetLessonScheduleByUserResponseDto getLessonScheduleByUser(Role role,Long userIdx, Long lessonIdx){
+//
+//        유저가 학부모인지확인
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+
+        if(!user.isMatchedRole(role)){
+            throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION,ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
+        }
+
+//        레슨이 존재하는지와 레슨과학부모가 연결되어있는지 확인
+        // 레슨의 존재확인
+        Lesson lesson=lessonRepository.findById(lessonIdx)
+                .orElseThrow(() -> new NotFoundLessonException(ErrorStatus.NOT_FOUND_LESSON_EXCEPTION, ErrorStatus.NOT_FOUND_LESSON_EXCEPTION.getMessage()));
+
+        // 레슨과 유저의 연결성확인
+        if(role.equals(Role.PARENTS)){
+            if(!lesson.isMatchedParents(user)){
+                throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION, ErrorStatus.INVALID_LESSON_CODE_EXCEPTION.getMessage());
+            }
+
+        } else if (role.equals(Role.TEACHER)) {
+            if(!lesson.isMatchedTeacher(user)){
+                throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION, ErrorStatus.INVALID_LESSON_CODE_EXCEPTION.getMessage());
+            }
+
+        }
+        else {
+            throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION, ErrorStatus.INVALID_LESSON_CODE_EXCEPTION.getMessage());
+        }
+
+
+
+//        레슨정보구성
+        // TODO : nowCount - percent 로직 겹침. 모듈로 빼기
+//        - [ ] nowCount : 진짜 카운트 : 현재 사이클의 스케쥴중 출결정보가 있는스케쥴개수
+        Long nowCount = scheduleRepository.countByLessonAndCycleAndStatusIn(lesson,lesson.getCycle(),ScheduleStatus.getAttendanceScheduleStatusList());
+        //                - [ ] percent : 전체카운트와 진짜카운트의 백분율
+        Long percent = ReturnLongMath.getPercentage(nowCount,lesson.getCount());
+//           레슨스케쥴정보구성
+        List<GetLessonSchedule> getLessonScheduleList=new ArrayList<>();
+        scheduleRepository.findAllByLessonAndCycleOrderByDateDesc(lesson,lesson.getCycle())
+                .forEach(s->{
+                    getLessonScheduleList.add(
+                            GetLessonSchedule.of(
+                                    s.getIdx(),
+                                    DateAndTimeConvert.localDateConvertString(s.getDate()),
+                                    s.getStatus().getValue(),
+                                    DateAndTimeConvert.localTimeConvertString(s.getStartTime()),
+                                    DateAndTimeConvert.localTimeConvertString(s.getEndTime())));
+                });
+
+        if(role.equals(Role.PARENTS)){
+            return GetLessonScheduleByUserResponseDto.of(
+                    GetLessonScheduleByParents.of(lesson.getIdx(),lesson.getStudentName(),lesson.getTeacher().getName(),lesson.getSubject(), lesson.getCount(), nowCount,percent),
+                    getLessonScheduleList
+            );
+
+        } else if (role.equals(Role.TEACHER)) {
+            return GetLessonScheduleByUserResponseDto.of(
+                    GetLessonScheduleByTeacher.of(lesson.getIdx(),lesson.getStudentName(),lesson.getSubject(), lesson.getCount(), nowCount,percent),
+                    getLessonScheduleList
+            );
+
+        }
+        else {
+            return null;
+        }
+
+    }
 
     @Transactional
     public GetLessonDetailByParentsResponseDto getLessonDetailByParents(Long userIdx, Long lessonIdx){
@@ -112,6 +189,46 @@ public class LessonService {
         }
     }
 
+
+    @Transactional
+    public List<GetLessonByTeacher> getLessonByTeacher(final Long userIdx){
+        List<GetLessonByTeacher> getLessonByTeacherList= new ArrayList<>();
+
+//        유저가 존재하고 선생님이 맞는지 확인
+        User teacher = userRepository.findById(userIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+
+
+        //0. 역할이 선생님이 아니면 에러발생 // TODO : 서비스단에는 도메인로직이 들어있으면 안됨.
+        if(!teacher.isMatchedRole(Role.TEACHER)){
+            throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION,ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
+        }
+
+//        유저에 연결된 레슨리스트 다가져오기
+        teacher.getLessonList().forEach(l->{
+//        각레슨의 정기스케쥴 가져와 일주일순서로 정렬
+            List<String> dayOfWeekList = new ArrayList<>();
+            RegularSchedule.dayOfWeekSortedReglarScheduleList(l.getRegularScheduleList());
+            l.getRegularScheduleList()
+                    .forEach(rs->dayOfWeekList.add(rs.getDayOfWeek().getValue()));
+//        각레슨의 진짜회차를 계산해 percent 계산
+            // TODO : nowCount - percent 로직 겹침. 모듈로 빼기
+//        - [ ] nowCount : 진짜 카운트 : 현재 사이클의 스케쥴중 출결정보가 있는스케쥴개수
+            Long nowCount = scheduleRepository.countByLessonAndCycleAndStatusIn(l,l.getCycle(),ScheduleStatus.getAttendanceScheduleStatusList());
+            //                - [ ] percent : 전체카운트와 진짜카운트의 백분율
+            Long percent = ReturnLongMath.getPercentage(nowCount,l.getCount());
+
+            getLessonByTeacherList.add(GetLessonByTeacher.of(l.getIdx(),l.getStudentName(), l.getSubject(),percent,dayOfWeekList));
+
+
+        });
+
+        return getLessonByTeacherList;
+    }
+
+
+
+
     @Transactional
     public List<GetLessonByParents> getLessonByParents(final Long userIdx){
 //        유저의 역할이 학부모인지 받기
@@ -122,7 +239,7 @@ public class LessonService {
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
 
 
-        //0. 역할이 선생님이 아니면 에러발생 // TODO : 서비스단에는 도메인로직이 들어있으면 안됨.
+        //0. 역할이 부모님이 아니면 에러발생 // TODO : 서비스단에는 도메인로직이 들어있으면 안됨.
         if(!parents.isMatchedRole(Role.PARENTS)){
             throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION,ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
         }
@@ -134,6 +251,7 @@ public class LessonService {
                     //  현재 회차계산 : 이때 수업에 연결된 스케쥴중 현재사이클(수업에 연결된 paymentRecord개수(선불,후불+1))중 출석,결석만 카운트해서 현재카운트가져오기
 
 
+                    // TODO : nowCount - percent 로직 겹침. 모듈로 빼기
                     Long nowCount = scheduleRepository.countByLessonAndCycleAndStatusIn(pl,pl.getCycle(),ScheduleStatus.getAttendanceScheduleStatusList());
                     Long percent = ReturnLongMath.getPercentage(nowCount,pl.getCount());
                     getLessonByParentsList.add(
@@ -226,8 +344,8 @@ public class LessonService {
 
 
         //4. 스케쥴 자동생성 (무조건 스케쥴 자동생성전에 가짜 paymentRecord 추가가 선행되어야함)
-        Schedule.autoCreateSchedule(lesson.getStartDate(),lesson.getCount(),lesson)
-                .forEach(acs->scheduleRepository.save(acs));
+       scheduleRepository.saveAll(Schedule.autoCreateSchedule(lesson.getStartDate(),lesson.getCount(),lesson));
+
 
 
         //레슨코드 생성

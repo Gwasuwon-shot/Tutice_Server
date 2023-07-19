@@ -57,14 +57,14 @@ public class Lesson extends AuditingTimeEntity {
     @Column(nullable = false)
     private Boolean isFinished = false;
 
-    @OneToMany(mappedBy = "lesson", cascade = {CascadeType.PERSIST})
+    @OneToMany(mappedBy = "lesson")
     private List<PaymentRecord> paymenRecordList;
 
 
-    @OneToMany(mappedBy = "lesson", cascade = {CascadeType.PERSIST})
+    @OneToMany(mappedBy = "lesson")
     private List<RegularSchedule> regularScheduleList;
 
-    @OneToMany(mappedBy = "lesson", cascade = {CascadeType.PERSIST})
+    @OneToMany(mappedBy = "lesson")
     private List<Schedule> scheduleList;
 
     public void addPaymentRecord(PaymentRecord paymentRecord){
@@ -110,7 +110,9 @@ public class Lesson extends AuditingTimeEntity {
     }
 
     public void finishLesson(){this.isFinished=true;}
+
     public Boolean isMatchedParents(User parents){
+        if(this.getParents() == null ){return false;}
         return this.getParents().equals(parents);
     }
 

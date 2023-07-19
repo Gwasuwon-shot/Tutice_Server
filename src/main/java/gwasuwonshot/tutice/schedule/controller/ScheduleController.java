@@ -3,10 +3,13 @@ package gwasuwonshot.tutice.schedule.controller;
 import gwasuwonshot.tutice.common.dto.ApiResponseDto;
 import gwasuwonshot.tutice.common.exception.SuccessStatus;
 import gwasuwonshot.tutice.common.resolver.userIdx.UserIdx;
+import gwasuwonshot.tutice.schedule.dto.request.UpdateScheduleAttendanceRequestDto;
 import gwasuwonshot.tutice.schedule.dto.request.UpdateScheduleRequestDto;
+import gwasuwonshot.tutice.schedule.dto.response.GetLatestScheduleByTeacherResponseDto;
 import gwasuwonshot.tutice.schedule.dto.response.GetMissingAttendanceScheduleResponseDto;
 import gwasuwonshot.tutice.schedule.dto.response.GetScheduleByUserResponseDto;
 import gwasuwonshot.tutice.schedule.dto.response.GetTodayScheduleByTeacherResponseDto;
+import gwasuwonshot.tutice.schedule.dto.response.UpdateScheduleAttendanceResponseDto;
 import gwasuwonshot.tutice.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -53,6 +56,19 @@ public class ScheduleController {
                                       @RequestBody @Valid final UpdateScheduleRequestDto request) {
   scheduleService.updateSchedule(userIdx, request);
   return ApiResponseDto.success(SuccessStatus.UPDATE_SCHEDULE);
+ }
+
+ @GetMapping("/latest")
+ @ResponseStatus(HttpStatus.OK)
+ public ApiResponseDto<GetLatestScheduleByTeacherResponseDto> getLatestScheduleByTeacher(@UserIdx final Long userIdx) {
+  return ApiResponseDto.success(SuccessStatus.GET_LATEST_SCHEDULE_BY_TEACHER, scheduleService.getLatestScheduleByTeacher(userIdx) );
+ }
+
+ @PatchMapping("/attendance")
+ @ResponseStatus(HttpStatus.OK)
+ public ApiResponseDto<UpdateScheduleAttendanceResponseDto> updateScheduleAttendance(@UserIdx final Long userIdx,
+                                                                                     @RequestBody @Valid final UpdateScheduleAttendanceRequestDto request) {
+  return ApiResponseDto.success(SuccessStatus.UPDATE_SCHEDULE_ATTENDANCE_SUCCESS, scheduleService.updateScheduleAttendance(userIdx, request));
  }
 
 }

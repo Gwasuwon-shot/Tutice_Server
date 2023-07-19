@@ -48,7 +48,7 @@ public class RegularSchedule extends AuditingTimeEntity {
 
     }
 
-    public static List<RegularSchedule> createSortedReglarScheduleList(LocalDate startDate, List<RegularSchedule> regularScheduleList){
+    public static List<RegularSchedule> dayOfWeekSortedReglarScheduleList(List<RegularSchedule> regularScheduleList){
         //regularScheduleList를 요일순서로 정렬
         Collections.sort( regularScheduleList, new Comparator<RegularSchedule>() {
             @Override
@@ -57,6 +57,24 @@ public class RegularSchedule extends AuditingTimeEntity {
                 return difference.intValue();
             }
         });
+
+        return regularScheduleList;
+    }
+
+    public static List<RegularSchedule> createSortedReglarScheduleList(LocalDate startDate, List<RegularSchedule> regularScheduleList){
+        //regularScheduleList를 요일순서로 정렬
+
+        //요일순 정렬전
+        System.out.println("요일순 정렬전");
+        regularScheduleList.forEach(rs->{System.out.println(rs.getDayOfWeek());});
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+        RegularSchedule.dayOfWeekSortedReglarScheduleList(regularScheduleList);
+
+        //요일순 정렬후
+        System.out.println("요일순 정렬후");
+        regularScheduleList.forEach(rs->{System.out.println(rs.getDayOfWeek());});
+        System.out.println("????????????????????");
 
         // startDate와 가장 가까운 요일의 정기일정 찾기. 만약 시작날짜가 정기요일중 가장 나중이면, 가장빠른 정기요일이 가까운요일
         Long startDateDayOfWeek = Long.valueOf(startDate.getDayOfWeek().getValue()); //시작날짜 요일
@@ -68,6 +86,12 @@ public class RegularSchedule extends AuditingTimeEntity {
 
         while(low<= high){
             mid = (low + high) / 2;
+
+            System.out.println("low : "+low);
+            System.out.println("high : "+high);
+            System.out.println("mid : "+mid);
+
+
             if(startDateDayOfWeek.equals(regularScheduleList.get(mid).getDayOfWeek().getIndex())){
                 latestDayOfWeekListIndex=mid; //수업시작일이 요일일때의 regularSchedulList의 인덱스
                 break;
@@ -78,14 +102,20 @@ public class RegularSchedule extends AuditingTimeEntity {
                 low = mid + 1;
             }
         }
+        System.out.println("low : "+low);
+        System.out.println("high : "+high);
+        System.out.println("latestDayOfWeekListIndex : "+latestDayOfWeekListIndex);
         // ex. startDate의 요일이 일요일이면 일 또는 월요일이 가장 가까운 날짜
         if(latestDayOfWeekListIndex.equals(7)){ //위 로직에서 같은 요일이 없던경우
             if(low>high){//시작날짜 요일이 가장큰경우
                 latestDayOfWeekListIndex=0;
+            }else {
+                latestDayOfWeekListIndex=low; //가장 가까운 큰 요일
             }
-            latestDayOfWeekListIndex=low; //가장 가까운 큰 요일
         }
+        System.out.println("가장 가까운 요일 index : "+latestDayOfWeekListIndex);
 
+        System.out.println("가장 가까운 요일 : "+regularScheduleList.get(latestDayOfWeekListIndex));
 
         //가장 가까운 RegularSchedule을 기준으로 재정렬
         List<RegularSchedule> sortedRegularScheduleList = regularScheduleList.subList(latestDayOfWeekListIndex,regularScheduleList.size());
