@@ -9,9 +9,12 @@ import gwasuwonshot.tutice.lesson.dto.request.UpdateLessonParentsRequestDto;
 import gwasuwonshot.tutice.lesson.dto.request.UpdatePaymentRecordRequestDto;
 import gwasuwonshot.tutice.lesson.dto.request.createLesson.CreateLessonRequestDto;
 import gwasuwonshot.tutice.lesson.dto.response.CreateLessonResponseDto;
+import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecord.GetPaymentRecordByParentsResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecord.GetPaymentRecordByTeacherResponseDto;
+import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecord.GetPaymentRecordByUserResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecordView.GetPaymentRecordViewResponseDto;
 import gwasuwonshot.tutice.lesson.service.PaymentRecordService;
+import gwasuwonshot.tutice.user.entity.Role;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -56,13 +59,27 @@ public class PaymentRecordController {
 
     @GetMapping("/teacher/{lessonIdx}")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<GetPaymentRecordByTeacherResponseDto> getLessonPaymentRecordByTeacher(
+    public ApiResponseDto<GetPaymentRecordByUserResponseDto> getLessonPaymentRecordByTeacher(
             @UserIdx final Long userIdx,
             @PathVariable final Long lessonIdx) {
 
 
         return ApiResponseDto.success(SuccessStatus.GET_PAYMENT_RECORD_SUCCESS,
-                paymentRecordService.getLessonPaymentRecordByTeacher(userIdx,lessonIdx));
+                paymentRecordService.getLessonPaymentRecordByUser(Role.TEACHER,userIdx,lessonIdx));
+
+
+    }
+
+
+    @GetMapping("/parents/{lessonIdx}")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponseDto<GetPaymentRecordByUserResponseDto> getLessonPaymentRecordByParents(
+            @UserIdx final Long userIdx,
+            @PathVariable final Long lessonIdx) {
+
+
+        return ApiResponseDto.success(SuccessStatus.GET_PAYMENT_RECORD_SUCCESS,
+                paymentRecordService.getLessonPaymentRecordByUser(Role.PARENTS, userIdx,lessonIdx));
 
 
     }
