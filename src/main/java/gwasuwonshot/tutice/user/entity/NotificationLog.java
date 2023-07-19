@@ -21,6 +21,7 @@ public class NotificationLog extends AuditingTimeEntity {
     @JoinColumn(name = "user_idx", nullable = false,  foreignKey = @ForeignKey(ConstraintMode.CONSTRAINT))
     private User user;
 
+    // TODO : NotificationConstant 이넘으로 변경
     @Column(nullable = false)
     private String title;
 
