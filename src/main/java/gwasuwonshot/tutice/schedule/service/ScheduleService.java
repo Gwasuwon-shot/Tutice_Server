@@ -143,6 +143,7 @@ public class ScheduleService {
         for(Schedule schedule : todayScheduleList) {
             Integer expectedCount = getExpectedScheduleCount(schedule);
             i++;
+            System.out.println("nowTime = " + nowTime);
             // 수업 전
             if(nowTime.isBefore(schedule.getStartTime())) {
                 timeStatus=BEFORE_SCHEDULE;
