@@ -3,13 +3,10 @@ package gwasuwonshot.tutice.schedule.controller;
 import gwasuwonshot.tutice.common.dto.ApiResponseDto;
 import gwasuwonshot.tutice.common.exception.SuccessStatus;
 import gwasuwonshot.tutice.common.resolver.userIdx.UserIdx;
+import gwasuwonshot.tutice.schedule.dto.request.GetTemporaryScheduleRequestDto;
 import gwasuwonshot.tutice.schedule.dto.request.UpdateScheduleAttendanceRequestDto;
 import gwasuwonshot.tutice.schedule.dto.request.UpdateScheduleRequestDto;
-import gwasuwonshot.tutice.schedule.dto.response.GetLatestScheduleByTeacherResponseDto;
-import gwasuwonshot.tutice.schedule.dto.response.GetMissingAttendanceScheduleResponseDto;
-import gwasuwonshot.tutice.schedule.dto.response.GetScheduleByUserResponseDto;
-import gwasuwonshot.tutice.schedule.dto.response.GetTodayScheduleByTeacherResponseDto;
-import gwasuwonshot.tutice.schedule.dto.response.UpdateScheduleAttendanceResponseDto;
+import gwasuwonshot.tutice.schedule.dto.response.*;
 import gwasuwonshot.tutice.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -77,6 +74,12 @@ public class ScheduleController {
  public void postMissingAttendance() throws IOException {
   scheduleService.postImmediateMissingAttendance();
   scheduleService.postMissingAttendance();
+ }
+
+ @GetMapping("/temporary")
+ @ResponseStatus(HttpStatus.OK)
+ public ApiResponseDto<GetTemporaryScheduleResponseDto> getTemporarySchedule(@RequestBody @Valid final GetTemporaryScheduleRequestDto request) {
+  return ApiResponseDto.success(SuccessStatus.GET_TEMPORARY_SCHEDULE_SUCCESS, scheduleService.getTemporarySchedule(request) );
  }
 
 }

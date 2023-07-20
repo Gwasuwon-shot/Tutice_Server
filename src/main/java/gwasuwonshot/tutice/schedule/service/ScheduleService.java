@@ -3,12 +3,12 @@ package gwasuwonshot.tutice.schedule.service;
 import gwasuwonshot.tutice.common.exception.ErrorStatus;
 import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
 import gwasuwonshot.tutice.external.firebase.service.FCMService;
-import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenance.GetMissingMaintenanceLesson;
-import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenance.MissingMaintenanceLesson;
+import gwasuwonshot.tutice.lesson.dto.assembler.RegularScheduleAssembler;
 import gwasuwonshot.tutice.lesson.entity.Lesson;
-import gwasuwonshot.tutice.lesson.exception.conflict.AlreadyFinishedLessonException;
-import gwasuwonshot.tutice.lesson.exception.invalid.InvalidDateException;
+import gwasuwonshot.tutice.lesson.entity.RegularSchedule;
 import gwasuwonshot.tutice.lesson.repository.LessonRepository;
+import gwasuwonshot.tutice.schedule.dto.request.GetTemporaryScheduleRequestDto;
+import gwasuwonshot.tutice.schedule.dto.request.RegularScheduleByDate;
 import gwasuwonshot.tutice.schedule.dto.request.UpdateScheduleAttendanceRequestDto;
 import gwasuwonshot.tutice.schedule.dto.request.UpdateScheduleRequestDto;
 import gwasuwonshot.tutice.schedule.dto.response.*;
@@ -26,18 +26,16 @@ import gwasuwonshot.tutice.user.repository.NotificationLogRepository;
 import gwasuwonshot.tutice.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -53,6 +51,7 @@ public class ScheduleService {
     private final LessonRepository lessonRepository;
     private final NotificationLogRepository notificationLogRepository;
     private final NotificationLogAssembler notificationLogAssembler;
+    private final RegularScheduleAssembler regularScheduleAssembler;
 
     public GetTodayScheduleByParentsResponseDto getTodayScheduleByParents(Long userIdx) {
         // 유저 존재 여부 확인
@@ -397,5 +396,11 @@ public class ScheduleService {
                 notificationLogRepository.save(notificationLogAssembler.toEntity(schedule.getLesson().getParents(), title, body));
             }
         }
+    }
+
+    public GetTemporaryScheduleResponseDto getTemporarySchedule(GetTemporaryScheduleRequestDto request) {
+        List<RegularSchedule> regularScheduleList = request.getRegularScheduleList().stream().map(r -> regularScheduleAssembler.toTemporaryEntity(r.getDayOfWeek(), r.getStartTime(), r.getEndTime())).collect(Collectors.toList());
+        List<Schedule> scheduleList = Schedule.autoCreateTemporarySchedule(DateAndTimeConvert.stringConvertLocalDate(request.getStartDate()), request.getCount(), regularScheduleList);
+        return GetTemporaryScheduleResponseDto.of(request.getStudentName(), request.getSubject(), scheduleList);
     }
 }

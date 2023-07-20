@@ -127,6 +127,35 @@ public class Schedule extends AuditingTimeEntity {
 
     }
 
+    // TODO 중복 코드 없애기
+    public static List<Schedule> autoCreateTemporarySchedule(LocalDate startDate, Long count, List <RegularSchedule> regularScheduleList){
+
+        if(regularScheduleList.size()>1){
+            List<RegularSchedule> sortedRegularScheduleList = RegularSchedule.createSortedReglarScheduleList(startDate,regularScheduleList);
+        }
+
+        List<RegularSchedule> sortedRegularScheduleList = regularScheduleList;
+        List<Schedule> createdScheduleList = new ArrayList<>();
+        for(int i =0 ; i < count; i++){
+            int tempI = i%sortedRegularScheduleList.size();
+            int week = i/sortedRegularScheduleList.size();
+            DayOfWeek dayOfWeek = sortedRegularScheduleList.get(tempI).getDayOfWeek();
+            LocalTime startTime = sortedRegularScheduleList.get(tempI).getStartTime();
+            LocalTime endTime = sortedRegularScheduleList.get(tempI).getEndTime();
+            LocalDate date = startDate.plusWeeks(week).with(TemporalAdjusters.next(java.time.DayOfWeek.of(dayOfWeek.getIndex().intValue())));
+
+            createdScheduleList.add(Schedule.builder()
+                    .date(date)
+                    .startTime(startTime)
+                    .endTime(endTime)
+                    .build());
+
+        }
+
+        createdScheduleList.forEach(cs -> System.out.println(cs.getDate()));
+        return createdScheduleList;
+    }
+
     public void updateSchedule(LocalDate date, LocalTime startTime, LocalTime endTime) {
         this.date = date;
         this.startTime = startTime;

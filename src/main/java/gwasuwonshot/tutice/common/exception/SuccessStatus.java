@@ -28,6 +28,7 @@ public enum SuccessStatus {
     GET_TODAY_SCHEDULE_BY_TEACHER_SUCCESS(HttpStatus.OK, "선생님 메인 뷰의 오늘의 수업 배너를 가져오는데 성공했습니다."),
     GET_LATEST_SCHEDULE_BY_TEACHER(HttpStatus.OK,"선생님 메인 뷰 오늘의 수업/다가오는 수업을 가져오는데 성공했습니다."),
     GET_LESSON_BY_TEACHER_SUCCESS(HttpStatus.OK,"선생님 수업 관리 뷰 조회 성공"),
+    GET_TEMPORARY_SCHEDULE_SUCCESS(HttpStatus.OK,"임시 스케줄 가져오기 성공"),
 
 
 
