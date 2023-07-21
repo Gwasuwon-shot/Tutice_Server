@@ -348,7 +348,7 @@ public class ScheduleService {
         boolean isMissingMaintenance = false;
         for(Lesson lesson : lessonList) {
             if(isMissingMaintenance) break;
-            isMissingMaintenance = scheduleRepository.existsByLessonAndCycleAndStatus(lesson, lesson.getCycle(), ScheduleStatus.NO_STATUS);
+            isMissingMaintenance = !scheduleRepository.existsByLessonAndCycleAndStatus(lesson, lesson.getCycle(), ScheduleStatus.NO_STATUS);
         }
         // 오늘인지 체크
         if(scheduleList.isEmpty()) return GetLatestScheduleByTeacherResponseDto.of(isMissingAttendance, isMissingMaintenance);
