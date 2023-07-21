@@ -7,6 +7,7 @@ import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecord.*;
 import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecordView.GetPaymentRecordViewCycle;
 import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecordView.GetPaymentRecordViewLesson;
 import gwasuwonshot.tutice.lesson.entity.Lesson;
+import gwasuwonshot.tutice.lesson.entity.Payment;
 import gwasuwonshot.tutice.lesson.entity.PaymentRecord;
 import gwasuwonshot.tutice.lesson.exception.invalid.InvalidLessonException;
 import gwasuwonshot.tutice.lesson.exception.invalid.InvalidPaymentRecordException;
@@ -155,12 +156,12 @@ public class PaymentRecordService {
 
         }
 
-
-        // 레슨의 현재 사이클 확인
-        //    스케쥴테이블에서 현재사이클의 가장 최신 스케쥴이 출결이면(상태없음이 아니면)(어차피 취소는 생각안해도됨�) ->사이클이마무리된거로판단
-
-        Schedule lastestSchedule = scheduleRepository.findTopByLessonAndCycleAndStatusNotOrderByDateDesc(lesson, lesson.getCycle(), ScheduleStatus.CANCEL);
-
+//
+//        // 레슨의 현재 사이클 확인
+//        //    스케쥴테이블에서 현재사이클의 가장 최신 스케쥴이 출결이면(상태없음이 아니면)(어차피 취소는 생각안해도됨�) ->사이클이마무리된거로판단
+//
+//        Schedule lastestSchedule = scheduleRepository.findTopByLessonAndCycleAndStatusNotOrderByDateDesc(lesson, lesson.getCycle(), ScheduleStatus.CANCEL);
+//
 
         // 최신 순으로 정렬
         Collections.sort(lesson.getPaymenRecordList(), new Comparator<PaymentRecord>() {
@@ -177,23 +178,48 @@ public class PaymentRecordService {
 
         List<GetPaymentRecord> paymentRecordList = new ArrayList<>();
 
-        if (lastestSchedule.isMatchedStatus(ScheduleStatus.NO_STATUS)) {
-            // - [ ] 아니면, 사이클-1개수로 가져오기
+        if(lesson.isMatchedPayment(Payment.PRE_PAYMENT)){
+            //선불
+            //- [ ] 사이클개수대로 payment 가져오기
+            lesson.getPaymenRecordList()
+                    .forEach(pr -> {
+                        paymentRecordList.add(
+                                GetPaymentRecord.of(
+                                        pr.getIdx(),
+                                        (pr.getDate() == null) ? null : DateAndTimeConvert.localDateConvertString(pr.getDate()),
+                                        pr.getAmount(), pr.getStatus()));
+            });
+
+        }else {
+            //후불
             lesson.getPaymenRecordList().subList(0, lesson.getCycle().intValue() - 1)
                     .forEach(pr -> {
                                 paymentRecordList.add(
                                         GetPaymentRecord.of(
-                                                pr.getIdx(), (pr.getDate() == null) ? null : DateAndTimeConvert.localDateConvertString(pr.getDate()), pr.getAmount(), pr.getStatus()));
+                                                pr.getIdx(),
+                                                (pr.getDate() == null) ? null : DateAndTimeConvert.localDateConvertString(pr.getDate()),
+                                                pr.getAmount(), pr.getStatus()));
                             }
                     );
-        } else {
-            //- [ ] 사이클개수대로 payment 가져오기
-            lesson.getPaymenRecordList().forEach(pr -> {
-                paymentRecordList.add(
-                        GetPaymentRecord.of(
-                                pr.getIdx(), DateAndTimeConvert.localDateConvertString(pr.getDate()), pr.getAmount(), pr.getStatus()));
-            });
         }
+
+//        if (lastestSchedule.isMatchedStatus(ScheduleStatus.NO_STATUS)) {
+//            // - [ ] 아니면, 사이클-1개수로 가져오기
+//            lesson.getPaymenRecordList().subList(0, lesson.getCycle().intValue() - 1)
+//                    .forEach(pr -> {
+//                                paymentRecordList.add(
+//                                        GetPaymentRecord.of(
+//                                                pr.getIdx(), (pr.getDate() == null) ? null : DateAndTimeConvert.localDateConvertString(pr.getDate()), pr.getAmount(), pr.getStatus()));
+//                            }
+//                    );
+//        } else {
+//            //- [ ] 사이클개수대로 payment 가져오기
+//            lesson.getPaymenRecordList().forEach(pr -> {
+//                paymentRecordList.add(
+//                        GetPaymentRecord.of(
+//                                pr.getIdx(), DateAndTimeConvert.localDateConvertString(pr.getDate()), pr.getAmount(), pr.getStatus()));
+//            });
+//        }
 
         if (role.equals(Role.TEACHER)) {
             return GetPaymentRecordByTeacherResponseDto.of(
