@@ -400,7 +400,21 @@ public class ScheduleService {
 
     public GetTemporaryScheduleResponseDto getTemporarySchedule(GetTemporaryScheduleRequestDto request) {
         List<RegularSchedule> regularScheduleList = request.getRegularScheduleList().stream().map(r -> regularScheduleAssembler.toTemporaryEntity(r.getDayOfWeek(), r.getStartTime(), r.getEndTime())).collect(Collectors.toList());
+
         List<Schedule> scheduleList = Schedule.autoCreateTemporarySchedule(DateAndTimeConvert.stringConvertLocalDate(request.getStartDate()), request.getCount(), regularScheduleList);
-        return GetTemporaryScheduleResponseDto.of(request.getStudentName(), request.getSubject(), scheduleList);
+        List<TemporarySchedule> temporaryScheduleList = new ArrayList<>();
+        LocalDate scheduleDate = scheduleList.get(0).getDate();
+        List<Schedule> temporaryScheduleByTime = new ArrayList<>();
+
+        for (Schedule schedule : scheduleList) {
+            if (!scheduleDate.isEqual(schedule.getDate())) {
+                temporaryScheduleList.add(TemporarySchedule.of(request.getStudentName(), request.getSubject(), DateAndTimeConvert.localDateConvertString(scheduleDate), temporaryScheduleByTime));
+                scheduleDate = schedule.getDate();
+                temporaryScheduleByTime.clear();
+            }
+            temporaryScheduleByTime.add(schedule);
+        }
+        temporaryScheduleList.add(TemporarySchedule.of(request.getStudentName(), request.getSubject(), DateAndTimeConvert.localDateConvertString(scheduleDate), temporaryScheduleByTime));
+        return GetTemporaryScheduleResponseDto.of(temporaryScheduleList);
     }
 }
