@@ -27,7 +27,7 @@ public class GetTodayScheduleByParentsResponseDto {
         return GetTodayScheduleByParentsResponseDto.builder()
                 .parentsName(name)
                 .today(TodayResponseDto.of(DateAndTimeConvert.localDateConvertString(now), DateAndTimeConvert.localDateConvertString(now)))
-                .scheduleList(scheduleList.stream().map(s -> ScheduleResponseDto.of(s.getIdx(), s.getLesson().getStudentName(), s.getLesson().getParents().getName(), s.getLesson().getSubject(), s.getStartTime(), s.getEndTime())).collect(Collectors.toList()))
+                .scheduleList(scheduleList.stream().map(s -> ScheduleResponseDto.of(s.getIdx(), s.getLesson().getStudentName(), s.getLesson().getTeacher().getName(), s.getLesson().getSubject(), s.getStartTime(), s.getEndTime())).collect(Collectors.toList()))
                 .build();
     }
 }
