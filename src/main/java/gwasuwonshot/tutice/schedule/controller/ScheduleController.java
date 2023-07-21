@@ -76,7 +76,7 @@ public class ScheduleController {
   scheduleService.postMissingAttendance();
  }
 
- @GetMapping("/temporary")
+ @PostMapping("/temporary")
  @ResponseStatus(HttpStatus.OK)
  public ApiResponseDto<GetTemporaryScheduleResponseDto> getTemporarySchedule(@RequestBody @Valid final GetTemporaryScheduleRequestDto request) {
   return ApiResponseDto.success(SuccessStatus.GET_TEMPORARY_SCHEDULE_SUCCESS, scheduleService.getTemporarySchedule(request) );
