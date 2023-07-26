@@ -24,8 +24,8 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String jwtSecret;
 
-    private final long accessTokenExpiryTime = 5184000;
-    private final long refreshTokenExpiryTime = 120 * 60 * 7 * 1000L;
+    private final long accessTokenExpiryTime = 1000L * 60 * 60 * 2; // 2시간
+    private final long refreshTokenExpiryTime = 1000L * 60 * 60 * 24 * 14; // 2주
     private final String CLAIM_NAME = "userIdx";
 
     private final RedisTemplate<String, String> redisTemplate;
