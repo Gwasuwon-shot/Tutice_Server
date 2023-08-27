@@ -94,5 +94,11 @@ public class ScheduleController {
   return ApiResponseDto.success(SuccessStatus.GET_MISSING_MAINTENANCE_EXIST_SUCCESS, scheduleService.getMissingMaintenanceExist(userIdx) );
  }
 
+ @GetMapping("/today/exists")
+ @ResponseStatus(HttpStatus.OK)
+ public ApiResponseDto<Boolean> getTodayScheduleExist(@UserIdx final Long userIdx) {
+  return ApiResponseDto.success(SuccessStatus.GET_TODAY_SCHEDULE_EXIST_SUCCESS, scheduleService.getTodayScheduleExist(userIdx) );
+ }
+
 }
 
