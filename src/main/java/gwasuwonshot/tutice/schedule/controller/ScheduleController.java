@@ -82,5 +82,11 @@ public class ScheduleController {
   return ApiResponseDto.success(SuccessStatus.GET_TEMPORARY_SCHEDULE_SUCCESS, scheduleService.getTemporarySchedule(request) );
  }
 
+ @GetMapping("/attendance/missing/exists")
+ @ResponseStatus(HttpStatus.OK)
+ public ApiResponseDto<Boolean> getMissingAttendanceExist(@UserIdx final Long userIdx) {
+  return ApiResponseDto.success(SuccessStatus.GET_MISSING_ATTENDANCE_EXIST_SUCCESS, scheduleService.getMissingAttendanceExist(userIdx) );
+ }
+
 }
 

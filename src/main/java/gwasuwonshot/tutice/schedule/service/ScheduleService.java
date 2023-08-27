@@ -417,4 +417,20 @@ public class ScheduleService {
         temporaryScheduleList.add(TemporarySchedule.of(request.getStudentName(), request.getSubject(), DateAndTimeConvert.localDateConvertString(scheduleDate), temporaryScheduleByTime));
         return GetTemporaryScheduleResponseDto.of(temporaryScheduleList);
     }
+
+    public Boolean getMissingAttendanceExist(Long userIdx) {
+        // 유저 존재 여부
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+        // 선생님 여부
+        if(!user.isMatchedRole(Role.TEACHER)) throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION,ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
+        // 수업 리스트 가져오기
+        List<Lesson> lessonList = lessonRepository.findAllByTeacherIdxAndIsFinished(userIdx, false);
+        // 출석누락 유무
+        boolean isMissingAttendance = false;
+        boolean isAfterMissingAttendance = scheduleRepository.existsByStatusAndDateIsBeforeAndLessonIn(ScheduleStatus.NO_STATUS, LocalDate.now(), lessonList);
+        boolean isTodayMissingAttendance = scheduleRepository.existsByStatusAndDateAndStartTimeLessThanEqualAndLessonInOrderByDate(ScheduleStatus.NO_STATUS, LocalDate.now(), LocalTime.now(), lessonList);
+        if(isAfterMissingAttendance || isTodayMissingAttendance) isMissingAttendance = true;
+        return isMissingAttendance;
+    }
 }
