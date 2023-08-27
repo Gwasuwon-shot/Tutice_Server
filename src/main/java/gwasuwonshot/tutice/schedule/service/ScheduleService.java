@@ -130,25 +130,20 @@ public class ScheduleService {
         List<Schedule> todayScheduleList = scheduleRepository.findAllByDateAndLessonInOrderByStartTime(now, lessonList);
 
         // 오늘의 수업 유무
-        if(todayScheduleList.isEmpty()) {
-            return GetTodayScheduleByTeacherResponseDto.of(user.getName());
-        }
+        if(todayScheduleList.isEmpty()) return null;
         LocalTime nowTime = LocalTime.now();
         Integer timeStatus;
 
         // 오늘의 수업 여러개일 때
         int i=0;
-        int size = todayScheduleList.size();
         for(Schedule schedule : todayScheduleList) {
             Integer expectedCount = getExpectedScheduleCount(schedule);
             i++;
-            System.out.println("nowTime = " + nowTime);
             // 수업 전
             if(nowTime.isBefore(schedule.getStartTime())) {
                 timeStatus=BEFORE_SCHEDULE;
                 // case 2
-                boolean isMissingAttendanceByLesson = isMissingAttendanceByLesson(schedule);
-                return GetTodayScheduleByTeacherResponseDto.ofTodaySchedule(isMissingAttendanceByLesson, user.getName(), schedule, timeStatus, expectedCount);
+                return GetTodayScheduleByTeacherResponseDto.of(schedule, timeStatus, expectedCount);
             }
             // 수업 중
             else if(nowTime.equals(schedule.getStartTime()) || nowTime.isBefore(schedule.getEndTime())) {
@@ -156,13 +151,12 @@ public class ScheduleService {
                 // 수업 체크 여부
                 if(schedule.getStatus()==ScheduleStatus.NO_STATUS) {
                     // case 3
-                    boolean isMissingAttendanceByLesson = isMissingAttendanceByLesson(schedule);
-                    return GetTodayScheduleByTeacherResponseDto.ofTodaySchedule(isMissingAttendanceByLesson, user.getName(), schedule, timeStatus, expectedCount);
+                    return GetTodayScheduleByTeacherResponseDto.of(schedule, timeStatus, expectedCount);
                 } else {
                     // 다음 수업 여부
                     if(i==todayScheduleList.size()) {
                         // 수업X
-                        return GetTodayScheduleByTeacherResponseDto.ofCompletedAttendance(user.getName());
+                        return null;
                     } else {
                         continue;
                     }
@@ -177,15 +171,13 @@ public class ScheduleService {
                     // 다음 수업 여부
                     if(i==todayScheduleList.size()) {
                         // 수업X
-                        boolean isMissingAttendanceByLesson = isMissingAttendanceByLesson(schedule);
-                        return GetTodayScheduleByTeacherResponseDto.ofTodaySchedule(isMissingAttendanceByLesson, user.getName(), schedule, timeStatus, expectedCount);
+                        return GetTodayScheduleByTeacherResponseDto.of(schedule, timeStatus, expectedCount);
                     } else {
                         // 수업O
                         // 다음 수업 시작 여부
                         if(nowTime.isBefore(todayScheduleList.get(i).getStartTime())) {
                             // 시작X
-                            boolean isMissingAttendanceByLesson = isMissingAttendanceByLesson(schedule);
-                            return GetTodayScheduleByTeacherResponseDto.ofTodaySchedule(isMissingAttendanceByLesson, user.getName(), schedule, timeStatus, expectedCount);
+                            return GetTodayScheduleByTeacherResponseDto.of(schedule, timeStatus, expectedCount);
                         } else {
                             // 시작O
                             continue;
@@ -197,7 +189,7 @@ public class ScheduleService {
                         // 수업X
                         // 1개이면
                         if(todayScheduleList.size()==1) {
-                            return GetTodayScheduleByTeacherResponseDto.ofCompletedAttendance(user.getName());
+                            return null;
                         }
                         break;
                     } else {
@@ -212,16 +204,9 @@ public class ScheduleService {
         List<Schedule> scheduleList = scheduleRepository.findAllByDateAndStatusAndLessonInOrderByStartTimeDesc(now, ScheduleStatus.NO_STATUS, lessonList);
         if(!scheduleList.isEmpty()) {
             Schedule schedule = scheduleList.get(0);
-            boolean isMissingAttendanceByLesson = isMissingAttendanceByLesson(schedule);
-            return GetTodayScheduleByTeacherResponseDto.ofTodaySchedule(isMissingAttendanceByLesson, user.getName(), schedule, AFTER_SCHEDULE, getExpectedScheduleCount(schedule));
+            return GetTodayScheduleByTeacherResponseDto.of(schedule, AFTER_SCHEDULE, getExpectedScheduleCount(schedule));
         }
         return null;
-    }
-
-    private boolean isMissingAttendanceByLesson(Schedule schedule) {
-        List<Schedule> scheduleByLessonList = scheduleRepository.findAllByLessonAndCycleOrderByDateDesc(schedule.getLesson(), schedule.getCycle());
-        int index = scheduleByLessonList.indexOf(schedule);
-        return index != 0 && scheduleByLessonList.get(index - 1).getStatus().equals(ScheduleStatus.NO_STATUS);
     }
 
     // 현재 스케줄로 기대 회차 구하기
