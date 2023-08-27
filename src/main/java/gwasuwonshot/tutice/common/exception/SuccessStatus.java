@@ -26,6 +26,7 @@ public enum SuccessStatus {
 
 
     GET_MISSING_ATTENDANCE_EXIST_SUCCESS(HttpStatus.OK, "누락 출결 유무를 가져오는데 성공했습니다."),
+    GET_MISSING_MAINTENANCE_EXIST_SUCCESS(HttpStatus.OK, "연장 필요 수업 유무를 가져오는데 성공했습니다."),
 
 
 
