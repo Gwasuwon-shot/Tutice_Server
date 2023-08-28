@@ -13,16 +13,16 @@ import gwasuwonshot.tutice.lesson.dto.response.GetLessonProgressResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonByParents.GetLessonByParentsResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonByTeacher.GetLessonByTeacherResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonDetail.GetLessonDetailByParentsResponseDto;
-import gwasuwonshot.tutice.lesson.dto.response.getLessonSchedule.GetLessonScheduleByUserResponseDto;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonSchedule.GetLessonScheduleResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenance.GetMissingMaintenanceLessonResponseDto;
 import gwasuwonshot.tutice.lesson.service.LessonService;
-import gwasuwonshot.tutice.user.entity.Role;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -53,28 +53,14 @@ public class LessonController {
 
     }
 
-    @GetMapping("/schedule/parents/{lessonIdx}")
+    @GetMapping("/schedule/{lessonIdx}")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<GetLessonScheduleByUserResponseDto> getLessonScheduleByParents(
+    public ApiResponseDto<List<GetLessonScheduleResponseDto>> getLessonSchedule(
             @UserIdx final Long userIdx,
             @PathVariable final Long lessonIdx) {
 
         return ApiResponseDto.success(SuccessStatus.GET_LESSON_SCHEDULE_SUCCESS,
-                lessonService.getLessonScheduleByUser(Role.PARENTS,userIdx,lessonIdx));
-
-
-    }
-
-    @GetMapping("/schedule/teacher/{lessonIdx}")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<GetLessonScheduleByUserResponseDto> getLessonScheduleByTeacher(
-            @UserIdx final Long userIdx,
-            @PathVariable final Long lessonIdx) {
-
-        return ApiResponseDto.success(SuccessStatus.GET_LESSON_SCHEDULE_SUCCESS,
-                lessonService.getLessonScheduleByUser(Role.TEACHER,userIdx,lessonIdx));
-
-
+                lessonService.getLessonSchedule(userIdx, lessonIdx));
     }
 
     @GetMapping("/detail/parents/{lessonIdx}")
