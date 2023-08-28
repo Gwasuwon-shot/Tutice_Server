@@ -7,6 +7,7 @@ import gwasuwonshot.tutice.lesson.dto.request.createLesson.CreateLessonMaintenan
 import gwasuwonshot.tutice.lesson.dto.request.createLesson.CreateLessonRequestDto;
 import gwasuwonshot.tutice.lesson.dto.request.UpdateLessonParentsRequestDto;
 import gwasuwonshot.tutice.lesson.dto.response.CreateLessonResponseDto;
+import gwasuwonshot.tutice.lesson.dto.response.GetLessonAccountResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.GetLessonByUserResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonByParents.GetLessonByParentsResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonByTeacher.GetLessonByTeacher;
@@ -165,6 +166,13 @@ public class LessonController {
         );
 
 
+    }
+
+    @GetMapping("/account/{lessonIdx}")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponseDto<GetLessonAccountResponseDto> getLessonAccount(@UserIdx final Long userIdx,
+                                                                        @PathVariable final Long lessonIdx) {
+        return ApiResponseDto.success(SuccessStatus.GET_LESSON_ACCOUNT_SUCCESS, lessonService.getLessonAccount(userIdx, lessonIdx));
     }
 
 
