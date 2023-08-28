@@ -244,6 +244,55 @@ public class PaymentRecordService {
 
     }
 
+    public List<GetPaymentRecord> getLessonPaymentRecord(Long userIdx, Long lessonIdx) {
+        // 유저 존재 여부 확인
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+        // 수업 존재 여부 확인
+        Lesson lesson = lessonRepository.findById(lessonIdx)
+                .orElseThrow(() -> new NotFoundLessonException(ErrorStatus.NOT_FOUND_LESSON_EXCEPTION, ErrorStatus.NOT_FOUND_LESSON_EXCEPTION.getMessage()));
+        // 수업과 유저 연결 여부 확인
+        if (!user.equals(lesson.getParents()) && !user.equals(lesson.getTeacher()))
+            throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION, ErrorStatus.INVALID_LESSON_CODE_EXCEPTION.getMessage());
+
+        // 최신 순으로 정렬
+        Collections.sort(lesson.getPaymenRecordList(), new Comparator<PaymentRecord>() {
+            @Override
+            public int compare(PaymentRecord o1, PaymentRecord o2) {
+                //정렬목표 : 내림차순 : 최신순
+                if (o1.getCreatedAt().isAfter(o2.getCreatedAt())) {
+                    return -1;
+                }
+                return 1;
+            }
+        });
+
+        List<GetPaymentRecord> paymentRecordList = new ArrayList<>();
+        if(lesson.isMatchedPayment(Payment.PRE_PAYMENT)){
+            //선불
+            //- [ ] 사이클개수대로 payment 가져오기
+            lesson.getPaymenRecordList()
+                    .forEach(pr -> {
+                        paymentRecordList.add(
+                                GetPaymentRecord.of(
+                                        pr.getIdx(),
+                                        (pr.getDate() == null) ? null : DateAndTimeConvert.localDateConvertString(pr.getDate()),
+                                        pr.getAmount(), pr.getStatus()));
+                    });
+        }else {
+            //후불
+            lesson.getPaymenRecordList().subList(0, lesson.getCycle().intValue() - 1)
+                    .forEach(pr -> {
+                                paymentRecordList.add(
+                                        GetPaymentRecord.of(
+                                                pr.getIdx(),
+                                                (pr.getDate() == null) ? null : DateAndTimeConvert.localDateConvertString(pr.getDate()),
+                                                pr.getAmount(), pr.getStatus()));
+                            }
+                    );
+        }
+        return paymentRecordList;
+    }
 }
 
 

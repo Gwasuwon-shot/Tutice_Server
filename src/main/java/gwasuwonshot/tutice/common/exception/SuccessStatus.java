@@ -22,7 +22,7 @@ public enum SuccessStatus {
     GET_MISSING_ATTENDANCE_SCHEDULE_SUCCESS(HttpStatus.OK, "선생님의 출결 누락 뷰를 가져오는데 성공했습니다."),
     GET_MISSING_MAINTENANCE_LESSON_SUCCESS(HttpStatus.OK, "연장여부를 알려주지 않은 수업 리스트 가져오기 성공"),
     GET_PAYMENT_RECORD_POST_VIEW_SUCCESS(HttpStatus.OK,"입금 등록 뷰 정보 가져오기 성공"),
-    GET_PAYMENT_RECORD_SUCCESS(HttpStatus.OK,"입금 내역 가져오기 성공"),
+    GET_PAYMENT_RECORD_SUCCESS(HttpStatus.OK,"입금 내역을 가져오는데 성공했습니다."),
 
 
 

@@ -9,6 +9,7 @@ import gwasuwonshot.tutice.lesson.dto.request.UpdateLessonParentsRequestDto;
 import gwasuwonshot.tutice.lesson.dto.request.UpdatePaymentRecordRequestDto;
 import gwasuwonshot.tutice.lesson.dto.request.createLesson.CreateLessonRequestDto;
 import gwasuwonshot.tutice.lesson.dto.response.CreateLessonResponseDto;
+import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecord.GetPaymentRecord;
 import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecord.GetPaymentRecordByParentsResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecord.GetPaymentRecordByTeacherResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecord.GetPaymentRecordByUserResponseDto;
@@ -21,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -82,6 +84,16 @@ public class PaymentRecordController {
                 paymentRecordService.getLessonPaymentRecordByUser(Role.PARENTS, userIdx,lessonIdx));
 
 
+    }
+
+    @GetMapping("/lesson/{lessonIdx}")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponseDto<List<GetPaymentRecord>> getLessonPaymentRecord(
+            @UserIdx final Long userIdx,
+            @PathVariable final Long lessonIdx
+    ) {
+        return ApiResponseDto.success(SuccessStatus.GET_PAYMENT_RECORD_SUCCESS,
+                paymentRecordService.getLessonPaymentRecord(userIdx, lessonIdx));
     }
 
 }
