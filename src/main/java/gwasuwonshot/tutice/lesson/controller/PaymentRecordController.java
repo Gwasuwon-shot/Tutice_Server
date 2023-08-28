@@ -9,6 +9,7 @@ import gwasuwonshot.tutice.lesson.dto.request.UpdateLessonParentsRequestDto;
 import gwasuwonshot.tutice.lesson.dto.request.UpdatePaymentRecordRequestDto;
 import gwasuwonshot.tutice.lesson.dto.request.createLesson.CreateLessonRequestDto;
 import gwasuwonshot.tutice.lesson.dto.response.CreateLessonResponseDto;
+import gwasuwonshot.tutice.lesson.dto.response.GetPaymentRecordCycleResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecord.GetPaymentRecordByParentsResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecord.GetPaymentRecordByTeacherResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecord.GetPaymentRecordByUserResponseDto;
@@ -82,6 +83,15 @@ public class PaymentRecordController {
                 paymentRecordService.getLessonPaymentRecordByUser(Role.PARENTS, userIdx,lessonIdx));
 
 
+    }
+
+    @GetMapping("/cycle/{paymentRecordIdx}")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponseDto<GetPaymentRecordCycleResponseDto> getPaymentRecordCycle(
+            @UserIdx final Long userIdx,
+            @PathVariable final Long paymentRecordIdx) {
+        return ApiResponseDto.success(SuccessStatus.GET_PAYMENT_RECORD_CYCLE_SUCCESS,
+                paymentRecordService.getPaymentRecordCycle(userIdx, paymentRecordIdx));
     }
 
 }

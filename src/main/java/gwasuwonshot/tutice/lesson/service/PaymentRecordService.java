@@ -3,6 +3,7 @@ package gwasuwonshot.tutice.lesson.service;
 
 import gwasuwonshot.tutice.common.exception.ErrorStatus;
 import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
+import gwasuwonshot.tutice.lesson.dto.response.GetPaymentRecordCycleResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecord.*;
 import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecordView.GetPaymentRecordViewCycle;
 import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecordView.GetPaymentRecordViewLesson;
@@ -244,6 +245,42 @@ public class PaymentRecordService {
 
     }
 
+    public GetPaymentRecordCycleResponseDto getPaymentRecordCycle(Long userIdx, Long paymentRecordIdx) {
+        // 유저 존재 여부 확인
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+        // 입금 내역 존재 여부 확인
+        PaymentRecord paymentRecord = paymentRecordRepository.findById(paymentRecordIdx)
+                .orElseThrow(() -> new NotFoundPaymentRecordException(ErrorStatus.NOT_FOUND_PAYMENT_RECORD_EXCEPTION, ErrorStatus.NOT_FOUND_PAYMENT_RECORD_EXCEPTION.getMessage()));
+        Lesson lesson = paymentRecord.getLesson();
+        // 수업과 유저 연결 여부 확인
+        if (!user.equals(lesson.getParents()) && !user.equals(lesson.getTeacher()))
+            throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION, ErrorStatus.INVALID_LESSON_CODE_EXCEPTION.getMessage());
+
+        // 해당레슨의 사이클 확인,  레슨 사이클의 처음스케쥴데이트 가장 늦은 스케쥴데이트 가져오기
+        //regularScheduleList를 요일순서로 정렬
+        Collections.sort(lesson.getPaymenRecordList(), new Comparator<PaymentRecord>() {
+            @Override
+            public int compare(PaymentRecord o1, PaymentRecord o2) {
+                //정렬목표 : 오름차순 : 오래된순
+                if (o1.getCreatedAt().isAfter(o2.getCreatedAt())) {
+                    return 1;
+                }
+                return -1;
+            }
+        });
+
+        // 들아오는 paymentRecord로 사이클판단
+        Long cycle = Long.valueOf(lesson.getPaymenRecordList().indexOf(paymentRecord)) + 1;
+
+        if (cycle == -1) {
+            throw new InvalidPaymentRecordException(ErrorStatus.UNCONNECTED_LESSON_PAYMENT_RECORD_EXCEPTION, ErrorStatus.UNCONNECTED_LESSON_PAYMENT_RECORD_EXCEPTION.getMessage());
+        }
+        Schedule endSchedule = scheduleRepository.findTopByLessonAndCycleAndStatusNotOrderByDateDesc(lesson, cycle, ScheduleStatus.CANCEL);
+        Schedule startSchedule = scheduleRepository.findTopByLessonAndCycleAndStatusNotOrderByDateAsc(lesson, cycle, ScheduleStatus.CANCEL);
+
+        return GetPaymentRecordCycleResponseDto.of(paymentRecord.getIdx(), cycle, startSchedule, endSchedule);
+    }
 }
 
 
