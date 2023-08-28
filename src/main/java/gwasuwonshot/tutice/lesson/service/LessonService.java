@@ -499,6 +499,22 @@ public class LessonService {
     }
 
 
+    public GetLessonProgressResponseDto getLessonProgress(Long userIdx, Long lessonIdx) {
+        // 유저 존재 여부 확인
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+        // 수업 존재 여부 확인
+        Lesson lesson = lessonRepository.findById(lessonIdx)
+                .orElseThrow(() -> new NotFoundLessonException(ErrorStatus.NOT_FOUND_LESSON_EXCEPTION, ErrorStatus.NOT_FOUND_LESSON_EXCEPTION.getMessage()));
+        // 수업과 유저 연결 여부 확인
+        if (!user.equals(lesson.getParents()) && !user.equals(lesson.getTeacher()))
+            throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION, ErrorStatus.INVALID_LESSON_CODE_EXCEPTION.getMessage());
 
+        // 현재 회차 계산 : 이때 수업에 연결된 스케쥴중 현재사이클(수업에 연결된 paymentRecord개수(선불,후불+1))중 출석,결석만 카운트해서 현재카운트가져오기
+        Long nowCount = scheduleRepository.countByLessonAndCycleAndStatusIn(lesson,lesson.getCycle(),ScheduleStatus.getAttendanceScheduleStatusList());
+        // - [ ] percent : 전체카운트와 진짜카운트의 백분율
+        Long percent = ReturnLongMath.getPercentage(nowCount, lesson.getCount());
 
+        return GetLessonProgressResponseDto.of(lesson.getIdx(), lesson.getCount(), nowCount, percent);
+    }
 }
