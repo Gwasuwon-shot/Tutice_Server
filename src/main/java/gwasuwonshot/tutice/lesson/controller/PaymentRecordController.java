@@ -6,10 +6,9 @@ import gwasuwonshot.tutice.common.exception.SuccessStatus;
 import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
 import gwasuwonshot.tutice.common.resolver.userIdx.UserIdx;
 import gwasuwonshot.tutice.lesson.dto.request.UpdatePaymentRecordRequestDto;
-import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecord.GetPaymentRecord;
+import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecord.GetPaymentRecordResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecordView.GetPaymentRecordViewResponseDto;
 import gwasuwonshot.tutice.lesson.service.PaymentRecordService;
-import gwasuwonshot.tutice.user.entity.Role;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -53,7 +52,7 @@ public class PaymentRecordController {
 
     @GetMapping("/lesson/{lessonIdx}")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<List<GetPaymentRecord>> getLessonPaymentRecord(
+    public ApiResponseDto<List<GetPaymentRecordResponseDto>> getLessonPaymentRecord(
             @UserIdx final Long userIdx,
             @PathVariable final Long lessonIdx
     ) {

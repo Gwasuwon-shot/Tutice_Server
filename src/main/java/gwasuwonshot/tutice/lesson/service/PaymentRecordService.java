@@ -122,7 +122,7 @@ public class PaymentRecordService {
 
     }
 
-    public List<GetPaymentRecord> getLessonPaymentRecord(Long userIdx, Long lessonIdx) {
+    public List<GetPaymentRecordResponseDto> getLessonPaymentRecord(Long userIdx, Long lessonIdx) {
         // 유저 존재 여부 확인
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
@@ -145,14 +145,14 @@ public class PaymentRecordService {
             }
         });
 
-        List<GetPaymentRecord> paymentRecordList = new ArrayList<>();
+        List<GetPaymentRecordResponseDto> paymentRecordList = new ArrayList<>();
         if(lesson.isMatchedPayment(Payment.PRE_PAYMENT)){
             //선불
             //- [ ] 사이클개수대로 payment 가져오기
             lesson.getPaymenRecordList()
                     .forEach(pr -> {
                         paymentRecordList.add(
-                                GetPaymentRecord.of(
+                                GetPaymentRecordResponseDto.of(
                                         pr.getIdx(),
                                         (pr.getDate() == null) ? null : DateAndTimeConvert.localDateConvertString(pr.getDate()),
                                         pr.getAmount(), pr.getStatus()));
@@ -162,7 +162,7 @@ public class PaymentRecordService {
             lesson.getPaymenRecordList().subList(0, lesson.getCycle().intValue() - 1)
                     .forEach(pr -> {
                                 paymentRecordList.add(
-                                        GetPaymentRecord.of(
+                                        GetPaymentRecordResponseDto.of(
                                                 pr.getIdx(),
                                                 (pr.getDate() == null) ? null : DateAndTimeConvert.localDateConvertString(pr.getDate()),
                                                 pr.getAmount(), pr.getStatus()));
