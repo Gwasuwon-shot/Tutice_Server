@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 @RestController
 @RequiredArgsConstructor
-public class ServerProfileController {
+public class CommonController {
 
     private final Environment env;
 
