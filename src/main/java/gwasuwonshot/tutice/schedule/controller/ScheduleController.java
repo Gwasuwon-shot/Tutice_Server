@@ -82,7 +82,7 @@ public class ScheduleController {
   return ApiResponseDto.success(SuccessStatus.GET_TEMPORARY_SCHEDULE_SUCCESS, scheduleService.getTemporarySchedule(request) );
  }
 
- @GetMapping("/attendance/missing/{lessonIdx}/exists")
+ @GetMapping("/attendance/missing/{lessonIdx}/existence")
  @ResponseStatus(HttpStatus.OK)
  public ApiResponseDto<Boolean> getMissingAttendanceByLessonExist(@UserIdx final Long userIdx,
                                                            @PathVariable final Long lessonIdx) {
