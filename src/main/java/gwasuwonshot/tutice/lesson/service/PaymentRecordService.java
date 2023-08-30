@@ -122,7 +122,7 @@ public class PaymentRecordService {
 
     }
 
-    public List<GetPaymentRecordResponseDto> getLessonPaymentRecord(Long userIdx, Long lessonIdx) {
+    public List<GetPaymentRecordResponseDto> getPaymentRecordByLesson(Long userIdx, Long lessonIdx) {
         // 유저 존재 여부 확인
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));

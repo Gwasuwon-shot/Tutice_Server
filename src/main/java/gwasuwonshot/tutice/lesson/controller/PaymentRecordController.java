@@ -52,12 +52,12 @@ public class PaymentRecordController {
 
     @GetMapping("/lesson/{lessonIdx}")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<List<GetPaymentRecordResponseDto>> getLessonPaymentRecord(
+    public ApiResponseDto<List<GetPaymentRecordResponseDto>> getPaymentRecordByLesson(
             @UserIdx final Long userIdx,
             @PathVariable final Long lessonIdx
     ) {
         return ApiResponseDto.success(SuccessStatus.GET_PAYMENT_RECORD_SUCCESS,
-                paymentRecordService.getLessonPaymentRecord(userIdx, lessonIdx));
+                paymentRecordService.getPaymentRecordByLesson(userIdx, lessonIdx));
     }
 
 }
