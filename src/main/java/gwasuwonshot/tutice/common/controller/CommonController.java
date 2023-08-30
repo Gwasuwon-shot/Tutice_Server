@@ -29,10 +29,6 @@ public class CommonController {
     @GetMapping("/today")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponseDto<GetTodayDateResponseDto> getTodayDate() {
-        return ApiResponseDto.success(SuccessStatus.GET_TODAY_DATE_SUCCESS,
-                GetTodayDateResponseDto.of(LocalDate.now())
-        );
-
-
+        return ApiResponseDto.success(SuccessStatus.GET_TODAY_DATE_SUCCESS, GetTodayDateResponseDto.of());
     }
 }
