@@ -199,8 +199,8 @@ public class PaymentRecordService {
         PaymentRecord paymentRecord = paymentRecordRepository.findById(paymentRecordIdx)
                 .orElseThrow(() -> new NotFoundPaymentRecordException(ErrorStatus.NOT_FOUND_PAYMENT_RECORD_EXCEPTION, ErrorStatus.NOT_FOUND_PAYMENT_RECORD_EXCEPTION.getMessage()));
         Lesson lesson = paymentRecord.getLesson();
-        // 수업과 유저 연결 여부 확인
-        if (!user.equals(lesson.getParents()) && !user.equals(lesson.getTeacher()))
+        // 수업과 선생님 연결 여부 확인
+        if (!lesson.isMatchedTeacher(user))
             throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION, ErrorStatus.INVALID_LESSON_CODE_EXCEPTION.getMessage());
 
         // 해당레슨의 사이클 확인,  레슨 사이클의 처음스케쥴데이트 가장 늦은 스케쥴데이트 가져오기
