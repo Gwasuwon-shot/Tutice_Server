@@ -126,6 +126,6 @@ public class Lesson extends AuditingTimeEntity {
 
 
     public boolean isMatchedUser(User user) {
-        return isMatchedParents(user) || isMatchedParents(user);
+        return isMatchedTeacher(user) || isMatchedParents(user);
     }
 }
