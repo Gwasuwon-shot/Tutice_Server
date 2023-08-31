@@ -19,6 +19,13 @@ public class DateAndTimeConvert {
         return nowDate.toString();
     }
 
+    public static String nowLocalDateConvertDayOfWeek(){
+        //현재날짜를 'yyyy-mm-dd' 형식의 string으로 만들어주기
+        LocalDate nowDate = LocalDate.now();
+        // 현재 날짜 -> 요일
+        return nowDate.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN);
+    }
+
 
     public static String localDateConvertString(LocalDate localDate){
         return localDate.toString();

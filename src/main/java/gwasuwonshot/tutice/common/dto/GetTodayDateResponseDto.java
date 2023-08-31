@@ -15,9 +15,9 @@ public class GetTodayDateResponseDto {
     private String date;
     private String dayOfWeek;
 
-    public static GetTodayDateResponseDto of(LocalDate now) {
+    public static GetTodayDateResponseDto of() {
         return new GetTodayDateResponseDto(
-                DateAndTimeConvert.localDateConvertString(now),
-                DateAndTimeConvert.localDateConvertDayOfWeek(now));
+                DateAndTimeConvert.nowLocalDateConvertString(),
+                DateAndTimeConvert.nowLocalDateConvertDayOfWeek());
     }
 }
