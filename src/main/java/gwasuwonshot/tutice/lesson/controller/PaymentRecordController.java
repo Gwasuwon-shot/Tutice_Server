@@ -5,23 +5,17 @@ import gwasuwonshot.tutice.common.dto.ApiResponseDto;
 import gwasuwonshot.tutice.common.exception.SuccessStatus;
 import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
 import gwasuwonshot.tutice.common.resolver.userIdx.UserIdx;
-import gwasuwonshot.tutice.lesson.dto.request.UpdateLessonParentsRequestDto;
 import gwasuwonshot.tutice.lesson.dto.request.UpdatePaymentRecordRequestDto;
-import gwasuwonshot.tutice.lesson.dto.request.createLesson.CreateLessonRequestDto;
-import gwasuwonshot.tutice.lesson.dto.response.CreateLessonResponseDto;
-import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecord.GetPaymentRecordByParentsResponseDto;
-import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecord.GetPaymentRecordByTeacherResponseDto;
-import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecord.GetPaymentRecordByUserResponseDto;
+import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecord.GetPaymentRecordResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecordView.GetPaymentRecordViewResponseDto;
 import gwasuwonshot.tutice.lesson.service.PaymentRecordService;
-import gwasuwonshot.tutice.user.entity.Role;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Optional;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -54,34 +48,16 @@ public class PaymentRecordController {
                 GetPaymentRecordViewResponseDto.of(paymentRecordService.getPaymentRecordView(userIdx, paymentRecordIdx),
                         DateAndTimeConvert.nowLocalDateConvertString()));
 
-
     }
 
-    @GetMapping("/teacher/{lessonIdx}")
+    @GetMapping("/lesson/{lessonIdx}")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<GetPaymentRecordByUserResponseDto> getLessonPaymentRecordByTeacher(
+    public ApiResponseDto<List<GetPaymentRecordResponseDto>> getPaymentRecordByLesson(
             @UserIdx final Long userIdx,
-            @PathVariable final Long lessonIdx) {
-
-
+            @PathVariable final Long lessonIdx
+    ) {
         return ApiResponseDto.success(SuccessStatus.GET_PAYMENT_RECORD_SUCCESS,
-                paymentRecordService.getLessonPaymentRecordByUser(Role.TEACHER,userIdx,lessonIdx));
-
-
-    }
-
-
-    @GetMapping("/parents/{lessonIdx}")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<GetPaymentRecordByUserResponseDto> getLessonPaymentRecordByParents(
-            @UserIdx final Long userIdx,
-            @PathVariable final Long lessonIdx) {
-
-
-        return ApiResponseDto.success(SuccessStatus.GET_PAYMENT_RECORD_SUCCESS,
-                paymentRecordService.getLessonPaymentRecordByUser(Role.PARENTS, userIdx,lessonIdx));
-
-
+                paymentRecordService.getPaymentRecordByLesson(userIdx, lessonIdx));
     }
 
 }
