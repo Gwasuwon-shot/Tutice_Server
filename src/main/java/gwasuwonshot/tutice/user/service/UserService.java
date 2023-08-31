@@ -6,6 +6,7 @@ import gwasuwonshot.tutice.user.dto.assembler.UserAssembler;
 import gwasuwonshot.tutice.user.dto.request.LocalLoginRequestDto;
 import gwasuwonshot.tutice.user.dto.request.LocalSignUpRequestDto;
 import gwasuwonshot.tutice.user.dto.request.UpdateUserDeviceTokenRequestDto;
+import gwasuwonshot.tutice.user.dto.response.GetUserNameResponseDto;
 import gwasuwonshot.tutice.user.dto.response.LoginResponseDto;
 import gwasuwonshot.tutice.user.entity.Provider;
 import gwasuwonshot.tutice.user.entity.Role;
@@ -69,5 +70,11 @@ public class UserService {
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
         user.setDeviceToken(request.getDeviceToken());
+    }
+
+    public GetUserNameResponseDto getUserName(Long userIdx) {
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+        return GetUserNameResponseDto.of(user.getName());
     }
 }

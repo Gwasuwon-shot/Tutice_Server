@@ -13,24 +13,11 @@ import java.util.stream.Collectors;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 public class GetLatestScheduleByTeacherResponseDto {
-    private Boolean isMissingAttendance;
-    private Boolean isMissingMaintenance;
-    private Boolean isTodaySchedule;
     private TodayResponseDto latestScheduleDay;
     private List<LatestSchedule> latestScheduleList;
 
-    public static GetLatestScheduleByTeacherResponseDto of(Boolean isMissingAttendance, Boolean isMissingMaintenance) {
+    public static GetLatestScheduleByTeacherResponseDto of(LocalDate date, List<Schedule> latestScheduleList) {
         return GetLatestScheduleByTeacherResponseDto.builder()
-                .isMissingAttendance(isMissingAttendance)
-                .isMissingMaintenance(isMissingMaintenance)
-                .build();
-    }
-
-    public static GetLatestScheduleByTeacherResponseDto ofSchedule(boolean isMissingAttendance, boolean isMissingMaintenance, boolean isTodaySchedule, LocalDate date, List<Schedule> latestScheduleList) {
-        return GetLatestScheduleByTeacherResponseDto.builder()
-                .isMissingAttendance(isMissingAttendance)
-                .isMissingMaintenance(isMissingMaintenance)
-                .isTodaySchedule(isTodaySchedule)
                 .latestScheduleDay(TodayResponseDto.of(DateAndTimeConvert.localDateConvertString(date), DateAndTimeConvert.localDateConvertDayOfWeek(date)))
                 .latestScheduleList(latestScheduleList.stream().map(s -> LatestSchedule.of(s.getLesson(), s)).collect(Collectors.toList()))
                 .build();
