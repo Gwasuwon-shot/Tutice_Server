@@ -432,7 +432,7 @@ public class LessonService {
         Lesson lesson = lessonRepository.findById(lessonIdx)
                 .orElseThrow(() -> new NotFoundLessonException(ErrorStatus.NOT_FOUND_LESSON_EXCEPTION, ErrorStatus.NOT_FOUND_LESSON_EXCEPTION.getMessage()));
         // 수업과 유저 연결 여부 확인
-        if (lesson.isMatchedUser(user))
+        if (!lesson.isMatchedUser(user))
             throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION, ErrorStatus.INVALID_LESSON_CODE_EXCEPTION.getMessage());
 
         // 현재 회차 계산 : 이때 수업에 연결된 스케쥴중 현재사이클(수업에 연결된 paymentRecord개수(선불,후불+1))중 출석,결석만 카운트해서 현재카운트가져오기
@@ -451,7 +451,7 @@ public class LessonService {
         Lesson lesson = lessonRepository.findById(lessonIdx)
                 .orElseThrow(() -> new NotFoundLessonException(ErrorStatus.NOT_FOUND_LESSON_EXCEPTION, ErrorStatus.NOT_FOUND_LESSON_EXCEPTION.getMessage()));
         // 수업과 유저 연결 여부 확인
-        if (lesson.isMatchedUser(user))
+        if (!lesson.isMatchedUser(user))
             throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION, ErrorStatus.INVALID_LESSON_CODE_EXCEPTION.getMessage());
 
         return GetLessonDetailResponseDto.of(lesson);
@@ -465,7 +465,7 @@ public class LessonService {
         Lesson lesson = lessonRepository.findById(lessonIdx)
                 .orElseThrow(() -> new NotFoundLessonException(ErrorStatus.NOT_FOUND_LESSON_EXCEPTION, ErrorStatus.NOT_FOUND_LESSON_EXCEPTION.getMessage()));
         // 수업과 유저 연결 여부 확인
-        if (lesson.isMatchedUser(user))
+        if (!lesson.isMatchedUser(user))
             throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION, ErrorStatus.INVALID_LESSON_CODE_EXCEPTION.getMessage());
         // 레슨 스케쥴 정보 구성
         List<GetLessonScheduleResponseDto> getLessonScheduleResponseDtoList = new ArrayList<>();
