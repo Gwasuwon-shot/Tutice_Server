@@ -14,16 +14,28 @@ public enum SuccessStatus {
     LOGIN_SUCCESS(HttpStatus.OK, "로그인에 성공했습니다."),
     NEW_TOKEN_SUCCESS(HttpStatus.OK, "토큰 재발급에 성공했습니다."),
     GET_TODAY_DATE_SUCCESS(HttpStatus.OK,"오늘 날짜와 요일을 가져오는데 성공했습니다."),
+    GET_USER_NAME_SUCCESS(HttpStatus.OK, "유저 이름을 가져오는데 성공했습니다."),
 
 
     GET_LESSON_BY_USER_SUCCESS(HttpStatus.OK, "유저별로 연결된 수업 여부를 가져오는데 성공했습니다."),
     GET_LESSON_SCHEDULE_SUCCESS(HttpStatus.OK,"수업 내역(출결 상황) 가져오기 성공"),
+    GET_LESSON_PROGRESS_SUCCESS(HttpStatus.OK,"수업 진행 정도를 가져오는데 성공했습니다."),
+    GET_LESSON_DETAIL_SUCCESS(HttpStatus.OK,"수업 정보를 가져오는데 성공했습니다."),
     GET_SCHEDULE_BY_USER_SUCCESS(HttpStatus.OK, "스케줄 메인 뷰를 가져오는데 성공했습니다."),
     GET_MISSING_ATTENDANCE_SCHEDULE_SUCCESS(HttpStatus.OK, "선생님의 출결 누락 뷰를 가져오는데 성공했습니다."),
     GET_MISSING_MAINTENANCE_LESSON_SUCCESS(HttpStatus.OK, "연장여부를 알려주지 않은 수업 리스트 가져오기 성공"),
     GET_PAYMENT_RECORD_POST_VIEW_SUCCESS(HttpStatus.OK,"입금 등록 뷰 정보 가져오기 성공"),
-    GET_PAYMENT_RECORD_SUCCESS(HttpStatus.OK,"입금 내역 가져오기 성공"),
     GET_PAYMENT_RECORD_CYCLE_SUCCESS(HttpStatus.OK,"입금 내역의 사이클 정보를 가져오는데 성공했습니다."),
+    GET_LESSON_ACCOUNT_SUCCESS(HttpStatus.OK,"수업에 연결된 계좌를 가져오는데 성공했습니다."),
+    GET_PAYMENT_RECORD_SUCCESS(HttpStatus.OK,"입금 내역을 가져오는데 성공했습니다."),
+
+    GET_MISSING_MAINTENANCE_BY_LESSON_EXIST_SUCCESS(HttpStatus.OK, "수업 이전 회차 누락 출결 유무를 가져오는데 성공했습니다."),
+
+
+
+    GET_MISSING_ATTENDANCE_EXIST_SUCCESS(HttpStatus.OK, "누락 출결 유무를 가져오는데 성공했습니다."),
+    GET_MISSING_MAINTENANCE_EXIST_SUCCESS(HttpStatus.OK, "연장 필요 수업 유무를 가져오는데 성공했습니다."),
+    GET_TODAY_SCHEDULE_EXIST_SUCCESS(HttpStatus.OK, "오늘 수업 유무를 가져오는데 성공했습니다."),
 
 
 

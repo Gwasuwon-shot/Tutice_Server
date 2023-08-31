@@ -6,16 +6,18 @@ import gwasuwonshot.tutice.common.exception.SuccessStatus;
 import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
 import gwasuwonshot.tutice.common.resolver.userIdx.UserIdx;
 import gwasuwonshot.tutice.lesson.dto.request.UpdatePaymentRecordRequestDto;
+import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecord.GetPaymentRecordResponseDto;
+import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecordView.GetPaymentRecordViewResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.GetPaymentRecordCycleResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecord.GetPaymentRecordByUserResponseDto;
 import gwasuwonshot.tutice.lesson.service.PaymentRecordService;
-import gwasuwonshot.tutice.user.entity.Role;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,32 +39,27 @@ public class PaymentRecordController {
     }
 
 
-
-    @GetMapping("/teacher/{lessonIdx}")
+    @GetMapping("/{paymentRecordIdx}")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<GetPaymentRecordByUserResponseDto> getLessonPaymentRecordByTeacher(
+    public ApiResponseDto<GetPaymentRecordViewResponseDto> getPaymentRecordView(
             @UserIdx final Long userIdx,
-            @PathVariable final Long lessonIdx) {
+            @PathVariable final Long paymentRecordIdx) {
 
 
-        return ApiResponseDto.success(SuccessStatus.GET_PAYMENT_RECORD_SUCCESS,
-                paymentRecordService.getLessonPaymentRecordByUser(Role.TEACHER,userIdx,lessonIdx));
-
+        return ApiResponseDto.success(SuccessStatus.GET_PAYMENT_RECORD_POST_VIEW_SUCCESS,
+                GetPaymentRecordViewResponseDto.of(paymentRecordService.getPaymentRecordView(userIdx, paymentRecordIdx),
+                        DateAndTimeConvert.nowLocalDateConvertString()));
 
     }
 
-
-    @GetMapping("/parents/{lessonIdx}")
+    @GetMapping("/lesson/{lessonIdx}")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<GetPaymentRecordByUserResponseDto> getLessonPaymentRecordByParents(
+    public ApiResponseDto<List<GetPaymentRecordResponseDto>> getPaymentRecordByLesson(
             @UserIdx final Long userIdx,
-            @PathVariable final Long lessonIdx) {
-
-
+            @PathVariable final Long lessonIdx
+    ) {
         return ApiResponseDto.success(SuccessStatus.GET_PAYMENT_RECORD_SUCCESS,
-                paymentRecordService.getLessonPaymentRecordByUser(Role.PARENTS, userIdx,lessonIdx));
-
-
+                paymentRecordService.getPaymentRecordByLesson(userIdx, lessonIdx));
     }
 
     @GetMapping("/cycle/{paymentRecordIdx}")

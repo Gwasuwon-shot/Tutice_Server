@@ -9,13 +9,8 @@ import gwasuwonshot.tutice.lesson.dto.assembler.RegularScheduleAssembler;
 import gwasuwonshot.tutice.lesson.dto.request.createLesson.CreateLessonRequestDto;
 import gwasuwonshot.tutice.lesson.dto.response.*;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonByParents.GetLessonByParents;
-import gwasuwonshot.tutice.lesson.dto.response.getLessonByTeacher.GetLessonByTeacher;
-import gwasuwonshot.tutice.lesson.dto.response.getLessonDetail.GetLessonDetailByParentsResponseAccount;
-import gwasuwonshot.tutice.lesson.dto.response.getLessonDetail.GetLessonDetailByParentsResponseDto;
-import gwasuwonshot.tutice.lesson.dto.response.getLessonSchedule.GetLessonSchedule;
-import gwasuwonshot.tutice.lesson.dto.response.getLessonSchedule.GetLessonScheduleByParents;
-import gwasuwonshot.tutice.lesson.dto.response.getLessonSchedule.GetLessonScheduleByTeacher;
-import gwasuwonshot.tutice.lesson.dto.response.getLessonSchedule.GetLessonScheduleByUserResponseDto;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonByTeacher.GetLessonByTeacher;결
+import gwasuwonshot.tutice.lesson.dto.response.getLessonSchedule.GetLessonScheduleResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenance.GetMissingMaintenanceLesson;
 import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenance.MissingMaintenanceLesson;
 import gwasuwonshot.tutice.lesson.entity.*;
@@ -63,113 +58,6 @@ public class LessonService {
     private final PaymentRecordRepository paymentRecordRepository;
     private final ScheduleRepository scheduleRepository;
 
-
-    @Transactional
-    public GetLessonScheduleByUserResponseDto getLessonScheduleByUser(Role role,Long userIdx, Long lessonIdx){
-//
-//        유저가 학부모인지확인
-        User user = userRepository.findById(userIdx)
-                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
-
-        if(!user.isMatchedRole(role)){
-            throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION,ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
-        }
-
-//        레슨이 존재하는지와 레슨과학부모가 연결되어있는지 확인
-        // 레슨의 존재확인
-        Lesson lesson=lessonRepository.findById(lessonIdx)
-                .orElseThrow(() -> new NotFoundLessonException(ErrorStatus.NOT_FOUND_LESSON_EXCEPTION, ErrorStatus.NOT_FOUND_LESSON_EXCEPTION.getMessage()));
-
-        // 레슨과 유저의 연결성확인
-        if(role.equals(Role.PARENTS)){
-            if(!lesson.isMatchedParents(user)){
-                throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION, ErrorStatus.INVALID_LESSON_CODE_EXCEPTION.getMessage());
-            }
-
-        } else if (role.equals(Role.TEACHER)) {
-            if(!lesson.isMatchedTeacher(user)){
-                throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION, ErrorStatus.INVALID_LESSON_CODE_EXCEPTION.getMessage());
-            }
-
-        }
-        else {
-            throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION, ErrorStatus.INVALID_LESSON_CODE_EXCEPTION.getMessage());
-        }
-
-
-
-//        레슨정보구성
-        // TODO : nowCount - percent 로직 겹침. 모듈로 빼기
-//        - [ ] nowCount : 진짜 카운트 : 현재 사이클의 스케쥴중 출결정보가 있는스케쥴개수
-        Long nowCount = scheduleRepository.countByLessonAndCycleAndStatusIn(lesson,lesson.getCycle(),ScheduleStatus.getAttendanceScheduleStatusList());
-        //                - [ ] percent : 전체카운트와 진짜카운트의 백분율
-        Long percent = ReturnLongMath.getPercentage(nowCount,lesson.getCount());
-//           레슨스케쥴정보구성
-        List<GetLessonSchedule> getLessonScheduleList=new ArrayList<>();
-        scheduleRepository.findAllByLessonAndCycleOrderByDateDesc(lesson,lesson.getCycle())
-                .forEach(s->{
-                    getLessonScheduleList.add(
-                            GetLessonSchedule.of(
-                                    s.getIdx(),
-                                    DateAndTimeConvert.localDateConvertString(s.getDate()),
-                                    s.getStatus().getValue(),
-                                    DateAndTimeConvert.localTimeConvertString(s.getStartTime()),
-                                    DateAndTimeConvert.localTimeConvertString(s.getEndTime())));
-                });
-
-        if(role.equals(Role.PARENTS)){
-            return GetLessonScheduleByUserResponseDto.of(
-                    GetLessonScheduleByParents.of(lesson.getIdx(),lesson.getStudentName(),lesson.getTeacher().getName(),lesson.getSubject(), lesson.getCount(), nowCount,percent),
-                    getLessonScheduleList
-            );
-
-        } else if (role.equals(Role.TEACHER)) {
-            return GetLessonScheduleByUserResponseDto.of(
-                    GetLessonScheduleByTeacher.of(lesson.getIdx(),lesson.getStudentName(),lesson.getSubject(), lesson.getCount(), nowCount,percent),
-                    getLessonScheduleList
-            );
-
-        }
-        else {
-            return null;
-        }
-
-    }
-
-    @Transactional
-    public GetLessonDetailByParentsResponseDto getLessonDetailByParents(Long userIdx, Long lessonIdx){
-        //1. 먼저 유저를 찾고 유저의 롤이 부모님확인
-        User parents = userRepository.findById(userIdx)
-                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
-
-        if(!parents.isMatchedRole(Role.PARENTS)){
-            throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION,ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
-        }
-
-
-
-        // 2. 부모님의 수업중 해당 수업 아이디 있는지 확인
-//        System.out.println("시작1"); // TODO : 이거 jpa 영속성 관련 이슈인것같은데... 구현하고 공부해보기....
-//        parents.getLessonList().forEach(lesson -> System.out.println(lesson.getStudentName()));
-//        System.out.println("끝1");
-
-
-
-
-        Lesson lesson = lessonRepository.findAllByParentsIdxAndIsFinished(parents.getIdx(),false)
-                .stream()
-                .filter(pl -> pl.getIdx().equals(lessonIdx))
-                .findFirst()
-                .orElseThrow(() -> new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION,ErrorStatus.INVALID_LESSON_EXCEPTION.getMessage()));
-
-        //3. 해당 수업아이디가 있으면 정보 주기
-        return GetLessonDetailByParentsResponseDto.of(lesson.getIdx(),lesson.getTeacher().getName(),
-                DateAndTimeConvert.localDateConvertString(lesson.getStartDate()),lesson.getPayment().getValue(),
-                lesson.getAmount(),
-                GetLessonDetailByParentsResponseAccount.of(lesson.getAccount().getName(),lesson.getAccount().getBank(), lesson.getAccount().getNumber() ));
-
-
-    }
 
     @Transactional
     public GetLessonByUserResponseDto getLessonByUser(final Long userIdx){
@@ -495,10 +383,77 @@ public class LessonService {
         }catch (Exception e){
             throw new InvalidLessonCodeException(ErrorStatus.INVALID_LESSON_CODE_EXCEPTION,ErrorStatus.INVALID_LESSON_CODE_EXCEPTION.getMessage());
         }
-
     }
 
+    public GetLessonAccountResponseDto getLessonAccount(Long userIdx, Long lessonIdx) {
+        // 유저 존재 여부 확인
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+        // 수업 존재 여부 확인
+        Lesson lesson = lessonRepository.findById(lessonIdx)
+                .orElseThrow(() -> new NotFoundLessonException(ErrorStatus.NOT_FOUND_LESSON_EXCEPTION, ErrorStatus.NOT_FOUND_LESSON_EXCEPTION.getMessage()));
+        // 수업과 유저 연결 여부 확인
+        if (!lesson.isMatchedUser(user))
+            throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION, ErrorStatus.INVALID_LESSON_CODE_EXCEPTION.getMessage());
 
+        return GetLessonAccountResponseDto.of(lesson.getAccount());
+    }
 
+    public GetLessonProgressResponseDto getLessonProgress(Long userIdx, Long lessonIdx) {
+        // 유저 존재 여부 확인
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+        // 수업 존재 여부 확인
+        Lesson lesson = lessonRepository.findById(lessonIdx)
+                .orElseThrow(() -> new NotFoundLessonException(ErrorStatus.NOT_FOUND_LESSON_EXCEPTION, ErrorStatus.NOT_FOUND_LESSON_EXCEPTION.getMessage()));
+        // 수업과 유저 연결 여부 확인
+        if (!lesson.isMatchedUser(user))
+            throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION, ErrorStatus.INVALID_LESSON_CODE_EXCEPTION.getMessage());
 
+        // 현재 회차 계산 : 이때 수업에 연결된 스케쥴중 현재사이클(수업에 연결된 paymentRecord개수(선불,후불+1))중 출석,결석만 카운트해서 현재카운트가져오기
+        Long nowCount = scheduleRepository.countByLessonAndCycleAndStatusIn(lesson,lesson.getCycle(),ScheduleStatus.getAttendanceScheduleStatusList());
+        // - [ ] percent : 전체카운트와 진짜카운트의 백분율
+        Long percent = ReturnLongMath.getPercentage(nowCount, lesson.getCount());
+
+        return GetLessonProgressResponseDto.of(lesson.getIdx(), lesson.getCount(), nowCount, percent);
+    }
+
+    public GetLessonDetailResponseDto getLessonDetail(Long userIdx, Long lessonIdx) {
+        // 유저 존재 여부 확인
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+        // 수업 존재 여부 확인
+        Lesson lesson = lessonRepository.findById(lessonIdx)
+                .orElseThrow(() -> new NotFoundLessonException(ErrorStatus.NOT_FOUND_LESSON_EXCEPTION, ErrorStatus.NOT_FOUND_LESSON_EXCEPTION.getMessage()));
+        // 수업과 유저 연결 여부 확인
+        if (!lesson.isMatchedUser(user))
+            throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION, ErrorStatus.INVALID_LESSON_CODE_EXCEPTION.getMessage());
+
+        return GetLessonDetailResponseDto.of(lesson);
+    }
+
+    public List<GetLessonScheduleResponseDto> getLessonSchedule(Long userIdx, Long lessonIdx) {
+        // 유저 존재 여부 확인
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+        // 수업 존재 여부 확인
+        Lesson lesson = lessonRepository.findById(lessonIdx)
+                .orElseThrow(() -> new NotFoundLessonException(ErrorStatus.NOT_FOUND_LESSON_EXCEPTION, ErrorStatus.NOT_FOUND_LESSON_EXCEPTION.getMessage()));
+        // 수업과 유저 연결 여부 확인
+        if (!lesson.isMatchedUser(user))
+            throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION, ErrorStatus.INVALID_LESSON_CODE_EXCEPTION.getMessage());
+        // 레슨 스케쥴 정보 구성
+        List<GetLessonScheduleResponseDto> getLessonScheduleResponseDtoList = new ArrayList<>();
+        scheduleRepository.findAllByLessonAndCycleOrderByDateDesc(lesson,lesson.getCycle())
+                .forEach(s->{
+                    getLessonScheduleResponseDtoList.add(
+                            GetLessonScheduleResponseDto.of(
+                                    s.getIdx(),
+                                    DateAndTimeConvert.localDateConvertString(s.getDate()),
+                                    s.getStatus().getValue(),
+                                    DateAndTimeConvert.localTimeConvertString(s.getStartTime()),
+                                    DateAndTimeConvert.localTimeConvertString(s.getEndTime())));
+                });
+        return getLessonScheduleResponseDtoList;
+    }
 }
