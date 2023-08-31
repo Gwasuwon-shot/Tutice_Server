@@ -9,7 +9,7 @@ import gwasuwonshot.tutice.lesson.dto.assembler.RegularScheduleAssembler;
 import gwasuwonshot.tutice.lesson.dto.request.createLesson.CreateLessonRequestDto;
 import gwasuwonshot.tutice.lesson.dto.response.*;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonByParents.GetLessonByParents;
-import gwasuwonshot.tutice.lesson.dto.response.getLessonByTeacher.GetLessonByTeacher;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonByTeacher.GetLessonByTeacher;결
 import gwasuwonshot.tutice.lesson.dto.response.getLessonSchedule.GetLessonScheduleResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenance.GetMissingMaintenanceLesson;
 import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenance.MissingMaintenanceLesson;
@@ -393,7 +393,7 @@ public class LessonService {
         Lesson lesson = lessonRepository.findById(lessonIdx)
                 .orElseThrow(() -> new NotFoundLessonException(ErrorStatus.NOT_FOUND_LESSON_EXCEPTION, ErrorStatus.NOT_FOUND_LESSON_EXCEPTION.getMessage()));
         // 수업과 유저 연결 여부 확인
-        if (!user.equals(lesson.getParents()) && !user.equals(lesson.getTeacher()))
+        if (!lesson.isMatchedUser(user))
             throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION, ErrorStatus.INVALID_LESSON_CODE_EXCEPTION.getMessage());
 
         return GetLessonAccountResponseDto.of(lesson.getAccount());
