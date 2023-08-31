@@ -130,7 +130,7 @@ public class PaymentRecordService {
         Lesson lesson = lessonRepository.findById(lessonIdx)
                 .orElseThrow(() -> new NotFoundLessonException(ErrorStatus.NOT_FOUND_LESSON_EXCEPTION, ErrorStatus.NOT_FOUND_LESSON_EXCEPTION.getMessage()));
         // 수업과 유저 연결 여부 확인
-        if (!user.equals(lesson.getParents()) && !user.equals(lesson.getTeacher()))
+        if (!lesson.isMatchedUser(user))
             throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION, ErrorStatus.INVALID_LESSON_CODE_EXCEPTION.getMessage());
 
         // 최신 순으로 정렬
