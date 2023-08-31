@@ -3,9 +3,8 @@ package gwasuwonshot.tutice.lesson.service;
 
 import gwasuwonshot.tutice.common.exception.ErrorStatus;
 import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
+import gwasuwonshot.tutice.lesson.dto.response.GetPaymentRecordCycleResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecord.*;
-import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecordView.GetPaymentRecordViewCycle;
-import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecordView.GetPaymentRecordViewLesson;
 import gwasuwonshot.tutice.lesson.entity.Lesson;
 import gwasuwonshot.tutice.lesson.entity.Payment;
 import gwasuwonshot.tutice.lesson.entity.PaymentRecord;
@@ -37,58 +36,6 @@ public class PaymentRecordService {
     private final UserRepository userRepository;
     private final PaymentRecordRepository paymentRecordRepository;
     private final ScheduleRepository scheduleRepository;
-
-    @Transactional
-    public GetPaymentRecordViewLesson getPaymentRecordView(Long userIdx, Long paymentRecordIdx) {
-        //1. 유저가 선생님인지 확인
-        User teacher = userRepository.findById(userIdx)
-                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
-
-        if (!teacher.isMatchedRole(Role.TEACHER)) {
-            throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION, ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
-        }
-
-        //2. 파라미터로 들어오는 paymentRecordIdx가 존재하는지 확인
-        PaymentRecord paymentRecord = paymentRecordRepository.findById(paymentRecordIdx)
-                .orElseThrow(() -> new NotFoundPaymentRecordException(ErrorStatus.NOT_FOUND_PAYMENT_RECORD_EXCEPTION, ErrorStatus.NOT_FOUND_PAYMENT_RECORD_EXCEPTION.getMessage()));
-
-        Lesson lesson = paymentRecord.getLesson();
-
-
-        //3. paymentRecordIdx의 레슨이 선생님의 레슨인지 확인
-        if (!lesson.isMatchedTeacher(teacher)) {
-            throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION, ErrorStatus.INVALID_LESSON_EXCEPTION.getMessage());
-
-        }
-        // 해당레슨의 사이클 확인,  레슨 사이클의 처음스케쥴데이트 가장 늦은 스케쥴데이트 가져오기
-        //regularScheduleList를 요일순서로 정렬
-        Collections.sort(lesson.getPaymenRecordList(), new Comparator<PaymentRecord>() {
-            @Override
-            public int compare(PaymentRecord o1, PaymentRecord o2) {
-                //정렬목표 : 오름차순 : 오래된순
-                if (o1.getCreatedAt().isAfter(o2.getCreatedAt())) {
-                    return 1;
-                }
-                return -1;
-            }
-        });
-
-        // 들아오는 paymentRecord로 사이클판단
-        Long cycle = Long.valueOf(lesson.getPaymenRecordList().indexOf(paymentRecord)) + 1;
-
-        if (cycle == -1) {
-            throw new InvalidPaymentRecordException(ErrorStatus.UNCONNECTED_LESSON_PAYMENT_RECORD_EXCEPTION, ErrorStatus.UNCONNECTED_LESSON_PAYMENT_RECORD_EXCEPTION.getMessage());
-        }
-
-        Schedule endSchedule = scheduleRepository.findTopByLessonAndCycleAndStatusNotOrderByDateDesc(lesson, cycle, ScheduleStatus.CANCEL);
-        Schedule startSchedule = scheduleRepository.findTopByLessonAndCycleAndStatusNotOrderByDateAsc(lesson, cycle, ScheduleStatus.CANCEL);
-
-        return GetPaymentRecordViewLesson.of(lesson.getIdx(), lesson.getStudentName(), lesson.getSubject(),
-                GetPaymentRecordViewCycle.of(cycle,
-                        DateAndTimeConvert.localDateConvertString(startSchedule.getDate()),
-                        DateAndTimeConvert.localDateConvertString(endSchedule.getDate())));
-
-    }
 
 
     @Transactional
@@ -170,6 +117,43 @@ public class PaymentRecordService {
                     );
         }
         return paymentRecordList;
+    }
+
+    public GetPaymentRecordCycleResponseDto getPaymentRecordCycle(Long userIdx, Long paymentRecordIdx) {
+        // 유저 존재 여부 확인
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+        // 입금 내역 존재 여부 확인
+        PaymentRecord paymentRecord = paymentRecordRepository.findById(paymentRecordIdx)
+                .orElseThrow(() -> new NotFoundPaymentRecordException(ErrorStatus.NOT_FOUND_PAYMENT_RECORD_EXCEPTION, ErrorStatus.NOT_FOUND_PAYMENT_RECORD_EXCEPTION.getMessage()));
+        Lesson lesson = paymentRecord.getLesson();
+        // 수업과 선생님 연결 여부 확인
+        if (!lesson.isMatchedTeacher(user))
+            throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION, ErrorStatus.INVALID_LESSON_CODE_EXCEPTION.getMessage());
+
+        // 해당레슨의 사이클 확인,  레슨 사이클의 처음스케쥴데이트 가장 늦은 스케쥴데이트 가져오기
+        //regularScheduleList를 요일순서로 정렬
+        Collections.sort(lesson.getPaymenRecordList(), new Comparator<PaymentRecord>() {
+            @Override
+            public int compare(PaymentRecord o1, PaymentRecord o2) {
+                //정렬목표 : 오름차순 : 오래된순
+                if (o1.getCreatedAt().isAfter(o2.getCreatedAt())) {
+                    return 1;
+                }
+                return -1;
+            }
+        });
+
+        // 들아오는 paymentRecord로 사이클판단
+        Long cycle = Long.valueOf(lesson.getPaymenRecordList().indexOf(paymentRecord)) + 1;
+
+        if (cycle == -1) {
+            throw new InvalidPaymentRecordException(ErrorStatus.UNCONNECTED_LESSON_PAYMENT_RECORD_EXCEPTION, ErrorStatus.UNCONNECTED_LESSON_PAYMENT_RECORD_EXCEPTION.getMessage());
+        }
+        Schedule endSchedule = scheduleRepository.findTopByLessonAndCycleAndStatusNotOrderByDateDesc(lesson, cycle, ScheduleStatus.CANCEL);
+        Schedule startSchedule = scheduleRepository.findTopByLessonAndCycleAndStatusNotOrderByDateAsc(lesson, cycle, ScheduleStatus.CANCEL);
+
+        return GetPaymentRecordCycleResponseDto.of(paymentRecord.getIdx(), cycle, startSchedule, endSchedule);
     }
 }
 
