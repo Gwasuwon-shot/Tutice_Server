@@ -5,18 +5,16 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class GetPaymentRecord {
+public class GetPaymentRecordResponseDto {
     private Long idx;
     private String date;
     private Long amount;
     private Boolean status;
 
-    public static GetPaymentRecord of(Long idx, String date, Long amount, Boolean status) {
-        return new GetPaymentRecord(idx, date, amount, status);
+    public static GetPaymentRecordResponseDto of(Long idx, String date, Long amount, Boolean status) {
+        return new GetPaymentRecordResponseDto(idx, date, amount, status);
     }
 }

@@ -8,32 +8,15 @@ import lombok.*;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 public class GetTodayScheduleByTeacherResponseDto {
-    private String teacherName;
-    private Boolean isTodaySchedule;
-    private TodaySchedule todaySchedule;
+    private TodayScheduleByTeacher lesson;
+    private TodayScheduleDetailByTeacher schedule;
+    private Integer timeStatus;
 
-    // case1
-    public static GetTodayScheduleByTeacherResponseDto of(String name) {
+    public static GetTodayScheduleByTeacherResponseDto of(Schedule schedule, Integer timeStatus, Integer expectedCount) {
         return GetTodayScheduleByTeacherResponseDto.builder()
-                .teacherName(name)
-                .isTodaySchedule(false)
-                .build();
-    }
-
-    // case 2,3,4
-    public static GetTodayScheduleByTeacherResponseDto ofTodaySchedule(Boolean isMissingAttendance, String name, Schedule schedule, Integer timeStatus, Integer expectedCount) {
-        return GetTodayScheduleByTeacherResponseDto.builder()
-                .teacherName(name)
-                .isTodaySchedule(true)
-                .todaySchedule(TodaySchedule.of(isMissingAttendance, schedule, timeStatus, expectedCount))
-                .build();
-    }
-
-    // case 5
-    public static GetTodayScheduleByTeacherResponseDto ofCompletedAttendance(String name) {
-        return GetTodayScheduleByTeacherResponseDto.builder()
-                .teacherName(name)
-                .isTodaySchedule(true)
+                .lesson(TodayScheduleByTeacher.of(schedule.getLesson().getIdx(), schedule.getLesson().getStudentName(), schedule.getLesson().getSubject()))
+                .schedule(TodayScheduleDetailByTeacher.of(schedule.getIdx(), schedule.getStatus().getValue(), expectedCount))
+                .timeStatus(timeStatus)
                 .build();
     }
 }

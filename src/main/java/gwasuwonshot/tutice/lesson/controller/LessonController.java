@@ -7,21 +7,22 @@ import gwasuwonshot.tutice.lesson.dto.request.createLesson.CreateLessonMaintenan
 import gwasuwonshot.tutice.lesson.dto.request.createLesson.CreateLessonRequestDto;
 import gwasuwonshot.tutice.lesson.dto.request.UpdateLessonParentsRequestDto;
 import gwasuwonshot.tutice.lesson.dto.response.CreateLessonResponseDto;
+import gwasuwonshot.tutice.lesson.dto.response.GetLessonAccountResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.GetLessonByUserResponseDto;
+import gwasuwonshot.tutice.lesson.dto.response.GetLessonDetailResponseDto;
+import gwasuwonshot.tutice.lesson.dto.response.GetLessonProgressResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonByParents.GetLessonByParentsResponseDto;
-import gwasuwonshot.tutice.lesson.dto.response.getLessonByTeacher.GetLessonByTeacher;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonByTeacher.GetLessonByTeacherResponseDto;
-import gwasuwonshot.tutice.lesson.dto.response.getLessonDetail.GetLessonDetailByParentsResponseDto;
-import gwasuwonshot.tutice.lesson.dto.response.getLessonSchedule.GetLessonScheduleByUserResponseDto;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonSchedule.GetLessonScheduleResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenance.GetMissingMaintenanceLessonResponseDto;
 import gwasuwonshot.tutice.lesson.service.LessonService;
-import gwasuwonshot.tutice.user.entity.Role;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -52,41 +53,14 @@ public class LessonController {
 
     }
 
-    @GetMapping("/schedule/parents/{lessonIdx}")
+    @GetMapping("/schedule/{lessonIdx}")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<GetLessonScheduleByUserResponseDto> getLessonScheduleByParents(
+    public ApiResponseDto<List<GetLessonScheduleResponseDto>> getLessonSchedule(
             @UserIdx final Long userIdx,
             @PathVariable final Long lessonIdx) {
 
         return ApiResponseDto.success(SuccessStatus.GET_LESSON_SCHEDULE_SUCCESS,
-                lessonService.getLessonScheduleByUser(Role.PARENTS,userIdx,lessonIdx));
-
-
-    }
-
-    @GetMapping("/schedule/teacher/{lessonIdx}")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<GetLessonScheduleByUserResponseDto> getLessonScheduleByTeacher(
-            @UserIdx final Long userIdx,
-            @PathVariable final Long lessonIdx) {
-
-        return ApiResponseDto.success(SuccessStatus.GET_LESSON_SCHEDULE_SUCCESS,
-                lessonService.getLessonScheduleByUser(Role.TEACHER,userIdx,lessonIdx));
-
-
-    }
-
-    @GetMapping("/detail/parents/{lessonIdx}")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<GetLessonDetailByParentsResponseDto> getLessonDetailByParents(
-            @UserIdx final Long userIdx
-            , @PathVariable final Long lessonIdx) {
-
-
-        return ApiResponseDto.success(SuccessStatus.GET_LESSON_DETAIL_BY_PARENTS_SUCCESS,
-                lessonService.getLessonDetailByParents(userIdx, lessonIdx));
-
-
+                lessonService.getLessonSchedule(userIdx, lessonIdx));
     }
 
 
@@ -165,6 +139,27 @@ public class LessonController {
         );
 
 
+    }
+
+    @GetMapping("/account/{lessonIdx}")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponseDto<GetLessonAccountResponseDto> getLessonAccount(@UserIdx final Long userIdx,
+                                                                        @PathVariable final Long lessonIdx) {
+        return ApiResponseDto.success(SuccessStatus.GET_LESSON_ACCOUNT_SUCCESS, lessonService.getLessonAccount(userIdx, lessonIdx));
+    }
+
+    @GetMapping("/progress/{lessonIdx}")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponseDto<GetLessonProgressResponseDto> getLessonProgress(@UserIdx final Long userIdx,
+                                                                          @PathVariable final Long lessonIdx) {
+        return ApiResponseDto.success(SuccessStatus.GET_LESSON_PROGRESS_SUCCESS, lessonService.getLessonProgress(userIdx, lessonIdx));
+    }
+
+    @GetMapping("/detail/{lessonIdx}")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponseDto<GetLessonDetailResponseDto> getLessonDetail(@UserIdx final Long userIdx,
+                                                                      @PathVariable final Long lessonIdx) {
+        return ApiResponseDto.success(SuccessStatus.GET_LESSON_DETAIL_SUCCESS, lessonService.getLessonDetail(userIdx, lessonIdx));
     }
 
 
