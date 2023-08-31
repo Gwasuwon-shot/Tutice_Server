@@ -9,9 +9,7 @@ import gwasuwonshot.tutice.lesson.dto.assembler.RegularScheduleAssembler;
 import gwasuwonshot.tutice.lesson.dto.request.createLesson.CreateLessonRequestDto;
 import gwasuwonshot.tutice.lesson.dto.response.*;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonByParents.GetLessonByParents;
-import gwasuwonshot.tutice.lesson.dto.response.getLessonByTeacher.GetLessonByTeacher;
-import gwasuwonshot.tutice.lesson.dto.response.getLessonDetail.GetLessonDetailByParentsResponseAccount;
-import gwasuwonshot.tutice.lesson.dto.response.getLessonDetail.GetLessonDetailByParentsResponseDto;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonByTeacher.GetLessonByTeacher;결
 import gwasuwonshot.tutice.lesson.dto.response.getLessonSchedule.GetLessonScheduleResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenance.GetMissingMaintenanceLesson;
 import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenance.MissingMaintenanceLesson;
@@ -60,41 +58,6 @@ public class LessonService {
     private final PaymentRecordRepository paymentRecordRepository;
     private final ScheduleRepository scheduleRepository;
 
-
-    @Transactional
-    public GetLessonDetailByParentsResponseDto getLessonDetailByParents(Long userIdx, Long lessonIdx){
-        //1. 먼저 유저를 찾고 유저의 롤이 부모님확인
-        User parents = userRepository.findById(userIdx)
-                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
-
-        if(!parents.isMatchedRole(Role.PARENTS)){
-            throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION,ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
-        }
-
-
-
-        // 2. 부모님의 수업중 해당 수업 아이디 있는지 확인
-//        System.out.println("시작1"); // TODO : 이거 jpa 영속성 관련 이슈인것같은데... 구현하고 공부해보기....
-//        parents.getLessonList().forEach(lesson -> System.out.println(lesson.getStudentName()));
-//        System.out.println("끝1");
-
-
-
-
-        Lesson lesson = lessonRepository.findAllByParentsIdxAndIsFinished(parents.getIdx(),false)
-                .stream()
-                .filter(pl -> pl.getIdx().equals(lessonIdx))
-                .findFirst()
-                .orElseThrow(() -> new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION,ErrorStatus.INVALID_LESSON_EXCEPTION.getMessage()));
-
-        //3. 해당 수업아이디가 있으면 정보 주기
-        return GetLessonDetailByParentsResponseDto.of(lesson.getIdx(),lesson.getTeacher().getName(),
-                DateAndTimeConvert.localDateConvertString(lesson.getStartDate()),lesson.getPayment().getValue(),
-                lesson.getAmount(),
-                GetLessonDetailByParentsResponseAccount.of(lesson.getAccount().getName(),lesson.getAccount().getBank(), lesson.getAccount().getNumber() ));
-
-
-    }
 
     @Transactional
     public GetLessonByUserResponseDto getLessonByUser(final Long userIdx){
@@ -420,9 +383,21 @@ public class LessonService {
         }catch (Exception e){
             throw new InvalidLessonCodeException(ErrorStatus.INVALID_LESSON_CODE_EXCEPTION,ErrorStatus.INVALID_LESSON_CODE_EXCEPTION.getMessage());
         }
-
     }
 
+    public GetLessonAccountResponseDto getLessonAccount(Long userIdx, Long lessonIdx) {
+        // 유저 존재 여부 확인
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+        // 수업 존재 여부 확인
+        Lesson lesson = lessonRepository.findById(lessonIdx)
+                .orElseThrow(() -> new NotFoundLessonException(ErrorStatus.NOT_FOUND_LESSON_EXCEPTION, ErrorStatus.NOT_FOUND_LESSON_EXCEPTION.getMessage()));
+        // 수업과 유저 연결 여부 확인
+        if (!lesson.isMatchedUser(user))
+            throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION, ErrorStatus.INVALID_LESSON_CODE_EXCEPTION.getMessage());
+
+        return GetLessonAccountResponseDto.of(lesson.getAccount());
+    }
 
     public GetLessonProgressResponseDto getLessonProgress(Long userIdx, Long lessonIdx) {
         // 유저 존재 여부 확인

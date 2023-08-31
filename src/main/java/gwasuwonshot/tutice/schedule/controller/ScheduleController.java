@@ -87,6 +87,7 @@ public class ScheduleController {
  public ApiResponseDto<Boolean> getMissingAttendanceByLessonExist(@UserIdx final Long userIdx,
                                                            @PathVariable final Long lessonIdx) {
   return ApiResponseDto.success(SuccessStatus.GET_MISSING_MAINTENANCE_BY_LESSON_EXIST_SUCCESS, scheduleService.getMissingAttendanceByLessonExist(userIdx, lessonIdx));
+ }
 
  @GetMapping("/attendance/missing/existence")
  @ResponseStatus(HttpStatus.OK)
