@@ -224,7 +224,7 @@ public class ScheduleService {
 
 
 
-    public GetMissingAttendanceScheduleResponseDto getMissingAttendanceSchedule(Long userIdx) {
+    public GetMissingAttendanceScheduleResponseDto getMissingAttendanceScheduleByTeacher(Long userIdx) {
         // 유저 존재 여부
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));

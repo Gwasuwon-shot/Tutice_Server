@@ -54,10 +54,10 @@ public class ScheduleController {
   return ApiResponseDto.success(SuccessStatus.GET_TODAY_SCHEDULE_BY_TEACHER_SUCCESS, scheduleService.getTodayScheduleByTeacher(userIdx) );
  }
 
- @GetMapping("/attendance/missing")
+ @GetMapping("/missing-attendance")
  @ResponseStatus(HttpStatus.OK)
- public ApiResponseDto<GetMissingAttendanceScheduleResponseDto> getMissingAttendanceSchedule(@UserIdx final Long userIdx) {
-  return ApiResponseDto.success(SuccessStatus.GET_MISSING_ATTENDANCE_SCHEDULE_SUCCESS, scheduleService.getMissingAttendanceSchedule(userIdx) );
+ public ApiResponseDto<GetMissingAttendanceScheduleResponseDto> getMissingAttendanceScheduleByTeacher(@UserIdx final Long userIdx) {
+  return ApiResponseDto.success(SuccessStatus.GET_MISSING_ATTENDANCE_SCHEDULE_SUCCESS, scheduleService.getMissingAttendanceScheduleByTeacher(userIdx) );
  }
 
  @PatchMapping("")
