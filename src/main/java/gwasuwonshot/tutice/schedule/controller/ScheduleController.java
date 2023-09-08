@@ -93,11 +93,12 @@ public class ScheduleController {
   return ApiResponseDto.success(SuccessStatus.GET_TEMPORARY_SCHEDULE_SUCCESS, scheduleService.getTemporarySchedule(request) );
  }
 
- @GetMapping("/attendance/missing/{lessonIdx}/existence")
+
+ @GetMapping("/lesson/{lessonIdx}/missing-attendance/existence")
  @ResponseStatus(HttpStatus.OK)
- public ApiResponseDto<Boolean> getMissingAttendanceByLessonExist(@UserIdx final Long userIdx,
+ public ApiResponseDto<Boolean> getMissingAttendanceExistenceByLesson(@UserIdx final Long userIdx,
                                                            @PathVariable final Long lessonIdx) {
-  return ApiResponseDto.success(SuccessStatus.GET_MISSING_MAINTENANCE_BY_LESSON_EXIST_SUCCESS, scheduleService.getMissingAttendanceByLessonExist(userIdx, lessonIdx));
+  return ApiResponseDto.success(SuccessStatus.GET_MISSING_MAINTENANCE_BY_LESSON_EXIST_SUCCESS, scheduleService.getMissingAttendanceExistenceByLesson(userIdx, lessonIdx));
  }
 
  @GetMapping("/attendance/missing/existence")

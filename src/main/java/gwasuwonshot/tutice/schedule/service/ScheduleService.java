@@ -393,7 +393,7 @@ public class ScheduleService {
         return GetTemporaryScheduleResponseDto.of(temporaryScheduleList);
     }
 
-    public Boolean getMissingAttendanceByLessonExist(Long userIdx, Long lessonIdx) {
+    public Boolean getMissingAttendanceExistenceByLesson(Long userIdx, Long lessonIdx) {
         // 유저 존재 여부 확인
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
