@@ -2,6 +2,11 @@ package gwasuwonshot.tutice.user.service;
 
 import gwasuwonshot.tutice.common.exception.ErrorStatus;
 import gwasuwonshot.tutice.config.jwt.JwtService;
+import gwasuwonshot.tutice.lesson.dto.response.GetLessonAccountResponseDto;
+import gwasuwonshot.tutice.lesson.entity.Lesson;
+import gwasuwonshot.tutice.lesson.exception.invalid.InvalidLessonException;
+import gwasuwonshot.tutice.lesson.exception.notfound.NotFoundLessonException;
+import gwasuwonshot.tutice.lesson.repository.LessonRepository;
 import gwasuwonshot.tutice.user.dto.assembler.UserAssembler;
 import gwasuwonshot.tutice.user.dto.request.LocalLoginRequestDto;
 import gwasuwonshot.tutice.user.dto.request.LocalSignUpRequestDto;
@@ -27,6 +32,7 @@ public class UserService {
     private final UserAssembler userAssembler;
     private final JwtService jwtService;
     private final UserRepository userRepository;
+    private final LessonRepository lessonRepository;
 
     @Transactional
     public LoginResponseDto localSignUp(LocalSignUpRequestDto request) {
@@ -65,7 +71,7 @@ public class UserService {
 
     }
 
-@Transactional
+    @Transactional
     public void updateUserDeviceToken(Long userIdx, UpdateUserDeviceTokenRequestDto request) {
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
@@ -76,5 +82,19 @@ public class UserService {
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
         return GetUserNameResponseDto.of(user.getName());
+    }
+
+    public GetLessonAccountResponseDto getAccountByLesson(Long userIdx, Long lessonIdx) {
+        // 유저 존재 여부 확인
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+        // 수업 존재 여부 확인
+        Lesson lesson = lessonRepository.findById(lessonIdx)
+                .orElseThrow(() -> new NotFoundLessonException(ErrorStatus.NOT_FOUND_LESSON_EXCEPTION, ErrorStatus.NOT_FOUND_LESSON_EXCEPTION.getMessage()));
+        // 수업과 유저 연결 여부 확인
+        if (!lesson.isMatchedUser(user))
+            throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION, ErrorStatus.INVALID_LESSON_CODE_EXCEPTION.getMessage());
+
+        return GetLessonAccountResponseDto.of(lesson.getAccount());
     }
 }

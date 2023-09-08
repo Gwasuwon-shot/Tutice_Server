@@ -17,7 +17,7 @@ public enum SuccessStatus {
     GET_USER_NAME_SUCCESS(HttpStatus.OK, "유저 이름을 가져오는데 성공했습니다."),
 
 
-    GET_LESSON_BY_USER_SUCCESS(HttpStatus.OK, "유저별로 연결된 수업 여부를 가져오는데 성공했습니다."),
+    GET_LESSON_EXISTENCE_BY_USER_SUCCESS(HttpStatus.OK, "유저별로 연결된 수업 여부를 가져오는데 성공했습니다."),
     GET_LESSON_SCHEDULE_SUCCESS(HttpStatus.OK,"수업 내역(출결 상황) 가져오기 성공"),
     GET_LESSON_PROGRESS_SUCCESS(HttpStatus.OK,"수업 진행 정도를 가져오는데 성공했습니다."),
     GET_LESSON_DETAIL_SUCCESS(HttpStatus.OK,"수업 정보를 가져오는데 성공했습니다."),
