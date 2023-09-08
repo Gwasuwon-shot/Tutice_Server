@@ -76,11 +76,11 @@ public class Schedule extends AuditingTimeEntity {
         regularScheduleList.forEach(lrs->System.out.println("수업의 요일들 : "+lrs.getDayOfWeek()));
 
 
-        // TODO 정기일정이 1개이면 근야 하면됨!!
-        if(regularScheduleList.size()>1){
-            List<RegularSchedule> sortedRegularScheduleList = RegularSchedule.createSortedReglarScheduleList(startDate,regularScheduleList);
-        }
-        List<RegularSchedule> sortedRegularScheduleList = regularScheduleList;
+
+        // TODO 정기일정이 1개이면 그냥 하면됨!!
+        List<RegularSchedule> sortedRegularScheduleList
+                = (regularScheduleList.size()>1) ? RegularSchedule.createSortedReglarScheduleList(startDate,regularScheduleList) : regularScheduleList;
+
 
         //2. 1의 정렬된 리스트에서 count 만큼 반복해 스케쥴 생성
 
@@ -106,6 +106,7 @@ public class Schedule extends AuditingTimeEntity {
 
             LocalTime startTime = sortedRegularScheduleList.get(tempI).getStartTime();
             LocalTime endTime = sortedRegularScheduleList.get(tempI).getEndTime();
+            System.out.println("startDate : "+startDate );
             LocalDate date = startDate.plusWeeks(week).with(TemporalAdjusters.next(java.time.DayOfWeek.of(dayOfWeek.getIndex().intValue())));
             System.out.println("date : "+DateAndTimeConvert.localDateConvertString(date));
             System.out.println();
@@ -122,8 +123,10 @@ public class Schedule extends AuditingTimeEntity {
 
         createdScheduleList.forEach(cs -> System.out.println(cs.getDate()));
 
-        return createdScheduleList;
+        //return createdScheduleList;
 
+        // test 용 return 변경
+        return null;
 
     }
 
@@ -162,21 +165,22 @@ public class Schedule extends AuditingTimeEntity {
         this.endTime = endTime;
     }
 
-//    public static void main(String[] args) {
-//        LocalDate startDate = DateAndTimeConvert.stringConvertLocalDate("2023-07-16");
-//        for(int i =0 ; i < 9; i++){
-//            System.out.println("i : "+i);
-//            int tempI = i%2;
-//            int week = i/2;
-//            System.out.println("tempI : "+tempI);
-//            System.out.println("week : "+week);
-//            LocalDate date = startDate.plusWeeks(week).with(TemporalAdjusters.next(java.time.DayOfWeek.of(dayOfWeek.getIndex().intValue())));
-//
-//
-//
-//
-//        }
-//    }
+    public static void main(String[] args) {
+        LocalDate startDate = DateAndTimeConvert.stringConvertLocalDate("2023-08-30");
+        for(int i =0 ; i < 9; i++){
+            System.out.println("i : "+i);
+            int tempI = i%2;
+            int week = i/2;
+            System.out.println("tempI : "+tempI);
+            System.out.println("week : "+week);
+            LocalDate date = startDate.plusWeeks(week).with(TemporalAdjusters.next(java.time.DayOfWeek.of(3)));
+
+            System.out.println("date : "+date);
+            System.out.println("startDate.plusWeeks(week): "+ startDate.plusWeeks(week));
+            System.out.println(startDate.plusDays(0).plusWeeks(0));
+
+        }
+    }
     public void updateScheduleAttendance(String status) {
         this.status = ScheduleStatus.getScheduleStatusByValue(status);
     }
