@@ -165,6 +165,12 @@ public class LessonController {
         return ApiResponseDto.success(SuccessStatus.GET_LESSON_DETAIL_SUCCESS, lessonService.getLessonDetail(userIdx, lessonIdx));
     }
 
+    @GetMapping("/missing-maintenance/existence")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponseDto<Boolean> getMissingMaintenanceExistenceByTeacher(@UserIdx final Long userIdx) {
+        return ApiResponseDto.success(SuccessStatus.GET_MISSING_MAINTENANCE_EXIST_SUCCESS, lessonService.getMissingMaintenanceExistenceByTeacher(userIdx) );
+    }
+
 
 
 }

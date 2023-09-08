@@ -107,11 +107,7 @@ public class ScheduleController {
   return ApiResponseDto.success(SuccessStatus.GET_MISSING_ATTENDANCE_EXIST_SUCCESS, scheduleService.getMissingAttendanceExistenceByTeacher(userIdx) );
  }
 
- @GetMapping("/maintenance/missing/existence")
- @ResponseStatus(HttpStatus.OK)
- public ApiResponseDto<Boolean> getMissingMaintenanceExist(@UserIdx final Long userIdx) {
-  return ApiResponseDto.success(SuccessStatus.GET_MISSING_MAINTENANCE_EXIST_SUCCESS, scheduleService.getMissingMaintenanceExist(userIdx) );
- }
+
 
  @GetMapping("/today/existence")
  @ResponseStatus(HttpStatus.OK)

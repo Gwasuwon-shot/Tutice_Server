@@ -429,22 +429,7 @@ public class ScheduleService {
         return isMissingAttendance;
     }
 
-    public Boolean getMissingMaintenanceExist(Long userIdx) {
-        // 유저 존재 여부
-        User user = userRepository.findById(userIdx)
-                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
-        // 선생님 여부
-        if(!user.isMatchedRole(Role.TEACHER)) throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION,ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
-        // 수업 리스트 가져오기
-        List<Lesson> lessonList = lessonRepository.findAllByTeacherIdxAndIsFinished(userIdx, false);
-        // 수업연장 여부 유무
-        boolean isMissingMaintenance = false;
-        for(Lesson lesson : lessonList) {
-            if(isMissingMaintenance) break;
-            isMissingMaintenance = !scheduleRepository.existsByLessonAndCycleAndStatus(lesson, lesson.getCycle(), ScheduleStatus.NO_STATUS);
-        }
-        return isMissingMaintenance;
-    }
+
 
     public Boolean getTodayScheduleExist(Long userIdx) {
         // 유저 존재 여부
