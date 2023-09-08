@@ -43,12 +43,12 @@ public class LessonController {
 
     }
 
-    @GetMapping("")
+    @GetMapping("/existence")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<GetLessonByUserResponseDto> getLessonByUser(@UserIdx final Long userIdx) {
+    public ApiResponseDto<GetLessonByUserResponseDto> getLessonExistenceByUser(@UserIdx final Long userIdx) {
 
-        return ApiResponseDto.success(SuccessStatus.GET_LESSON_BY_USER_SUCCESS,
-                lessonService.getLessonByUser(userIdx));
+        return ApiResponseDto.success(SuccessStatus.GET_LESSON_EXISTENCE_BY_USER_SUCCESS,
+                lessonService.getLessonExistenceByUser(userIdx));
 
 
     }
