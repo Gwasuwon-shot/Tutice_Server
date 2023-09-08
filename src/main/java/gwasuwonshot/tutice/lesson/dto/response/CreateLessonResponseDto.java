@@ -14,9 +14,10 @@ import lombok.NoArgsConstructor;
 public class CreateLessonResponseDto {
     private String lessonCode;
     private Long paymentRecordIdx;
+    private Long lessonidx;
 
-    public static CreateLessonResponseDto of(String lessonCode, Long paymentRecordIdx) {
-        return new CreateLessonResponseDto(lessonCode, paymentRecordIdx);
+    public static CreateLessonResponseDto of(String lessonCode, Long paymentRecordIdx, Long lessonIdx) {
+        return new CreateLessonResponseDto(lessonCode, paymentRecordIdx, lessonIdx);
     }
 
 }
