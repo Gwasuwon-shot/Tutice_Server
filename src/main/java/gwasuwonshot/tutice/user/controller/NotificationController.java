@@ -19,7 +19,8 @@ public class NotificationController {
     private final NotificationService notificationService;
 
 
-    @GetMapping("/attendance/{scheduleIdx}")
+
+    @GetMapping("/schedule/{scheduleIdx}/attendance")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponseDto<RequestAttendanceNotificationResponseDto> requestAttendanceNotification(
             @UserIdx final Long userIdx,
@@ -32,7 +33,7 @@ public class NotificationController {
 
     }
 
-    @GetMapping("/payment-record/{lessonIdx}")
+    @GetMapping("/lesson/{lessonIdx}/payment-record")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponseDto<RequestPaymentRecordNotificationResponseDto> requestPaymentRecordNotification(
             @UserIdx final Long userIdx,
