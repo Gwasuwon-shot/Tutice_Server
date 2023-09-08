@@ -3,6 +3,7 @@ package gwasuwonshot.tutice.schedule.controller;
 import gwasuwonshot.tutice.common.dto.ApiResponseDto;
 import gwasuwonshot.tutice.common.exception.SuccessStatus;
 import gwasuwonshot.tutice.common.resolver.userIdx.UserIdx;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonSchedule.GetLessonScheduleResponseDto;
 import gwasuwonshot.tutice.schedule.dto.request.GetTemporaryScheduleRequestDto;
 import gwasuwonshot.tutice.schedule.dto.request.UpdateScheduleAttendanceRequestDto;
 import gwasuwonshot.tutice.schedule.dto.request.UpdateScheduleRequestDto;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.List;
 
 
 @RestController
@@ -30,6 +32,15 @@ public class ScheduleController {
   return ApiResponseDto.success(SuccessStatus.GET_TODAY_SCHEDULE_BY_PARENTS_SUCCESS, scheduleService.getTodayScheduleByParents(userIdx) );
  }
 
+ @GetMapping("/lesson/{lessonIdx}")
+ @ResponseStatus(HttpStatus.OK)
+ public ApiResponseDto<List<GetLessonScheduleResponseDto>> getLessonSchedule(
+         @UserIdx final Long userIdx,
+         @PathVariable final Long lessonIdx) {
+
+  return ApiResponseDto.success(SuccessStatus.GET_LESSON_SCHEDULE_SUCCESS,
+          scheduleService.getLessonSchedule(userIdx, lessonIdx));
+ }
  @GetMapping("")
  @ResponseStatus(HttpStatus.OK)
  public ApiResponseDto<GetScheduleByUserResponseDto> getScheduleByUser(@UserIdx final Long userIdx,
@@ -43,10 +54,10 @@ public class ScheduleController {
   return ApiResponseDto.success(SuccessStatus.GET_TODAY_SCHEDULE_BY_TEACHER_SUCCESS, scheduleService.getTodayScheduleByTeacher(userIdx) );
  }
 
- @GetMapping("/attendance/missing")
+ @GetMapping("/missing-attendance")
  @ResponseStatus(HttpStatus.OK)
- public ApiResponseDto<GetMissingAttendanceScheduleResponseDto> getMissingAttendanceSchedule(@UserIdx final Long userIdx) {
-  return ApiResponseDto.success(SuccessStatus.GET_MISSING_ATTENDANCE_SCHEDULE_SUCCESS, scheduleService.getMissingAttendanceSchedule(userIdx) );
+ public ApiResponseDto<GetMissingAttendanceScheduleResponseDto> getMissingAttendanceScheduleByTeacher(@UserIdx final Long userIdx) {
+  return ApiResponseDto.success(SuccessStatus.GET_MISSING_ATTENDANCE_SCHEDULE_SUCCESS, scheduleService.getMissingAttendanceScheduleByTeacher(userIdx) );
  }
 
  @PatchMapping("")
@@ -82,29 +93,26 @@ public class ScheduleController {
   return ApiResponseDto.success(SuccessStatus.GET_TEMPORARY_SCHEDULE_SUCCESS, scheduleService.getTemporarySchedule(request) );
  }
 
- @GetMapping("/attendance/missing/{lessonIdx}/existence")
+
+ @GetMapping("/lesson/{lessonIdx}/missing-attendance/existence")
  @ResponseStatus(HttpStatus.OK)
- public ApiResponseDto<Boolean> getMissingAttendanceByLessonExist(@UserIdx final Long userIdx,
+ public ApiResponseDto<Boolean> getMissingAttendanceExistenceByLesson(@UserIdx final Long userIdx,
                                                            @PathVariable final Long lessonIdx) {
-  return ApiResponseDto.success(SuccessStatus.GET_MISSING_MAINTENANCE_BY_LESSON_EXIST_SUCCESS, scheduleService.getMissingAttendanceByLessonExist(userIdx, lessonIdx));
+  return ApiResponseDto.success(SuccessStatus.GET_MISSING_MAINTENANCE_BY_LESSON_EXIST_SUCCESS, scheduleService.getMissingAttendanceExistenceByLesson(userIdx, lessonIdx));
  }
 
- @GetMapping("/attendance/missing/existence")
+ @GetMapping("/missing-attendance/existence")
  @ResponseStatus(HttpStatus.OK)
- public ApiResponseDto<Boolean> getMissingAttendanceExist(@UserIdx final Long userIdx) {
-  return ApiResponseDto.success(SuccessStatus.GET_MISSING_ATTENDANCE_EXIST_SUCCESS, scheduleService.getMissingAttendanceExist(userIdx) );
+ public ApiResponseDto<Boolean> getMissingAttendanceExistenceByTeacher(@UserIdx final Long userIdx) {
+  return ApiResponseDto.success(SuccessStatus.GET_MISSING_ATTENDANCE_EXIST_SUCCESS, scheduleService.getMissingAttendanceExistenceByTeacher(userIdx) );
  }
 
- @GetMapping("/maintenance/missing/existence")
- @ResponseStatus(HttpStatus.OK)
- public ApiResponseDto<Boolean> getMissingMaintenanceExist(@UserIdx final Long userIdx) {
-  return ApiResponseDto.success(SuccessStatus.GET_MISSING_MAINTENANCE_EXIST_SUCCESS, scheduleService.getMissingMaintenanceExist(userIdx) );
- }
+
 
  @GetMapping("/today/existence")
  @ResponseStatus(HttpStatus.OK)
- public ApiResponseDto<Boolean> getTodayScheduleExist(@UserIdx final Long userIdx) {
-  return ApiResponseDto.success(SuccessStatus.GET_TODAY_SCHEDULE_EXIST_SUCCESS, scheduleService.getTodayScheduleExist(userIdx) );
+ public ApiResponseDto<Boolean> getTodayScheduleExistenceByTeacher(@UserIdx final Long userIdx) {
+  return ApiResponseDto.success(SuccessStatus.GET_TODAY_SCHEDULE_EXIST_SUCCESS, scheduleService.getTodayScheduleExistenceByTeacher(userIdx) );
  }
 
 }

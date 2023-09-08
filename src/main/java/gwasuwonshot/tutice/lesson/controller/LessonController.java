@@ -43,25 +43,27 @@ public class LessonController {
 
     }
 
-    @GetMapping("")
+    @GetMapping("/existence")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<GetLessonByUserResponseDto> getLessonByUser(@UserIdx final Long userIdx) {
+    public ApiResponseDto<GetLessonByUserResponseDto> getLessonExistenceByUser(@UserIdx final Long userIdx) {
 
-        return ApiResponseDto.success(SuccessStatus.GET_LESSON_BY_USER_SUCCESS,
-                lessonService.getLessonByUser(userIdx));
+        // TODO! DTO에도 existence 붙이기
+        return ApiResponseDto.success(SuccessStatus.GET_LESSON_EXISTENCE_BY_USER_SUCCESS,
+                lessonService.getLessonExistenceByUser(userIdx));
 
 
     }
 
-    @GetMapping("/schedule/{lessonIdx}")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<List<GetLessonScheduleResponseDto>> getLessonSchedule(
-            @UserIdx final Long userIdx,
-            @PathVariable final Long lessonIdx) {
-
-        return ApiResponseDto.success(SuccessStatus.GET_LESSON_SCHEDULE_SUCCESS,
-                lessonService.getLessonSchedule(userIdx, lessonIdx));
-    }
+    //TODO ! 일단 url만 우선 변경
+//    @GetMapping("/schedule/{lessonIdx}")
+//    @ResponseStatus(HttpStatus.OK)
+//    public ApiResponseDto<List<GetLessonScheduleResponseDto>> getLessonSchedule(
+//            @UserIdx final Long userIdx,
+//            @PathVariable final Long lessonIdx) {
+//
+//        return ApiResponseDto.success(SuccessStatus.GET_LESSON_SCHEDULE_SUCCESS,
+//                lessonService.getLessonSchedule(userIdx, lessonIdx));
+//    }
 
 
     @GetMapping("/teacher")
@@ -129,37 +131,45 @@ public class LessonController {
 
 
 
-    @GetMapping("/maintenance/missing")
+    @GetMapping("/missing-maintenance")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<GetMissingMaintenanceLessonResponseDto> getMissingMaintenanceLesson(@UserIdx final Long userIdx) {
+    public ApiResponseDto<GetMissingMaintenanceLessonResponseDto> getMissingMaintenanceLessonByUser(@UserIdx final Long userIdx) {
 
 
         return ApiResponseDto.success(SuccessStatus.GET_MISSING_MAINTENANCE_LESSON_SUCCESS,
-                GetMissingMaintenanceLessonResponseDto.of(lessonService.getMissingMaintenanceLesson(userIdx))
+                GetMissingMaintenanceLessonResponseDto.of(lessonService.getMissingMaintenanceLessonByUser(userIdx))
         );
 
 
     }
 
-    @GetMapping("/account/{lessonIdx}")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<GetLessonAccountResponseDto> getLessonAccount(@UserIdx final Long userIdx,
-                                                                        @PathVariable final Long lessonIdx) {
-        return ApiResponseDto.success(SuccessStatus.GET_LESSON_ACCOUNT_SUCCESS, lessonService.getLessonAccount(userIdx, lessonIdx));
-    }
+    // TODO : url만 변경
+//    @GetMapping("/account/{lessonIdx}")
+//    @ResponseStatus(HttpStatus.OK)
+//    public ApiResponseDto<GetLessonAccountResponseDto> getLessonAccount(@UserIdx final Long userIdx,
+//                                                                        @PathVariable final Long lessonIdx) {
+//        return ApiResponseDto.success(SuccessStatus.GET_LESSON_ACCOUNT_SUCCESS, lessonService.getLessonAccount(userIdx, lessonIdx));
+//    }
 
-    @GetMapping("/progress/{lessonIdx}")
+    @GetMapping("/{lessonIdx}/progress")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponseDto<GetLessonProgressResponseDto> getLessonProgress(@UserIdx final Long userIdx,
                                                                           @PathVariable final Long lessonIdx) {
         return ApiResponseDto.success(SuccessStatus.GET_LESSON_PROGRESS_SUCCESS, lessonService.getLessonProgress(userIdx, lessonIdx));
     }
 
-    @GetMapping("/detail/{lessonIdx}")
+    @GetMapping("/{lessonIdx}/detail")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponseDto<GetLessonDetailResponseDto> getLessonDetail(@UserIdx final Long userIdx,
                                                                       @PathVariable final Long lessonIdx) {
         return ApiResponseDto.success(SuccessStatus.GET_LESSON_DETAIL_SUCCESS, lessonService.getLessonDetail(userIdx, lessonIdx));
+    }
+
+    @GetMapping("/missing-maintenance/existence")
+    // TODO SuccessMessage등 자잘한 변경사항 필요
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponseDto<Boolean> getMissingMaintenanceExistenceByTeacher(@UserIdx final Long userIdx) {
+        return ApiResponseDto.success(SuccessStatus.GET_MISSING_MAINTENANCE_EXIST_SUCCESS, lessonService.getMissingMaintenanceExistenceByTeacher(userIdx) );
     }
 
 
