@@ -36,6 +36,7 @@ public class UserController {
 
     @GetMapping("/account/lesson/{lessonIdx}")
     @ResponseStatus(HttpStatus.OK)
+    // TODO url만 변경 dto, 함수명 변경 필요
     public ApiResponseDto<GetLessonAccountResponseDto> getAccountByLesson(@UserIdx final Long userIdx,
                                                                         @PathVariable final Long lessonIdx) {
         return ApiResponseDto.success(SuccessStatus.GET_LESSON_ACCOUNT_SUCCESS, userService.getAccountByLesson(userIdx, lessonIdx));

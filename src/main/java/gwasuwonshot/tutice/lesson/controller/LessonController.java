@@ -151,7 +151,7 @@ public class LessonController {
 //        return ApiResponseDto.success(SuccessStatus.GET_LESSON_ACCOUNT_SUCCESS, lessonService.getLessonAccount(userIdx, lessonIdx));
 //    }
 
-    @GetMapping("/progress/{lessonIdx}")
+    @GetMapping("/{lessonIdx}/progress")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponseDto<GetLessonProgressResponseDto> getLessonProgress(@UserIdx final Long userIdx,
                                                                           @PathVariable final Long lessonIdx) {
