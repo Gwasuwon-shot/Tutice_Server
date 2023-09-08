@@ -47,21 +47,23 @@ public class LessonController {
     @ResponseStatus(HttpStatus.OK)
     public ApiResponseDto<GetLessonByUserResponseDto> getLessonExistenceByUser(@UserIdx final Long userIdx) {
 
+        // TODO! DTO에도 existence 붙이기
         return ApiResponseDto.success(SuccessStatus.GET_LESSON_EXISTENCE_BY_USER_SUCCESS,
                 lessonService.getLessonExistenceByUser(userIdx));
 
 
     }
 
-    @GetMapping("/schedule/{lessonIdx}")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<List<GetLessonScheduleResponseDto>> getLessonSchedule(
-            @UserIdx final Long userIdx,
-            @PathVariable final Long lessonIdx) {
-
-        return ApiResponseDto.success(SuccessStatus.GET_LESSON_SCHEDULE_SUCCESS,
-                lessonService.getLessonSchedule(userIdx, lessonIdx));
-    }
+    //TODO ! 일단 url만 우선 변경
+//    @GetMapping("/schedule/{lessonIdx}")
+//    @ResponseStatus(HttpStatus.OK)
+//    public ApiResponseDto<List<GetLessonScheduleResponseDto>> getLessonSchedule(
+//            @UserIdx final Long userIdx,
+//            @PathVariable final Long lessonIdx) {
+//
+//        return ApiResponseDto.success(SuccessStatus.GET_LESSON_SCHEDULE_SUCCESS,
+//                lessonService.getLessonSchedule(userIdx, lessonIdx));
+//    }
 
 
     @GetMapping("/teacher")
@@ -129,13 +131,13 @@ public class LessonController {
 
 
 
-    @GetMapping("/maintenance/missing")
+    @GetMapping("/missing-maintenance")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<GetMissingMaintenanceLessonResponseDto> getMissingMaintenanceLesson(@UserIdx final Long userIdx) {
+    public ApiResponseDto<GetMissingMaintenanceLessonResponseDto> getMissingMaintenanceLessonByUser(@UserIdx final Long userIdx) {
 
 
         return ApiResponseDto.success(SuccessStatus.GET_MISSING_MAINTENANCE_LESSON_SUCCESS,
-                GetMissingMaintenanceLessonResponseDto.of(lessonService.getMissingMaintenanceLesson(userIdx))
+                GetMissingMaintenanceLessonResponseDto.of(lessonService.getMissingMaintenanceLessonByUser(userIdx))
         );
 
 

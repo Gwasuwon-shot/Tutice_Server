@@ -3,6 +3,7 @@ package gwasuwonshot.tutice.schedule.controller;
 import gwasuwonshot.tutice.common.dto.ApiResponseDto;
 import gwasuwonshot.tutice.common.exception.SuccessStatus;
 import gwasuwonshot.tutice.common.resolver.userIdx.UserIdx;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonSchedule.GetLessonScheduleResponseDto;
 import gwasuwonshot.tutice.schedule.dto.request.GetTemporaryScheduleRequestDto;
 import gwasuwonshot.tutice.schedule.dto.request.UpdateScheduleAttendanceRequestDto;
 import gwasuwonshot.tutice.schedule.dto.request.UpdateScheduleRequestDto;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.List;
 
 
 @RestController
@@ -30,6 +32,15 @@ public class ScheduleController {
   return ApiResponseDto.success(SuccessStatus.GET_TODAY_SCHEDULE_BY_PARENTS_SUCCESS, scheduleService.getTodayScheduleByParents(userIdx) );
  }
 
+ @GetMapping("/lesson/{lessonIdx}")
+ @ResponseStatus(HttpStatus.OK)
+ public ApiResponseDto<List<GetLessonScheduleResponseDto>> getLessonSchedule(
+         @UserIdx final Long userIdx,
+         @PathVariable final Long lessonIdx) {
+
+  return ApiResponseDto.success(SuccessStatus.GET_LESSON_SCHEDULE_SUCCESS,
+          scheduleService.getLessonSchedule(userIdx, lessonIdx));
+ }
  @GetMapping("")
  @ResponseStatus(HttpStatus.OK)
  public ApiResponseDto<GetScheduleByUserResponseDto> getScheduleByUser(@UserIdx final Long userIdx,

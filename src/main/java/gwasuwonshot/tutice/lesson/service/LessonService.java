@@ -303,7 +303,7 @@ public class LessonService {
     }
 
     @Transactional
-    public List<GetMissingMaintenanceLesson> getMissingMaintenanceLesson(Long userIdx){
+    public List<GetMissingMaintenanceLesson> getMissingMaintenanceLessonByUser(Long userIdx){
 
         //1.  유저가져와서 역할검사
         User teacher = userRepository.findById(userIdx)
@@ -432,28 +432,28 @@ public class LessonService {
         return GetLessonDetailResponseDto.of(lesson);
     }
 
-    public List<GetLessonScheduleResponseDto> getLessonSchedule(Long userIdx, Long lessonIdx) {
-        // 유저 존재 여부 확인
-        User user = userRepository.findById(userIdx)
-                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
-        // 수업 존재 여부 확인
-        Lesson lesson = lessonRepository.findById(lessonIdx)
-                .orElseThrow(() -> new NotFoundLessonException(ErrorStatus.NOT_FOUND_LESSON_EXCEPTION, ErrorStatus.NOT_FOUND_LESSON_EXCEPTION.getMessage()));
-        // 수업과 유저 연결 여부 확인
-        if (!lesson.isMatchedUser(user))
-            throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION, ErrorStatus.INVALID_LESSON_CODE_EXCEPTION.getMessage());
-        // 레슨 스케쥴 정보 구성
-        List<GetLessonScheduleResponseDto> getLessonScheduleResponseDtoList = new ArrayList<>();
-        scheduleRepository.findAllByLessonAndCycleOrderByDateDesc(lesson,lesson.getCycle())
-                .forEach(s->{
-                    getLessonScheduleResponseDtoList.add(
-                            GetLessonScheduleResponseDto.of(
-                                    s.getIdx(),
-                                    DateAndTimeConvert.localDateConvertString(s.getDate()),
-                                    s.getStatus().getValue(),
-                                    DateAndTimeConvert.localTimeConvertString(s.getStartTime()),
-                                    DateAndTimeConvert.localTimeConvertString(s.getEndTime())));
-                });
-        return getLessonScheduleResponseDtoList;
-    }
+//    public List<GetLessonScheduleResponseDto> getLessonSchedule(Long userIdx, Long lessonIdx) {
+//        // 유저 존재 여부 확인
+//        User user = userRepository.findById(userIdx)
+//                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+//        // 수업 존재 여부 확인
+//        Lesson lesson = lessonRepository.findById(lessonIdx)
+//                .orElseThrow(() -> new NotFoundLessonException(ErrorStatus.NOT_FOUND_LESSON_EXCEPTION, ErrorStatus.NOT_FOUND_LESSON_EXCEPTION.getMessage()));
+//        // 수업과 유저 연결 여부 확인
+//        if (!lesson.isMatchedUser(user))
+//            throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION, ErrorStatus.INVALID_LESSON_CODE_EXCEPTION.getMessage());
+//        // 레슨 스케쥴 정보 구성
+//        List<GetLessonScheduleResponseDto> getLessonScheduleResponseDtoList = new ArrayList<>();
+//        scheduleRepository.findAllByLessonAndCycleOrderByDateDesc(lesson,lesson.getCycle())
+//                .forEach(s->{
+//                    getLessonScheduleResponseDtoList.add(
+//                            GetLessonScheduleResponseDto.of(
+//                                    s.getIdx(),
+//                                    DateAndTimeConvert.localDateConvertString(s.getDate()),
+//                                    s.getStatus().getValue(),
+//                                    DateAndTimeConvert.localTimeConvertString(s.getStartTime()),
+//                                    DateAndTimeConvert.localTimeConvertString(s.getEndTime())));
+//                });
+//        return getLessonScheduleResponseDtoList;
+//    }
 }

@@ -4,8 +4,10 @@ import gwasuwonshot.tutice.common.exception.ErrorStatus;
 import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
 import gwasuwonshot.tutice.external.firebase.service.FCMService;
 import gwasuwonshot.tutice.lesson.dto.assembler.RegularScheduleAssembler;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonSchedule.GetLessonScheduleResponseDto;
 import gwasuwonshot.tutice.lesson.entity.Lesson;
 import gwasuwonshot.tutice.lesson.entity.RegularSchedule;
+import gwasuwonshot.tutice.lesson.exception.invalid.InvalidLessonException;
 import gwasuwonshot.tutice.lesson.exception.notfound.NotFoundLessonException;
 import gwasuwonshot.tutice.lesson.repository.LessonRepository;
 import gwasuwonshot.tutice.schedule.dto.request.GetTemporaryScheduleRequestDto;
@@ -455,6 +457,31 @@ public class ScheduleService {
         // TODO 성능 고민 (queryDSL, exists)
         List<Schedule> scheduleList = scheduleRepository.findAllByLessonInAndDate(lessonList, LocalDate.now());
         return !scheduleList.isEmpty();
+    }
+
+    public List<GetLessonScheduleResponseDto> getLessonSchedule(Long userIdx, Long lessonIdx) {
+        // 유저 존재 여부 확인
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+        // 수업 존재 여부 확인
+        Lesson lesson = lessonRepository.findById(lessonIdx)
+                .orElseThrow(() -> new NotFoundLessonException(ErrorStatus.NOT_FOUND_LESSON_EXCEPTION, ErrorStatus.NOT_FOUND_LESSON_EXCEPTION.getMessage()));
+        // 수업과 유저 연결 여부 확인
+        if (!lesson.isMatchedUser(user))
+            throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION, ErrorStatus.INVALID_LESSON_CODE_EXCEPTION.getMessage());
+        // 레슨 스케쥴 정보 구성
+        List<GetLessonScheduleResponseDto> getLessonScheduleResponseDtoList = new ArrayList<>();
+        scheduleRepository.findAllByLessonAndCycleOrderByDateDesc(lesson,lesson.getCycle())
+                .forEach(s->{
+                    getLessonScheduleResponseDtoList.add(
+                            GetLessonScheduleResponseDto.of(
+                                    s.getIdx(),
+                                    DateAndTimeConvert.localDateConvertString(s.getDate()),
+                                    s.getStatus().getValue(),
+                                    DateAndTimeConvert.localTimeConvertString(s.getStartTime()),
+                                    DateAndTimeConvert.localTimeConvertString(s.getEndTime())));
+                });
+        return getLessonScheduleResponseDtoList;
     }
 
 }
