@@ -143,12 +143,13 @@ public class LessonController {
 
     }
 
-    @GetMapping("/account/{lessonIdx}")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<GetLessonAccountResponseDto> getLessonAccount(@UserIdx final Long userIdx,
-                                                                        @PathVariable final Long lessonIdx) {
-        return ApiResponseDto.success(SuccessStatus.GET_LESSON_ACCOUNT_SUCCESS, lessonService.getLessonAccount(userIdx, lessonIdx));
-    }
+    // TODO : url만 변경
+//    @GetMapping("/account/{lessonIdx}")
+//    @ResponseStatus(HttpStatus.OK)
+//    public ApiResponseDto<GetLessonAccountResponseDto> getLessonAccount(@UserIdx final Long userIdx,
+//                                                                        @PathVariable final Long lessonIdx) {
+//        return ApiResponseDto.success(SuccessStatus.GET_LESSON_ACCOUNT_SUCCESS, lessonService.getLessonAccount(userIdx, lessonIdx));
+//    }
 
     @GetMapping("/progress/{lessonIdx}")
     @ResponseStatus(HttpStatus.OK)
