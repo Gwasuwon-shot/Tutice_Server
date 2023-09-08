@@ -166,6 +166,7 @@ public class LessonController {
     }
 
     @GetMapping("/missing-maintenance/existence")
+    // TODO SuccessMessage등 자잘한 변경사항 필요
     @ResponseStatus(HttpStatus.OK)
     public ApiResponseDto<Boolean> getMissingMaintenanceExistenceByTeacher(@UserIdx final Long userIdx) {
         return ApiResponseDto.success(SuccessStatus.GET_MISSING_MAINTENANCE_EXIST_SUCCESS, lessonService.getMissingMaintenanceExistenceByTeacher(userIdx) );

@@ -111,8 +111,8 @@ public class ScheduleController {
 
  @GetMapping("/today/existence")
  @ResponseStatus(HttpStatus.OK)
- public ApiResponseDto<Boolean> getTodayScheduleExist(@UserIdx final Long userIdx) {
-  return ApiResponseDto.success(SuccessStatus.GET_TODAY_SCHEDULE_EXIST_SUCCESS, scheduleService.getTodayScheduleExist(userIdx) );
+ public ApiResponseDto<Boolean> getTodayScheduleExistenceByTeacher(@UserIdx final Long userIdx) {
+  return ApiResponseDto.success(SuccessStatus.GET_TODAY_SCHEDULE_EXIST_SUCCESS, scheduleService.getTodayScheduleExistenceByTeacher(userIdx) );
  }
 
 }
