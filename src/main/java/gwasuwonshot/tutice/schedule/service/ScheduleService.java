@@ -413,7 +413,7 @@ public class ScheduleService {
         return isMissingAttendance;
     }
 
-    public Boolean getMissingAttendanceExist(Long userIdx) {
+    public Boolean getMissingAttendanceExistenceByTeacher(Long userIdx) {
         // 유저 존재 여부
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
