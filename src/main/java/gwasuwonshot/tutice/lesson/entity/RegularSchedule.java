@@ -115,7 +115,7 @@ public class RegularSchedule extends AuditingTimeEntity {
         }
         System.out.println("가장 가까운 요일 index : "+latestDayOfWeekListIndex);
 
-        System.out.println("가장 가까운 요일 : "+regularScheduleList.get(latestDayOfWeekListIndex));
+        System.out.println("가장 가까운 요일 : "+regularScheduleList.get(latestDayOfWeekListIndex).getDayOfWeek());
 
         //가장 가까운 RegularSchedule을 기준으로 재정렬
         List<RegularSchedule> sortedRegularScheduleList = regularScheduleList.subList(latestDayOfWeekListIndex,regularScheduleList.size());
