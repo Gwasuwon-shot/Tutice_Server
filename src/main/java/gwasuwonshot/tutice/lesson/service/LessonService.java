@@ -242,10 +242,10 @@ public class LessonService {
         if(lesson.isMatchedPayment(Payment.PRE_PAYMENT)){
             //선불인경우만 payment와 lessonIdx 주기
             //제대로 오나?
-            return CreateLessonResponseDto.of(createdLessonCode, prePaymentRecordIdx);
+            return CreateLessonResponseDto.of(createdLessonCode, prePaymentRecordIdx, lesson.getIdx());
 
         }
-        return CreateLessonResponseDto.of(createdLessonCode,null);
+        return CreateLessonResponseDto.of(createdLessonCode,null, null);
 
     }
 
