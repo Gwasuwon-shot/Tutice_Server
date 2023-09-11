@@ -454,19 +454,44 @@ public class ScheduleService {
         // 수업과 유저 연결 여부 확인
         if (!lesson.isMatchedUser(user))
             throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION, ErrorStatus.INVALID_LESSON_CODE_EXCEPTION.getMessage());
+
+        //오늘날짜, 현재시간 구하기
+        LocalDate today = LocalDate.now();
+        LocalTime nowTime = LocalTime.now();
+
         // 레슨 스케쥴 정보 구성
         List<GetLessonScheduleResponseDto> getLessonScheduleResponseDtoList = new ArrayList<>();
         scheduleRepository.findAllByLessonAndCycleOrderByDateDesc(lesson,lesson.getCycle())
                 .forEach(s->{
-                    getLessonScheduleResponseDtoList.add(
-                            GetLessonScheduleResponseDto.of(
-                                    s.getIdx(),
-                                    DateAndTimeConvert.localDateConvertString(s.getDate()),
-                                    s.getStatus().getValue(),
-                                    DateAndTimeConvert.localTimeConvertString(s.getStartTime()),
-                                    DateAndTimeConvert.localTimeConvertString(s.getEndTime())));
+                    //스케쥴날짜가 오늘날짜보다 이전인지 확인
+                    if(today.isAfter(s.getDate())){
+                        getLessonScheduleResponseDtoList.add(
+                                GetLessonScheduleResponseDto.of(
+                                        s.getIdx(),
+                                        DateAndTimeConvert.localDateConvertString(s.getDate()),
+                                        s.getStatus().getValue(),
+                                        DateAndTimeConvert.localTimeConvertString(s.getStartTime()),
+                                        DateAndTimeConvert.localTimeConvertString(s.getEndTime())));
+                    }
+                    if(today.isEqual(s.getDate())){
+                        //수업시작시간확인
+
+                        if(!nowTime.isBefore(s.getStartTime())){
+                            getLessonScheduleResponseDtoList.add(
+                                    GetLessonScheduleResponseDto.of(
+                                            s.getIdx(),
+                                            DateAndTimeConvert.localDateConvertString(s.getDate()),
+                                            s.getStatus().getValue(),
+                                            DateAndTimeConvert.localTimeConvertString(s.getStartTime()),
+                                            DateAndTimeConvert.localTimeConvertString(s.getEndTime())));
+                        }
+
+                    }
                 });
         return getLessonScheduleResponseDtoList;
+
+
+
     }
 
 }
