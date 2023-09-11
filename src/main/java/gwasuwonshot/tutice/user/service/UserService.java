@@ -16,6 +16,7 @@ import gwasuwonshot.tutice.user.dto.response.LoginResponseDto;
 import gwasuwonshot.tutice.user.entity.Provider;
 import gwasuwonshot.tutice.user.entity.Role;
 import gwasuwonshot.tutice.user.entity.User;
+import gwasuwonshot.tutice.user.exception.authException.AlreadyExistEmailException;
 import gwasuwonshot.tutice.user.exception.authException.InvalidPasswordException;
 import gwasuwonshot.tutice.user.exception.userException.NotFoundUserException;
 import gwasuwonshot.tutice.user.repository.UserRepository;
@@ -36,6 +37,9 @@ public class UserService {
 
     @Transactional
     public LoginResponseDto localSignUp(LocalSignUpRequestDto request) {
+        // 이메일 중복 시, 에러 발생
+        if(userRepository.existsByEmail(request.getEmail())) throw new AlreadyExistEmailException(ErrorStatus.ALREADY_EXIST_EMAIL_EXCEPTION, ErrorStatus.ALREADY_EXIST_EMAIL_EXCEPTION.getMessage());
+        // 비밀번호 암호화
         String password = passwordEncoder.encode(request.getPassword());
 
         User user = userAssembler.toEntity(
