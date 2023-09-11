@@ -107,7 +107,7 @@ public class Schedule extends AuditingTimeEntity {
             LocalTime startTime = sortedRegularScheduleList.get(tempI).getStartTime();
             LocalTime endTime = sortedRegularScheduleList.get(tempI).getEndTime();
             System.out.println("startDate : "+startDate );
-            LocalDate date = startDate.plusWeeks(week).with(TemporalAdjusters.next(java.time.DayOfWeek.of(dayOfWeek.getIndex().intValue())));
+            LocalDate date = startDate.plusWeeks(week).with(TemporalAdjusters.nextOrSame(java.time.DayOfWeek.of(dayOfWeek.getIndex().intValue())));
             System.out.println("date : "+DateAndTimeConvert.localDateConvertString(date));
             System.out.println();
 
@@ -123,10 +123,8 @@ public class Schedule extends AuditingTimeEntity {
 
         createdScheduleList.forEach(cs -> System.out.println(cs.getDate()));
 
-        //return createdScheduleList;
+        return createdScheduleList;
 
-        // test 용 return 변경
-        return null;
 
     }
 
@@ -145,7 +143,7 @@ public class Schedule extends AuditingTimeEntity {
             DayOfWeek dayOfWeek = sortedRegularScheduleList.get(tempI).getDayOfWeek();
             LocalTime startTime = sortedRegularScheduleList.get(tempI).getStartTime();
             LocalTime endTime = sortedRegularScheduleList.get(tempI).getEndTime();
-            LocalDate date = startDate.plusWeeks(week).with(TemporalAdjusters.next(java.time.DayOfWeek.of(dayOfWeek.getIndex().intValue())));
+            LocalDate date = startDate.plusWeeks(week).with(TemporalAdjusters.nextOrSame(java.time.DayOfWeek.of(dayOfWeek.getIndex().intValue())));
 
             createdScheduleList.add(Schedule.builder()
                     .date(date)
@@ -156,7 +154,10 @@ public class Schedule extends AuditingTimeEntity {
         }
 
         createdScheduleList.forEach(cs -> System.out.println(cs.getDate()));
+
         return createdScheduleList;
+        //test 용
+        //return null;
     }
 
     public void updateSchedule(LocalDate date, LocalTime startTime, LocalTime endTime) {
@@ -165,22 +166,7 @@ public class Schedule extends AuditingTimeEntity {
         this.endTime = endTime;
     }
 
-    public static void main(String[] args) {
-        LocalDate startDate = DateAndTimeConvert.stringConvertLocalDate("2023-08-30");
-        for(int i =0 ; i < 9; i++){
-            System.out.println("i : "+i);
-            int tempI = i%2;
-            int week = i/2;
-            System.out.println("tempI : "+tempI);
-            System.out.println("week : "+week);
-            LocalDate date = startDate.plusWeeks(week).with(TemporalAdjusters.next(java.time.DayOfWeek.of(3)));
 
-            System.out.println("date : "+date);
-            System.out.println("startDate.plusWeeks(week): "+ startDate.plusWeeks(week));
-            System.out.println(startDate.plusDays(0).plusWeeks(0));
-
-        }
-    }
     public void updateScheduleAttendance(String status) {
         this.status = ScheduleStatus.getScheduleStatusByValue(status);
     }
