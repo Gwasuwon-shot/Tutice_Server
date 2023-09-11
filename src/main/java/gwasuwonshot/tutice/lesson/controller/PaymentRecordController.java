@@ -46,7 +46,7 @@ public class PaymentRecordController {
                 paymentRecordService.getPaymentRecordByLesson(userIdx, lessonIdx));
     }
 
-    @GetMapping("/cycle/{paymentRecordIdx}")
+    @GetMapping("/{paymentRecordIdx}/cycle")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponseDto<GetPaymentRecordCycleResponseDto> getPaymentRecordCycle(
             @UserIdx final Long userIdx,
