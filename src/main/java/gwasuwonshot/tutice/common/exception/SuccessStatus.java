@@ -15,6 +15,7 @@ public enum SuccessStatus {
     NEW_TOKEN_SUCCESS(HttpStatus.OK, "토큰 재발급에 성공했습니다."),
     GET_TODAY_DATE_SUCCESS(HttpStatus.OK,"오늘 날짜와 요일을 가져오는데 성공했습니다."),
     GET_USER_NAME_SUCCESS(HttpStatus.OK, "유저 이름을 가져오는데 성공했습니다."),
+    CHECK_DUPLICATION_EMAIL_SUCCESS(HttpStatus.OK, "이메일이 중복되지 않습니다."),
 
 
     GET_LESSON_EXISTENCE_BY_USER_SUCCESS(HttpStatus.OK, "유저별로 연결된 수업 여부를 가져오는데 성공했습니다."),

@@ -2,6 +2,7 @@ package gwasuwonshot.tutice.user.controller;
 
 import gwasuwonshot.tutice.common.dto.ApiResponseDto;
 import gwasuwonshot.tutice.common.exception.SuccessStatus;
+import gwasuwonshot.tutice.user.dto.request.CheckDuplicationEmailRequestDto;
 import gwasuwonshot.tutice.user.dto.request.LocalLoginRequestDto;
 import gwasuwonshot.tutice.user.dto.request.LocalSignUpRequestDto;
 import gwasuwonshot.tutice.user.dto.response.LoginResponseDto;
@@ -29,6 +30,13 @@ public class AuthController {
     @ResponseStatus(HttpStatus.OK)
     public ApiResponseDto<LoginResponseDto> localLogin(@RequestBody @Valid final LocalLoginRequestDto request) {
         return ApiResponseDto.success(SuccessStatus.LOGIN_SUCCESS, userService.localLogin(request));
+    }
+
+    @PostMapping("/email/duplication")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponseDto checkDuplicationEmail(@RequestBody @Valid final CheckDuplicationEmailRequestDto request) {
+        userService.checkDuplicationEmail(request);
+        return ApiResponseDto.success(SuccessStatus.CHECK_DUPLICATION_EMAIL_SUCCESS);
     }
 
 }
