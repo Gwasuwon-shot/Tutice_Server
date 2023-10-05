@@ -8,6 +8,7 @@ import gwasuwonshot.tutice.lesson.exception.invalid.InvalidLessonException;
 import gwasuwonshot.tutice.lesson.exception.notfound.NotFoundLessonException;
 import gwasuwonshot.tutice.lesson.repository.LessonRepository;
 import gwasuwonshot.tutice.user.dto.assembler.UserAssembler;
+import gwasuwonshot.tutice.user.dto.request.CheckDuplicationEmailRequestDto;
 import gwasuwonshot.tutice.user.dto.request.LocalLoginRequestDto;
 import gwasuwonshot.tutice.user.dto.request.LocalSignUpRequestDto;
 import gwasuwonshot.tutice.user.dto.request.UpdateUserDeviceTokenRequestDto;
@@ -100,5 +101,10 @@ public class UserService {
             throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION, ErrorStatus.INVALID_LESSON_CODE_EXCEPTION.getMessage());
 
         return GetLessonAccountResponseDto.of(lesson.getAccount());
+    }
+
+    public void checkDuplicationEmail(CheckDuplicationEmailRequestDto request) {
+        // 이메일 중복 시, 에러 발생
+        if(userRepository.existsByEmail(request.getEmail())) throw new AlreadyExistEmailException(ErrorStatus.ALREADY_EXIST_EMAIL_EXCEPTION, ErrorStatus.ALREADY_EXIST_EMAIL_EXCEPTION.getMessage());
     }
 }
