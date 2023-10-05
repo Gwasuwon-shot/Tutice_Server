@@ -172,6 +172,14 @@ public class LessonController {
         return ApiResponseDto.success(SuccessStatus.GET_MISSING_MAINTENANCE_EXIST_SUCCESS, lessonService.getMissingMaintenanceExistenceByTeacher(userIdx) );
     }
 
+    @DeleteMapping("/{lessonIdx}")
+    // TODO SuccessMessage등 자잘한 변경사항 필요
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponseDto deleteLesson(@UserIdx final Long userIdx,
+                                       @PathVariable final Long lessonIdx) {
+        lessonService.deleteLesson(userIdx, lessonIdx);
+        return ApiResponseDto.success(SuccessStatus.DELETE_LESSON_SUCCESS);
+    }
 
 
 }
