@@ -178,6 +178,7 @@ public class LessonController {
     public ApiResponseDto deleteLesson(@UserIdx final Long userIdx,
                                        @PathVariable final Long lessonIdx) {
         lessonService.deleteLesson(userIdx, lessonIdx);
+
         return ApiResponseDto.success(SuccessStatus.DELETE_LESSON_SUCCESS);
     }
 
