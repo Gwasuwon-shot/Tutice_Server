@@ -173,7 +173,6 @@ public class LessonController {
     }
 
     @DeleteMapping("/{lessonIdx}")
-    // TODO SuccessMessage등 자잘한 변경사항 필요
     @ResponseStatus(HttpStatus.OK)
     public ApiResponseDto deleteLesson(@UserIdx final Long userIdx,
                                        @PathVariable final Long lessonIdx) {
