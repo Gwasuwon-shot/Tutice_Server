@@ -62,6 +62,8 @@ public enum SuccessStatus {
 
 
 
+    DELETE_LESSON_SUCCESS(HttpStatus.OK,"수업 삭제 성공"),
+
     REQUEST_ATTENDANCE_NOTIFICATION_SUCCESS(HttpStatus.OK,"학부모에게 출결알람 보내기 성공"),
     REQUEST_PAYMENT_RECORD_NOTIFICATION_SUCCESS(HttpStatus.OK,"수업비 알림 전송 성공"),
 
