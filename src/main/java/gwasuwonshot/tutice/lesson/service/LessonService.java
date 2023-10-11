@@ -238,7 +238,7 @@ public class LessonService {
 
 
         //레슨코드 생성
-        String createdLessonCode = this.createLessonCode(lesson.getIdx());
+        String createdLessonCode = lesson.createLessonCode();
 
         if(lesson.isMatchedPayment(Payment.PRE_PAYMENT)){
             //선불인경우만 payment와 lessonIdx 주기
@@ -368,13 +368,13 @@ public class LessonService {
 
     }
 
-    public String createLessonCode(Long lessonIdx){
-        //statless하게 lessonIdx의 정보를 가진 레슨코드를 생성하여 추후 레슨코드만 해석해도 어떤 레슨인지 알수있게
-        byte[] lessonIdxBytes = (lessonIdx+"").getBytes();
-        String lessonCode = Base64.getEncoder().encodeToString(lessonIdxBytes);
-
-        return lessonCode;
-    }
+//    public String createLessonCode(Long lessonIdx){
+//        //statless하게 lessonIdx의 정보를 가진 레슨코드를 생성하여 추후 레슨코드만 해석해도 어떤 레슨인지 알수있게
+//        byte[] lessonIdxBytes = (lessonIdx+"").getBytes();
+//        String lessonCode = Base64.getEncoder().encodeToString(lessonIdxBytes);
+//
+//        return lessonCode;
+//    }
 
     public Long getLessonIdxFromLessonCode(String lessonCode){
         try{
