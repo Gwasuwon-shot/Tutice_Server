@@ -1,6 +1,8 @@
 package gwasuwonshot.tutice.config.jwt;
 
 import gwasuwonshot.tutice.common.exception.BasicException;
+import gwasuwonshot.tutice.user.exception.authException.InvalidAccessTokenException;
+import gwasuwonshot.tutice.user.exception.authException.NullAccessTokenException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
@@ -8,8 +10,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import gwasuwonshot.tutice.common.exception.ErrorStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.time.Duration;
@@ -24,7 +30,8 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String jwtSecret;
 
-    private final long accessTokenExpiryTime = 1000L * 60 * 60 * 2; // 2시간
+//    private final long accessTokenExpiryTime = 1000L * 60 * 60 * 2; // 2시간
+    private final long accessTokenExpiryTime = 1000L * 60 * 60 * 24 * 14; // 2주
     private final long refreshTokenExpiryTime = 1000L * 60 * 60 * 24 * 14; // 2주
     private final String CLAIM_NAME = "userIdx";
 
@@ -100,4 +107,39 @@ public class JwtService {
         return (String) claims.get(CLAIM_NAME);
     }
 
+    // 로그아웃
+    @Transactional
+    public void logout(Long userIdx) {
+        deleteToken(userIdx);
+        String token = getToken();
+        registerBlackList(token, "logout");
+    }
+
+    // refreshToken 삭제
+    public void deleteToken(Long userIdx) {
+        String key = String.valueOf(userIdx);
+        if(redisTemplate.opsForValue().get(key)!=null) redisTemplate.delete(key);
+    }
+
+
+    // 유효한 토큰 blacklist로 등록
+    private void registerBlackList(String token, String status) {
+        token = token.replaceAll("^Bearer( )*", "");
+        Date AccessTokenExpiration = Jwts.parser().parseClaimsJws(token).getBody().getExpiration();
+        long now = (new Date()).getTime();
+
+        Long expiration = AccessTokenExpiration.getTime() - now;
+        redisTemplate.opsForValue().set(token, status, Duration.ofMillis(expiration));
+    }
+
+    private String getToken() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+
+        String header = request.getHeader("Authorization");
+        if (header == null) throw new NullAccessTokenException(ErrorStatus.NULL_ACCESS_TOKEN_EXCEPTION, ErrorStatus.NULL_ACCESS_TOKEN_EXCEPTION.getMessage());
+        final String token = header.substring(7);
+        if (!verifyToken(token)) throw new InvalidAccessTokenException(ErrorStatus.INVALID_ACCESS_TOKEN_EXCEPTION, ErrorStatus.INVALID_ACCESS_TOKEN_EXCEPTION.getMessage());
+
+        return token;
+    }
 }

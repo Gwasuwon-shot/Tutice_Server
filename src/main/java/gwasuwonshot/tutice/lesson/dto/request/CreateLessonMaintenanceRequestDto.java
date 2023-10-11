@@ -1,4 +1,4 @@
-package gwasuwonshot.tutice.lesson.dto.request.createLesson;
+package gwasuwonshot.tutice.lesson.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;

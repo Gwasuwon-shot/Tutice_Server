@@ -1,6 +1,7 @@
 package gwasuwonshot.tutice.lesson.dto.request.createLesson;
 
 import gwasuwonshot.tutice.common.resolver.enumValue.Enum;
+import gwasuwonshot.tutice.common.resolver.validator.createLessonValid.CreateLessonValid;
 import gwasuwonshot.tutice.lesson.entity.DayOfWeek;
 import gwasuwonshot.tutice.lesson.entity.Payment;
 import gwasuwonshot.tutice.user.entity.Role;
@@ -14,6 +15,7 @@ import javax.validation.constraints.Pattern;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@CreateLessonValid
 public class CreateLessonRequestRegularSchedule {
     @NotBlank(message = "요일이 없습니다.")
     @Schema(description = "요일")

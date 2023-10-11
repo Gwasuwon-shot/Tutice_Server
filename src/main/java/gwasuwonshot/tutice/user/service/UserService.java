@@ -107,4 +107,13 @@ public class UserService {
         // 이메일 중복 시, 에러 발생
         if(userRepository.existsByEmail(request.getEmail())) throw new AlreadyExistEmailException(ErrorStatus.ALREADY_EXIST_EMAIL_EXCEPTION, ErrorStatus.ALREADY_EXIST_EMAIL_EXCEPTION.getMessage());
     }
+
+
+    @Transactional
+    public void logout(Long userIdx) {
+        // 유저 존재 여부 확인
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+        jwtService.logout(userIdx);
+    }
 }

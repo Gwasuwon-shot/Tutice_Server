@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 @Entity
@@ -108,7 +109,13 @@ public class Lesson extends AuditingTimeEntity {
 
 
     }
+    public String createLessonCode(){
+        //statless하게 lessonIdx의 정보를 가진 레슨코드를 생성하여 추후 레슨코드만 해석해도 어떤 레슨인지 알수있게
+        byte[] lessonIdxBytes = (this.getIdx()+"").getBytes();
+        String lessonCode = Base64.getEncoder().encodeToString(lessonIdxBytes);
 
+        return lessonCode;
+    }
     public void finishLesson(){this.isFinished=true;}
 
     public Boolean isMatchedParents(User parents){

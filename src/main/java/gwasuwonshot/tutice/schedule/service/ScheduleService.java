@@ -494,4 +494,16 @@ public class ScheduleService {
 
     }
 
+    public Boolean getAttendanceExistenceByTeacher(Long userIdx, Long scheduleIdx) {
+        // 유저 존재 여부
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+        // 선생님 여부
+        if(!user.isMatchedRole(Role.TEACHER)) throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION,ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
+        // 스케줄 존재 여부
+        Schedule schedule = scheduleRepository.findById(scheduleIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_SCHEDULE_EXCEPTION, ErrorStatus.NOT_FOUND_SCHEDULE_EXCEPTION.getMessage()));
+        // 출결 상태가 존재하는 스케줄 체크
+        return !schedule.getStatus().equals(ScheduleStatus.NO_STATUS);
+    }
 }

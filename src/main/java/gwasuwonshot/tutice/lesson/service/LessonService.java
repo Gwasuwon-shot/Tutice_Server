@@ -36,6 +36,7 @@ import gwasuwonshot.tutice.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 
 
 import java.time.LocalDate;
@@ -237,7 +238,7 @@ public class LessonService {
 
 
         //레슨코드 생성
-        String createdLessonCode = this.createLessonCode(lesson.getIdx());
+        String createdLessonCode = lesson.createLessonCode();
 
         if(lesson.isMatchedPayment(Payment.PRE_PAYMENT)){
             //선불인경우만 payment와 lessonIdx 주기
@@ -367,13 +368,13 @@ public class LessonService {
 
     }
 
-    public String createLessonCode(Long lessonIdx){
-        //statless하게 lessonIdx의 정보를 가진 레슨코드를 생성하여 추후 레슨코드만 해석해도 어떤 레슨인지 알수있게
-        byte[] lessonIdxBytes = (lessonIdx+"").getBytes();
-        String lessonCode = Base64.getEncoder().encodeToString(lessonIdxBytes);
-
-        return lessonCode;
-    }
+//    public String createLessonCode(Long lessonIdx){
+//        //statless하게 lessonIdx의 정보를 가진 레슨코드를 생성하여 추후 레슨코드만 해석해도 어떤 레슨인지 알수있게
+//        byte[] lessonIdxBytes = (lessonIdx+"").getBytes();
+//        String lessonCode = Base64.getEncoder().encodeToString(lessonIdxBytes);
+//
+//        return lessonCode;
+//    }
 
     public Long getLessonIdxFromLessonCode(String lessonCode){
         try{
@@ -473,5 +474,28 @@ public class LessonService {
             isMissingMaintenance = !scheduleRepository.existsByLessonAndCycleAndStatus(lesson, lesson.getCycle(), ScheduleStatus.NO_STATUS);
         }
         return isMissingMaintenance;
+    }
+
+    @Transactional
+    public void deleteLesson(Long userIdx, Long lessonIdx){
+        //유저 존재여부
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+        // 선생님 여부
+        if(!user.isMatchedRole(Role.TEACHER)) throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION,ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
+
+        // 수업 존재 여부 확인
+        Lesson lesson = lessonRepository.findById(lessonIdx)
+                .orElseThrow(() -> new NotFoundLessonException(ErrorStatus.NOT_FOUND_LESSON_EXCEPTION, ErrorStatus.NOT_FOUND_LESSON_EXCEPTION.getMessage()));
+        // 수업과 유저 연결 여부 확인
+        if (!lesson.isMatchedUser(user))
+            throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION, ErrorStatus.INVALID_LESSON_CODE_EXCEPTION.getMessage());
+
+        // 수업이 이미 종료되었는지 확인
+        if(lesson.getIsFinished()){
+            throw new AlreadyFinishedLessonException(ErrorStatus.ALREADY_FINISHED_LESSON_EXCEPTION,ErrorStatus.ALREADY_FINISHED_LESSON_EXCEPTION.getMessage());
+        }
+        // 수업 종료처리
+        lesson.finishLesson();
     }
 }

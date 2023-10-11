@@ -16,6 +16,7 @@ public enum SuccessStatus {
     GET_TODAY_DATE_SUCCESS(HttpStatus.OK,"오늘 날짜와 요일을 가져오는데 성공했습니다."),
     GET_USER_NAME_SUCCESS(HttpStatus.OK, "유저 이름을 가져오는데 성공했습니다."),
     CHECK_DUPLICATION_EMAIL_SUCCESS(HttpStatus.OK, "사용 가능한 이메일 입니다."),
+    LOGOUT_SUCCESS(HttpStatus.OK, "로그아웃에 성공했습니다."),
 
 
     GET_LESSON_EXISTENCE_BY_USER_SUCCESS(HttpStatus.OK, "유저별로 연결된 수업 여부를 가져오는데 성공했습니다."),
@@ -37,6 +38,7 @@ public enum SuccessStatus {
     GET_MISSING_ATTENDANCE_EXIST_SUCCESS(HttpStatus.OK, "누락 출결 유무를 가져오는데 성공했습니다."),
     GET_MISSING_MAINTENANCE_EXIST_SUCCESS(HttpStatus.OK, "연장 필요 수업 유무를 가져오는데 성공했습니다."),
     GET_TODAY_SCHEDULE_EXIST_SUCCESS(HttpStatus.OK, "오늘 수업 유무를 가져오는데 성공했습니다."),
+    GET_SCHEDULE_ATTENDANCE_EXIST_SUCCESS(HttpStatus.OK, "스케줄의 출석 체크 유무를 가져오는데 성공했습니다."),
 
 
 
@@ -60,6 +62,8 @@ public enum SuccessStatus {
     UPDATE_SCHEDULE_ATTENDANCE_SUCCESS(HttpStatus.OK,"출석 상태 변경 성공"),
 
 
+
+    DELETE_LESSON_SUCCESS(HttpStatus.OK,"수업 삭제 성공"),
 
     REQUEST_ATTENDANCE_NOTIFICATION_SUCCESS(HttpStatus.OK,"학부모에게 출결알람 보내기 성공"),
     REQUEST_PAYMENT_RECORD_NOTIFICATION_SUCCESS(HttpStatus.OK,"수업비 알림 전송 성공"),

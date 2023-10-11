@@ -41,4 +41,11 @@ public class UserController {
                                                                         @PathVariable final Long lessonIdx) {
         return ApiResponseDto.success(SuccessStatus.GET_LESSON_ACCOUNT_SUCCESS, userService.getAccountByLesson(userIdx, lessonIdx));
     }
+
+    @PatchMapping("/logout")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponseDto logout(@UserIdx final Long userIdx) {
+        userService.logout(userIdx);
+        return ApiResponseDto.success(SuccessStatus.LOGOUT_SUCCESS);
+    }
 }

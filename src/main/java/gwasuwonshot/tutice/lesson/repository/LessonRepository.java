@@ -12,5 +12,6 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
 
     List<Lesson> findAllByTeacherIdxAndIsFinished(Long teacherIdx, Boolean isFinished);
     Optional<Lesson> findByIdxAndIsFinished(Long lessonIdx, boolean isFinished);
+
 }
 

@@ -16,6 +16,7 @@ public class GetLessonDetailResponseDto {
     private String payment;
     private Long amount;
     private String subject;
+    private String lessonCode;
 
     public static GetLessonDetailResponseDto of(Lesson lesson) {
         return GetLessonDetailResponseDto.builder()
@@ -26,6 +27,7 @@ public class GetLessonDetailResponseDto {
                 .payment(lesson.getPayment().getValue())
                 .amount(lesson.getAmount())
                 .subject(lesson.getSubject())
+                .lessonCode(lesson.createLessonCode())
                 .build();
     }
 }
