@@ -111,8 +111,8 @@ public class JwtService {
     @Transactional
     public void logout(Long userIdx) {
         deleteToken(userIdx);
-        String token = getToken();
-        registerBlackList(token, "logout");
+//        String token = getToken();
+//        registerBlackList(token, "logout");
     }
 
     // refreshToken 삭제
