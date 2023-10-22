@@ -443,24 +443,30 @@ public class LessonService {
                         dayOfWeeksList.add(lesson.getRegularScheduleList().get(d).getDayOfWeek()));
 
                     // dayOfWeekList 정렬
-                    Collections.sort(dayOfWeeksList, new Comparator<DayOfWeek>(){
-                        @Override
-                        public int compare(DayOfWeek o1, DayOfWeek o2){
-                            Long difference = o1.getIndex() - o2.getIndex();
-                            return difference.intValue();
-                        }
-                    });
+                    if(dayOfWeeksList.size()>1){
+                        Collections.sort(dayOfWeeksList, new Comparator<DayOfWeek>(){
+                            @Override
+                            public int compare(DayOfWeek o1, DayOfWeek o2){
+                                Long difference = o1.getIndex() - o2.getIndex();
+                                return difference.intValue();
+                            }
+                        });
+                    }
+
                     getLessonRegularScheduleList.add(GetLessonRegularSchedule.of(dayOfWeeksList,startTime,endTime));
                 });
 
         // 첫번째 DayOfWeek 순서로 정렬필요
-        Collections.sort(getLessonRegularScheduleList, new Comparator<GetLessonRegularSchedule>(){
-            @Override
-            public int compare(GetLessonRegularSchedule o1, GetLessonRegularSchedule o2){
-                Long difference = DayOfWeek.getIndexByValue(o1.getDayOfWeekList().get(0)) - DayOfWeek.getIndexByValue(o2.getDayOfWeekList().get(0));
-                return difference.intValue();
-            }
-        });
+        if(getLessonRegularScheduleList.size()>1){
+            Collections.sort(getLessonRegularScheduleList, new Comparator<GetLessonRegularSchedule>(){
+                @Override
+                public int compare(GetLessonRegularSchedule o1, GetLessonRegularSchedule o2){
+                    Long difference = DayOfWeek.getIndexByValue(o1.getDayOfWeekList().get(0)) - DayOfWeek.getIndexByValue(o2.getDayOfWeekList().get(0));
+                    return difference.intValue();
+                }
+            });
+        }
+
 
 
         return GetLessonRegularScheduleResponseDto.of(getLessonRegularScheduleList);
