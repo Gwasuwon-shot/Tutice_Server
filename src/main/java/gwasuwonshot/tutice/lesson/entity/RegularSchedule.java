@@ -10,9 +10,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 
 @Entity
@@ -45,6 +43,38 @@ public class RegularSchedule extends AuditingTimeEntity {
         this.startTime=startTime;
         this.endTime=endTime;
         this.dayOfWeek=dayOfWeek;
+
+    }
+
+    public static List<List<Integer>> groupByTimeRegularScheduleIndexList(List<RegularSchedule> regularScheduleList){
+
+
+        List<List<Integer>> result = new ArrayList<>();
+
+        Map<String, List<Integer>> timeSlotMap = new HashMap<>();
+
+
+        for (int i = 0; i < regularScheduleList.size(); i++) {
+            RegularSchedule schedule = regularScheduleList.get(i);
+            String timeSlotKey = schedule.getStartTime() + "-" + schedule.getEndTime();
+
+            if (timeSlotMap.containsKey(timeSlotKey)) {
+                timeSlotMap.get(timeSlotKey).add(i);
+            } else {
+                List<Integer> newIndexList = new ArrayList<>();
+                newIndexList.add(i);
+                timeSlotMap.put(timeSlotKey, newIndexList);
+            }
+        }
+
+        for (List<Integer> indexList : timeSlotMap.values()) {
+            result.add(indexList);
+
+        }
+
+
+
+        return result;
 
     }
 
