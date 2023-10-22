@@ -47,7 +47,9 @@ public class RegularSchedule extends AuditingTimeEntity {
     }
 
     public static List<List<Integer>> groupByTimeRegularScheduleIndexList(List<RegularSchedule> regularScheduleList){
-
+        // 어떤함수인지 : regularScheduleList를 받아, 해당 리스트안의 시간을 기준으로 그룹화할 원소를 이중리스트로 알려줌
+        // 들어오는 인자의 index를 기준으로 알려줌
+        // ex. input = [{월, 14:00, 15:00},{화, 14:00, 15:00},{수, 15:00, 16:00}] -> output = [[0,1],[2]]
 
         List<List<Integer>> result = new ArrayList<>();
 
