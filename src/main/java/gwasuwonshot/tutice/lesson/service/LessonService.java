@@ -10,7 +10,8 @@ import gwasuwonshot.tutice.lesson.dto.request.createLesson.CreateLessonRequestDt
 import gwasuwonshot.tutice.lesson.dto.response.*;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonByParents.GetLessonByParents;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonByTeacher.GetLessonByTeacher;
-import gwasuwonshot.tutice.lesson.dto.response.getLessonSchedule.GetLessonScheduleResponseDto;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonRegularSchedule.GetLessonRegularSchedule;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonRegularSchedule.GetLessonRegularScheduleResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenance.GetMissingMaintenanceLesson;
 import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenance.MissingMaintenanceLesson;
 import gwasuwonshot.tutice.lesson.entity.*;
@@ -36,13 +37,11 @@ import gwasuwonshot.tutice.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
 
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
+import java.time.LocalTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -417,6 +416,56 @@ public class LessonService {
         Long percent = ReturnLongMath.getPercentage(nowCount, lesson.getCount());
 
         return GetLessonProgressResponseDto.of(lesson.getIdx(), lesson.getCount(), nowCount, percent);
+    }
+
+    public GetLessonRegularScheduleResponseDto getLessonRegularSchedule(Long userIdx, Long lessonIdx){
+        // 유저 존재 여부 확인
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+        // 수업 존재 여부 확인
+        Lesson lesson = lessonRepository.findById(lessonIdx)
+                .orElseThrow(() -> new NotFoundLessonException(ErrorStatus.NOT_FOUND_LESSON_EXCEPTION, ErrorStatus.NOT_FOUND_LESSON_EXCEPTION.getMessage()));
+        // 수업과 유저 연결 여부 확인
+        if (!lesson.isMatchedUser(user))
+            throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION, ErrorStatus.INVALID_LESSON_CODE_EXCEPTION.getMessage());
+
+
+        List<GetLessonRegularSchedule> getLessonRegularScheduleList=new ArrayList<>();
+
+        // 정기일정중 시간이 중복되는 경우 검사
+        RegularSchedule.groupByTimeRegularScheduleIndexList(lesson.getRegularScheduleList())
+                .forEach(gl->{
+                    List<DayOfWeek> dayOfWeeksList = new ArrayList<>();
+                    LocalTime startTime = lesson.getRegularScheduleList().get(gl.get(0)).getStartTime();
+                    LocalTime endTime = lesson.getRegularScheduleList().get(gl.get(0)).getEndTime();
+
+                    gl.forEach(d ->
+                        dayOfWeeksList.add(lesson.getRegularScheduleList().get(d).getDayOfWeek()));
+
+                    // dayOfWeekList 정렬
+                    Collections.sort(dayOfWeeksList, new Comparator<DayOfWeek>(){
+                        @Override
+                        public int compare(DayOfWeek o1, DayOfWeek o2){
+                            Long difference = o1.getIndex() - o2.getIndex();
+                            return difference.intValue();
+                        }
+                    });
+                    getLessonRegularScheduleList.add(GetLessonRegularSchedule.of(dayOfWeeksList,startTime,endTime));
+                });
+
+        // 첫번째 DayOfWeek 순서로 정렬필요
+        Collections.sort(getLessonRegularScheduleList, new Comparator<GetLessonRegularSchedule>(){
+            @Override
+            public int compare(GetLessonRegularSchedule o1, GetLessonRegularSchedule o2){
+                Long difference = DayOfWeek.getIndexByValue(o1.getDayOfWeekList().get(0)) - DayOfWeek.getIndexByValue(o2.getDayOfWeekList().get(0));
+                return difference.intValue();
+            }
+        });
+
+
+        return GetLessonRegularScheduleResponseDto.of(getLessonRegularScheduleList);
+
+
     }
 
     public GetLessonDetailResponseDto getLessonDetail(Long userIdx, Long lessonIdx) {
