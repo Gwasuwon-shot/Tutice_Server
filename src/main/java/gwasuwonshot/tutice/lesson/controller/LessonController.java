@@ -12,6 +12,7 @@ import gwasuwonshot.tutice.lesson.dto.response.GetLessonDetailResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.GetLessonProgressResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonByParents.GetLessonByParentsResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonByTeacher.GetLessonByTeacherResponseDto;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonRegularSchedule.GetLessonRegularScheduleResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenance.GetMissingMaintenanceLessonResponseDto;
 import gwasuwonshot.tutice.lesson.service.LessonService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -147,6 +148,13 @@ public class LessonController {
 //                                                                        @PathVariable final Long lessonIdx) {
 //        return ApiResponseDto.success(SuccessStatus.GET_LESSON_ACCOUNT_SUCCESS, lessonService.getLessonAccount(userIdx, lessonIdx));
 //    }
+
+    @GetMapping("/{lessonIdx}/regular-schedule")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponseDto<GetLessonRegularScheduleResponseDto> getLessonRegularSchedule(@UserIdx final Long userIdx,
+                                                                                        @PathVariable final Long lessonIdx) {
+        return ApiResponseDto.success(SuccessStatus.GET_LESSON_REGULAR_SCHEDULE_SUCCESS, lessonService.getLessonRegularSchedule(userIdx, lessonIdx));
+    }
 
     @GetMapping("/{lessonIdx}/progress")
     @ResponseStatus(HttpStatus.OK)
