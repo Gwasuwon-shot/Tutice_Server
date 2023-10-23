@@ -10,9 +10,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 
 @Entity
@@ -45,6 +43,40 @@ public class RegularSchedule extends AuditingTimeEntity {
         this.startTime=startTime;
         this.endTime=endTime;
         this.dayOfWeek=dayOfWeek;
+
+    }
+
+    public static List<List<Integer>> groupByTimeRegularScheduleIndexList(List<RegularSchedule> regularScheduleList){
+        // 어떤함수인지 : regularScheduleList를 받아, 해당 리스트안의 시간을 기준으로 그룹화할 원소를 이중리스트로 알려줌
+        // 들어오는 인자의 index를 기준으로 알려줌
+        // ex. input = [{월, 14:00, 15:00},{화, 14:00, 15:00},{수, 15:00, 16:00}] -> output = [[0,1],[2]]
+
+        List<List<Integer>> result = new ArrayList<>();
+
+        Map<String, List<Integer>> timeSlotMap = new HashMap<>();
+
+
+        for (int i = 0; i < regularScheduleList.size(); i++) {
+            RegularSchedule schedule = regularScheduleList.get(i);
+            String timeSlotKey = schedule.getStartTime() + "-" + schedule.getEndTime();
+
+            if (timeSlotMap.containsKey(timeSlotKey)) {
+                timeSlotMap.get(timeSlotKey).add(i);
+            } else {
+                List<Integer> newIndexList = new ArrayList<>();
+                newIndexList.add(i);
+                timeSlotMap.put(timeSlotKey, newIndexList);
+            }
+        }
+
+        for (List<Integer> indexList : timeSlotMap.values()) {
+            result.add(indexList);
+
+        }
+
+
+
+        return result;
 
     }
 
