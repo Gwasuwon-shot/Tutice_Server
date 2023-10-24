@@ -449,7 +449,7 @@ public class ScheduleService {
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
         // 수업 존재 여부 확인
-        Lesson lesson = lessonRepository.findById(lessonIdx)
+        Lesson lesson = lessonRepository.findByIdxAndDeletedAtIsNull(lessonIdx)
                 .orElseThrow(() -> new NotFoundLessonException(ErrorStatus.NOT_FOUND_LESSON_EXCEPTION, ErrorStatus.NOT_FOUND_LESSON_EXCEPTION.getMessage()));
         // 수업과 유저 연결 여부 확인
         if (!lesson.isMatchedUser(user))
