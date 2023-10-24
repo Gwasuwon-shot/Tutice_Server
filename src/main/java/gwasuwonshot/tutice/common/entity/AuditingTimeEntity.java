@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class AuditingTimeEntity {
 
-    // TODO : 어째서인지는 모르지만 createAt, updateAt이 우리 서비스에서는 적용이 안되고 있음
     @CreatedDate
     private LocalDateTime createdAt;
 
@@ -35,6 +34,9 @@ public abstract class AuditingTimeEntity {
     public void preUpdate(){
         updatedAt = LocalDateTime.now();
     }
+
+
+    public void markAsDeleted(){deletedAt=LocalDateTime.now();}
 }
 
 

@@ -66,7 +66,7 @@ public class ScheduleService {
 
         // 학부모-레슨리스트 -> 스케줄 중 해당 레슨 있는지 + 오늘 날짜인지
         // TODO 부모님 수업 리스트 양방향 매핑으로 수정하기
-        List<Lesson> lessonList = lessonRepository.findAllByParentsIdxAndIsFinished(userIdx,false);
+        List<Lesson> lessonList = lessonRepository.findAllByParentsIdxAndIsFinishedAndDeletedAtIsNull(userIdx,false);
         List<Schedule> todayScheduleList = scheduleRepository.findAllByDateAndLessonIn(now, lessonList);
         if(todayScheduleList == null) return GetTodayScheduleByParentsResponseDto.of(user.getName());
         return GetTodayScheduleByParentsResponseDto.ofTodaySchedule(user.getName(), now, todayScheduleList);
@@ -85,9 +85,9 @@ public class ScheduleService {
         // 유저 역할 따라 스케줄 가져오기
         List<Lesson> lessonList;
         if (user.isMatchedRole(Role.PARENTS)) {
-            lessonList = lessonRepository.findAllByParentsIdxAndIsFinished(userIdx,false);
+            lessonList = lessonRepository.findAllByParentsIdxAndIsFinishedAndDeletedAtIsNull(userIdx,false);
         } else if (user.isMatchedRole(Role.TEACHER)) {
-            lessonList = lessonRepository.findAllByTeacherIdxAndIsFinished(userIdx,false);
+            lessonList = lessonRepository.findAllByTeacherIdxAndIsFinishedAndDeletedAtIsNull(userIdx,false);
         } else {
             return null;
         }
@@ -128,7 +128,7 @@ public class ScheduleService {
 
         // 오늘의 수업 있는지 체크
         LocalDate now = LocalDate.now();
-        List<Lesson> lessonList = lessonRepository.findAllByTeacherIdxAndIsFinished(userIdx,false);
+        List<Lesson> lessonList = lessonRepository.findAllByTeacherIdxAndIsFinishedAndDeletedAtIsNull(userIdx,false);
         List<Schedule> todayScheduleList = scheduleRepository.findAllByDateAndLessonInOrderByStartTime(now, lessonList);
 
         // 오늘의 수업 유무
@@ -229,7 +229,7 @@ public class ScheduleService {
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
 
-        List<Lesson> lessonList = lessonRepository.findAllByTeacherIdxAndIsFinished(userIdx,false);
+        List<Lesson> lessonList = lessonRepository.findAllByTeacherIdxAndIsFinishedAndDeletedAtIsNull(userIdx,false);
 
         // 오늘 수업 시작&끝 체크 안 한 것
         List<Schedule> missingScheduleList = scheduleRepository.findAllByStatusAndDateAndStartTimeIsBeforeAndLessonIn(ScheduleStatus.NO_STATUS, LocalDate.now(), LocalTime.now(), lessonList);
@@ -324,7 +324,7 @@ public class ScheduleService {
         // 선생님 여부
         if(!user.isMatchedRole(Role.TEACHER)) throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION,ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
         // 가장 최근 스케줄 가져오기 (오늘 포함)
-        List<Lesson> lessonList = lessonRepository.findAllByTeacherIdxAndIsFinished(userIdx, false);
+        List<Lesson> lessonList = lessonRepository.findAllByTeacherIdxAndIsFinishedAndDeletedAtIsNull(userIdx, false);
         List<Schedule> scheduleList = scheduleRepository.findAllByLessonInAndDateGreaterThanEqualOrderByDate(lessonList, LocalDate.now());
         // 오늘인지 체크
         if(scheduleList.isEmpty()) return null;
@@ -402,7 +402,7 @@ public class ScheduleService {
         if(!user.isMatchedRole(Role.TEACHER)) throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION,ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
 
         // 수업 존재 여부 확인
-        Lesson lesson = lessonRepository.findByIdxAndIsFinished(lessonIdx, false)
+        Lesson lesson = lessonRepository.findByIdxAndIsFinishedAndDeletedAtIsNull(lessonIdx, false)
                 .orElseThrow(() -> new NotFoundLessonException(ErrorStatus.NOT_FOUND_LESSON_EXCEPTION, ErrorStatus.NOT_FOUND_LESSON_EXCEPTION.getMessage()));
 
         // 출석누락 유무
@@ -420,7 +420,7 @@ public class ScheduleService {
         // 선생님 여부
         if(!user.isMatchedRole(Role.TEACHER)) throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION,ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
         // 수업 리스트 가져오기
-        List<Lesson> lessonList = lessonRepository.findAllByTeacherIdxAndIsFinished(userIdx, false);
+        List<Lesson> lessonList = lessonRepository.findAllByTeacherIdxAndIsFinishedAndDeletedAtIsNull(userIdx, false);
         // 출석누락 유무
         boolean isMissingAttendance = false;
         boolean isAfterMissingAttendance = scheduleRepository.existsByStatusAndDateIsBeforeAndLessonIn(ScheduleStatus.NO_STATUS, LocalDate.now(), lessonList);
@@ -438,7 +438,7 @@ public class ScheduleService {
         // 선생님 여부
         if(!user.isMatchedRole(Role.TEACHER)) throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION,ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
         // 수업 리스트 가져오기
-        List<Lesson> lessonList = lessonRepository.findAllByTeacherIdxAndIsFinished(userIdx, false);
+        List<Lesson> lessonList = lessonRepository.findAllByTeacherIdxAndIsFinishedAndDeletedAtIsNull(userIdx, false);
         // TODO 성능 고민 (queryDSL, exists)
         List<Schedule> scheduleList = scheduleRepository.findAllByLessonInAndDate(lessonList, LocalDate.now());
         return !scheduleList.isEmpty();
@@ -449,7 +449,7 @@ public class ScheduleService {
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
         // 수업 존재 여부 확인
-        Lesson lesson = lessonRepository.findById(lessonIdx)
+        Lesson lesson = lessonRepository.findByIdxAndDeletedAtIsNull(lessonIdx)
                 .orElseThrow(() -> new NotFoundLessonException(ErrorStatus.NOT_FOUND_LESSON_EXCEPTION, ErrorStatus.NOT_FOUND_LESSON_EXCEPTION.getMessage()));
         // 수업과 유저 연결 여부 확인
         if (!lesson.isMatchedUser(user))
