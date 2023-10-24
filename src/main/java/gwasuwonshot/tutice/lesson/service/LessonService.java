@@ -557,11 +557,7 @@ public class LessonService {
         if (!lesson.isMatchedUser(user))
             throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION, ErrorStatus.INVALID_LESSON_CODE_EXCEPTION.getMessage());
 
-        // 수업이 이미 종료되었는지 확인
-        if(lesson.getIsFinished()){
-            throw new AlreadyFinishedLessonException(ErrorStatus.ALREADY_FINISHED_LESSON_EXCEPTION,ErrorStatus.ALREADY_FINISHED_LESSON_EXCEPTION.getMessage());
-        }
-        // 수업 종료처리
-        lesson.finishLesson();
+        // 수업 삭제 처리
+        lesson.deleteLesson();
     }
 }
