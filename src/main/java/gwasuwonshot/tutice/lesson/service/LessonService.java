@@ -66,11 +66,11 @@ public class LessonService {
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
 
         if(user.isMatchedRole(Role.PARENTS)){
-            return GetLessonByUserResponseDto.of(!(lessonRepository.findAllByParentsIdxAndIsFinished(user.getIdx(), false).isEmpty())
+            return GetLessonByUserResponseDto.of(!(lessonRepository.findAllByParentsIdxAndIsFinishedAndDeletedAtIsNull(user.getIdx(), false).isEmpty())
                     ,user.getName());
 
         } else if (user.isMatchedRole(Role.TEACHER)) {
-            return GetLessonByUserResponseDto.of(!(lessonRepository.findAllByTeacherIdxAndIsFinished(user.getIdx(),false).isEmpty())
+            return GetLessonByUserResponseDto.of(!(lessonRepository.findAllByTeacherIdxAndIsFinishedAndDeletedAtIsNull(user.getIdx(),false).isEmpty())
                     ,user.getName());
         }
         else{
@@ -144,7 +144,7 @@ public class LessonService {
         }
 
 //        유저에 연결된 수업리스트가져오기
-        lessonRepository.findAllByParentsIdxAndIsFinished(parents.getIdx(),false)
+        lessonRepository.findAllByParentsIdxAndIsFinishedAndDeletedAtIsNull(parents.getIdx(),false)
                 .forEach(pl->{
 
                     //  현재 회차계산 : 이때 수업에 연결된 스케쥴중 현재사이클(수업에 연결된 paymentRecord개수(선불,후불+1))중 출석,결석만 카운트해서 현재카운트가져오기
@@ -280,8 +280,10 @@ public class LessonService {
             throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION,ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
         }
 
-        Lesson lesson = lessonRepository.findById(lessonIdx)
-                .orElseThrow(() -> new NotFoundLessonException(ErrorStatus.NOT_FOUND_LESSON_EXCEPTION,ErrorStatus.NOT_FOUND_LESSON_EXCEPTION.getMessage()));
+        // 수업 존재 여부 확인
+        Lesson lesson = lessonRepository.findByIdxAndIsFinishedAndDeletedAtIsNull(lessonIdx, false)
+                .orElseThrow(() -> new NotFoundLessonException(ErrorStatus.NOT_FOUND_LESSON_EXCEPTION, ErrorStatus.NOT_FOUND_LESSON_EXCEPTION.getMessage()));
+
 
         if(!lesson.isMatchedTeacher(teacher)){
             throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION,ErrorStatus.INVALID_LESSON_EXCEPTION.getMessage());
@@ -330,7 +332,7 @@ public class LessonService {
         // TODO : 아래의 로직좀더 효율적으로 리팩하기
         //2. 유저에 연결된 레슨가져오기
         //2.1 레슨이 isFinished가 false이고00
-        lessonRepository.findAllByTeacherIdxAndIsFinished(teacher.getIdx(),false)
+        lessonRepository.findAllByTeacherIdxAndIsFinishedAndDeletedAtIsNull(teacher.getIdx(),false)
                 .forEach(lfn -> {
                     // 2.2 간단플래그 : 현재사이클의 가장 최근 스케쥴의 상태가 상태없음이 아닐경우 (사실 최근스케쥴은 출석 or 결석만 되긴함)
                     Schedule endSchedule = scheduleRepository.findTopByLessonAndCycleAndStatusNotOrderByDateDesc(lfn, lfn.getCycle(),ScheduleStatus.CANCEL);
@@ -363,8 +365,10 @@ public class LessonService {
         //2. 레슨코드해석
         Long lessonIdx = this.getLessonIdxFromLessonCode(lessonCode);
         //3. 해석한 레슨아이디로 레슨찾기 -> 없으면 404
-        Lesson lesson = lessonRepository.findById(lessonIdx)
-                .orElseThrow(()->new NotFoundLessonException(ErrorStatus.NOT_FOUND_LESSON_EXCEPTION, ErrorStatus.NOT_FOUND_LESSON_EXCEPTION.getMessage()));
+        // 수업 존재 여부 확인
+        Lesson lesson = lessonRepository.findByIdxAndIsFinishedAndDeletedAtIsNull(lessonIdx, false)
+                .orElseThrow(() -> new NotFoundLessonException(ErrorStatus.NOT_FOUND_LESSON_EXCEPTION, ErrorStatus.NOT_FOUND_LESSON_EXCEPTION.getMessage()));
+
         //4. 레슨에 연결된 학부모검사 -> 현유저가 아닌유저이면 409
         if(lesson.getParents() == null){
             lesson.connectParents(parents);
@@ -532,7 +536,7 @@ public class LessonService {
         // 선생님 여부
         if(!user.isMatchedRole(Role.TEACHER)) throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION,ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
         // 수업 리스트 가져오기
-        List<Lesson> lessonList = lessonRepository.findAllByTeacherIdxAndIsFinished(userIdx, false);
+        List<Lesson> lessonList = lessonRepository.findAllByTeacherIdxAndIsFinishedAndDeletedAtIsNull(userIdx, false);
         // 수업연장 여부 유무
         boolean isMissingMaintenance = false;
         for(Lesson lesson : lessonList) {
