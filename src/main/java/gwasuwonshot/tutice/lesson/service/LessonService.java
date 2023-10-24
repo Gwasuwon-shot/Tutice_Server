@@ -93,23 +93,19 @@ public class LessonService {
             throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION,ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
         }
 
-//        유저에 연결된 레슨리스트 다가져오기
+
+        // 유저에 연결된 레슨리스트 다가져오기
         teacher.getLessonList().forEach(l->{
 
-// 먼저 레슨이 종료되었는지(삭제되었는지) 확인
+            // 먼저 레슨이 삭제되었는지 확인
             if(l.getDeletedAt()!=null){
                 return;
             }
 
-////        각레슨의 정기스케쥴 가져와 일주일순서로 정렬
-//            List<String> dayOfWeekList = new ArrayList<>();
-//            RegularSchedule.dayOfWeekSortedReglarScheduleList(l.getRegularScheduleList());
-//            l.getRegularScheduleList()
-//                    .forEach(rs->dayOfWeekList.add(rs.getDayOfWeek().getValue()));
-            // 23.10.18 수정본 : 각수업당 다가오는 가장 빠른 요일가져오기
+            // 각수업당 다가오는 가장 빠른 요일가져오기
             RegularSchedule latestRegularSchedule = RegularSchedule.findLatestRegularSchedule(LocalDate.now(),l.getRegularScheduleList());
 
-//        각레슨의 진짜회차를 계산해 percent 계산
+            //  각레슨의 진짜회차를 계산해 percent 계산
             // TODO : nowCount - percent 로직 겹침. 모듈로 빼기
 //        - [ ] nowCount : 진짜 카운트 : 현재 사이클의 스케쥴중 출결정보가 있는스케쥴개수
             Long nowCount = scheduleRepository.countByLessonAndCycleAndStatusIn(l,l.getCycle(),ScheduleStatus.getAttendanceScheduleStatusList());
