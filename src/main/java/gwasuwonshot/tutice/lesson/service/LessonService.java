@@ -116,7 +116,7 @@ public class LessonService {
             //                - [ ] percent : 전체카운트와 진짜카운트의 백분율
             Long percent = ReturnLongMath.getPercentage(nowCount,l.getCount());
 
-            getLessonByTeacherList.add(GetLessonByTeacher.of(l.getIdx(),l.getStudentName(), l.getSubject(),percent,
+            getLessonByTeacherList.add(GetLessonByTeacher.of(l.getIdx(),l.getStudentName(), l.getSubject(),percent,l.getIsFinished(),
                     GetLessonByTeacherLatestRegularSchedule.of(latestRegularSchedule.getDayOfWeek().getValue(),latestRegularSchedule.getStartTime(),latestRegularSchedule.getEndTime())));
 
 
