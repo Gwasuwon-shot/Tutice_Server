@@ -4,12 +4,15 @@ import gwasuwonshot.tutice.common.exception.ErrorStatus;
 import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
 import gwasuwonshot.tutice.common.module.ReturnLongMath;
 import gwasuwonshot.tutice.lesson.dto.request.createLesson.CreateLessonRequest;
-import gwasuwonshot.tutice.lesson.dto.response.*;
+import gwasuwonshot.tutice.lesson.dto.response.LessonResponse;
+import gwasuwonshot.tutice.lesson.dto.response.createLesson.CreateLessonResponse;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonByTeacher.GetLessonByTeacher;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonByTeacher.GetLessonByTeacherLatestRegularSchedule;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonDetail.GetLessonDetailResponse;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonExistenceByUser.GetLessonExistenceByUserResponse;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonRegularSchedule.GetLessonRegularSchedule;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonRegularSchedule.GetLessonRegularScheduleResponse;
-import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenance.GetMissingMaintenanceLesson;
+import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenanceLessonByTeacher.GetMissingMaintenanceLesson;
 import gwasuwonshot.tutice.lesson.entity.*;
 import gwasuwonshot.tutice.lesson.exception.conflict.AlreadyExistLessonParentsException;
 import gwasuwonshot.tutice.lesson.exception.conflict.AlreadyFinishedLessonException;
@@ -343,7 +346,7 @@ public class LessonService {
     }
 
 
-    public GetLessonProgressResponse getLessonProgress(Long userIdx, Long lessonIdx) {
+    public LessonResponse getLessonProgress(Long userIdx, Long lessonIdx) {
         // 유저 존재 여부 확인
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
@@ -361,7 +364,7 @@ public class LessonService {
         // - [ ] percent : 전체카운트와 진짜카운트의 백분율
         Long percent = ReturnLongMath.getPercentage(nowCount, lesson.getCount());
 
-        return GetLessonProgressResponse.of(lesson.getIdx(), lesson.getCount(), nowCount, percent);
+        return LessonResponse.of(lesson.getIdx(), lesson.getCount(), nowCount, percent);
     }
 
     public GetLessonRegularScheduleResponse getLessonRegularSchedule(Long userIdx, Long lessonIdx) {

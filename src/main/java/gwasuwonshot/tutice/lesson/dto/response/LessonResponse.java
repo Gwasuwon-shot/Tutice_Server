@@ -38,4 +38,13 @@ public class LessonResponse {
                 .count(count)
                 .build();
     }
+
+    public static LessonResponse of(Long idx, Long count, Long nowCount, Long percent) {
+        return LessonResponse.builder()
+                .idx(idx)
+                .count(count)
+                .nowCount(nowCount)
+                .percent(percent)
+                .build();
+    }
 }
