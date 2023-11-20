@@ -67,7 +67,7 @@ public class ScheduleService {
                 String title = NotificationConstant.getAttendanceLateCheckTitle();
                 String body = NotificationConstant.getAttendanceLateCheckContent();
                 fcmService.sendMessage(user.getDeviceToken(), title, body);
-                notificationLogRepository.save(notificationLogAssembler.toEntity(schedule.getLesson().getParents(), title, body));
+                notificationLogRepository.save(NotificationLog.toEntity(schedule.getLesson().getParents(), title, body));
             }
         }
     }
