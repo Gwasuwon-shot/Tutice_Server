@@ -6,7 +6,7 @@ import gwasuwonshot.tutice.common.exception.SuccessStatus;
 import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
 import gwasuwonshot.tutice.common.resolver.userIdx.UserIdx;
 import gwasuwonshot.tutice.lesson.dto.request.UpdatePaymentRecordRequest;
-import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecordByLesson.GetPaymentRecordResponse;
+import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecordByLesson.GetPaymentRecordByLessonResponse;
 import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecordCycle.GetPaymentRecordCycleResponse;
 import gwasuwonshot.tutice.lesson.service.PaymentRecordService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,7 +26,7 @@ public class PaymentRecordController {
 
     @GetMapping("/lesson/{lessonIdx}")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<List<GetPaymentRecordResponse>> getPaymentRecordByLesson(
+    public ApiResponse<List<GetPaymentRecordByLessonResponse>> getPaymentRecordByLesson(
             @UserIdx final Long userIdx,
             @PathVariable final Long lessonIdx
     ) {

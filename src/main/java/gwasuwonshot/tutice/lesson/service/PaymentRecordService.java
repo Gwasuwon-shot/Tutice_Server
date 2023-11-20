@@ -4,7 +4,7 @@ package gwasuwonshot.tutice.lesson.service;
 import gwasuwonshot.tutice.common.exception.ErrorStatus;
 import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
 import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecordCycle.GetPaymentRecordCycleResponse;
-import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecordByLesson.GetPaymentRecordResponse;
+import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecordByLesson.GetPaymentRecordByLessonResponse;
 import gwasuwonshot.tutice.lesson.entity.Lesson;
 import gwasuwonshot.tutice.lesson.entity.Payment;
 import gwasuwonshot.tutice.lesson.entity.PaymentRecord;
@@ -39,7 +39,7 @@ public class PaymentRecordService {
 
 
 
-    public List<GetPaymentRecordResponse> getPaymentRecordByLesson(Long userIdx, Long lessonIdx) {
+    public List<GetPaymentRecordByLessonResponse> getPaymentRecordByLesson(Long userIdx, Long lessonIdx) {
         // 유저 존재 여부 확인
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
@@ -62,14 +62,14 @@ public class PaymentRecordService {
             }
         });
 
-        List<GetPaymentRecordResponse> paymentRecordList = new ArrayList<>();
+        List<GetPaymentRecordByLessonResponse> paymentRecordList = new ArrayList<>();
         if(lesson.isMatchedPayment(Payment.PRE_PAYMENT)){
             //선불
             //- [ ] 사이클개수대로 payment 가져오기
             lesson.getPaymenRecordList()
                     .forEach(pr -> {
                         paymentRecordList.add(
-                                GetPaymentRecordResponse.of(
+                                GetPaymentRecordByLessonResponse.of(
                                         pr.getIdx(),
                                         (pr.getDate() == null) ? null : DateAndTimeConvert.localDateConvertString(pr.getDate()),
                                         pr.getAmount(), pr.getStatus()));
@@ -79,7 +79,7 @@ public class PaymentRecordService {
             lesson.getPaymenRecordList().subList(0, lesson.getCycle().intValue() - 1)
                     .forEach(pr -> {
                                 paymentRecordList.add(
-                                        GetPaymentRecordResponse.of(
+                                        GetPaymentRecordByLessonResponse.of(
                                                 pr.getIdx(),
                                                 (pr.getDate() == null) ? null : DateAndTimeConvert.localDateConvertString(pr.getDate()),
                                                 pr.getAmount(), pr.getStatus()));

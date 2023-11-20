@@ -2,7 +2,7 @@ package gwasuwonshot.tutice.user.service;
 
 import gwasuwonshot.tutice.common.exception.ErrorStatus;
 import gwasuwonshot.tutice.config.jwt.JwtService;
-import gwasuwonshot.tutice.lesson.dto.response.getAccountByLesson.GetLessonAccountResponse;
+import gwasuwonshot.tutice.user.dto.response.GetAccountByLessonResponse;
 import gwasuwonshot.tutice.lesson.entity.Lesson;
 import gwasuwonshot.tutice.lesson.exception.invalid.InvalidLessonException;
 import gwasuwonshot.tutice.lesson.exception.notfound.NotFoundLessonException;
@@ -87,7 +87,7 @@ public class UserService {
         return GetUserNameResponse.of(user.getName());
     }
 
-    public GetLessonAccountResponse getAccountByLesson(Long userIdx, Long lessonIdx) {
+    public GetAccountByLessonResponse getAccountByLesson(Long userIdx, Long lessonIdx) {
         // 유저 존재 여부 확인
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
@@ -98,7 +98,7 @@ public class UserService {
         if (!lesson.isMatchedUser(user))
             throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION, ErrorStatus.INVALID_LESSON_CODE_EXCEPTION.getMessage());
 
-        return GetLessonAccountResponse.of(lesson.getAccount());
+        return GetAccountByLessonResponse.of(lesson.getAccount());
     }
 
     public void checkDuplicationEmail(CheckDuplicationEmailRequest request) {

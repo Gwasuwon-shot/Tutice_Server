@@ -3,7 +3,7 @@ package gwasuwonshot.tutice.schedule.service;
 import gwasuwonshot.tutice.common.exception.ErrorStatus;
 import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
 import gwasuwonshot.tutice.external.firebase.service.FCMService;
-import gwasuwonshot.tutice.lesson.dto.response.getLessonSchedule.GetLessonScheduleResponse;
+import gwasuwonshot.tutice.schedule.dto.response.getScheduleByLesson.GetScheduleByLessonResponse;
 import gwasuwonshot.tutice.lesson.entity.Lesson;
 import gwasuwonshot.tutice.lesson.entity.RegularSchedule;
 import gwasuwonshot.tutice.lesson.exception.invalid.InvalidLessonException;
@@ -13,7 +13,7 @@ import gwasuwonshot.tutice.schedule.dto.request.GetTemporaryScheduleRequest;
 import gwasuwonshot.tutice.schedule.dto.request.UpdateScheduleAttendanceRequest;
 import gwasuwonshot.tutice.schedule.dto.request.UpdateScheduleRequest;
 import gwasuwonshot.tutice.schedule.dto.response.getLatestScheduleByTeacher.GetLatestScheduleByTeacherResponse;
-import gwasuwonshot.tutice.schedule.dto.response.getMissingAttendanceScheduleByTeacher.GetMissingAttendanceScheduleResponse;
+import gwasuwonshot.tutice.schedule.dto.response.getMissingAttendanceScheduleByTeacher.GetMissingAttendanceScheduleByTeacherResponse;
 import gwasuwonshot.tutice.schedule.dto.response.getMissingAttendanceScheduleByTeacher.MissingScheduleByDate;
 import gwasuwonshot.tutice.schedule.dto.response.getScheduleByUser.GetScheduleByUserResponse;
 import gwasuwonshot.tutice.schedule.dto.response.getScheduleByUser.ScheduleByDate;
@@ -250,7 +250,7 @@ public class ScheduleService {
 
 
 
-    public GetMissingAttendanceScheduleResponse getMissingAttendanceScheduleByTeacher(Long userIdx) {
+    public GetMissingAttendanceScheduleByTeacherResponse getMissingAttendanceScheduleByTeacher(Long userIdx) {
         // 유저 존재 여부
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
@@ -265,7 +265,7 @@ public class ScheduleService {
         missingScheduleList.sort(Comparator.comparing(Schedule::getDate));
 
         // 누락 수업 없는 경우
-        if(missingScheduleList.isEmpty()) return GetMissingAttendanceScheduleResponse.of();
+        if(missingScheduleList.isEmpty()) return GetMissingAttendanceScheduleByTeacherResponse.of();
 
         // 누락 수업 시간별 묶기
         List<Schedule> scheduleList = new ArrayList<>();
@@ -287,7 +287,7 @@ public class ScheduleService {
             scheduleList.add(schedule);
         }
         scheduleListByDateList.add(MissingScheduleByDate.of(DateAndTimeConvert.localDateConvertString(scheduleDate), DateAndTimeConvert.localDateConvertDayOfWeek(scheduleDate), scheduleList, scheduleCountList));
-        return GetMissingAttendanceScheduleResponse.ofSchedule(scheduleListByDateList);
+        return GetMissingAttendanceScheduleByTeacherResponse.ofSchedule(scheduleListByDateList);
     }
 
 
@@ -403,7 +403,7 @@ public class ScheduleService {
         return !scheduleList.isEmpty();
     }
 
-    public List<GetLessonScheduleResponse> getScheduleByLesson(Long userIdx, Long lessonIdx) {
+    public List<GetScheduleByLessonResponse> getScheduleByLesson(Long userIdx, Long lessonIdx) {
         // 유저 존재 여부 확인
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
@@ -419,13 +419,13 @@ public class ScheduleService {
         LocalTime nowTime = LocalTime.now();
 
         // 레슨 스케쥴 정보 구성
-        List<GetLessonScheduleResponse> getLessonScheduleResponseList = new ArrayList<>();
+        List<GetScheduleByLessonResponse> getScheduleByLessonResponseList = new ArrayList<>();
         scheduleRepository.findAllByLessonAndCycleOrderByDateDesc(lesson,lesson.getCycle())
                 .forEach(s->{
                     //스케쥴날짜가 오늘날짜보다 이전인지 확인
                     if(today.isAfter(s.getDate())){
-                        getLessonScheduleResponseList.add(
-                                GetLessonScheduleResponse.of(
+                        getScheduleByLessonResponseList.add(
+                                GetScheduleByLessonResponse.of(
                                         s.getIdx(),
                                         DateAndTimeConvert.localDateConvertString(s.getDate()),
                                         s.getStatus().getValue(),
@@ -436,8 +436,8 @@ public class ScheduleService {
                         //수업시작시간확인
 
                         if(!nowTime.isBefore(s.getStartTime())){
-                            getLessonScheduleResponseList.add(
-                                    GetLessonScheduleResponse.of(
+                            getScheduleByLessonResponseList.add(
+                                    GetScheduleByLessonResponse.of(
                                             s.getIdx(),
                                             DateAndTimeConvert.localDateConvertString(s.getDate()),
                                             s.getStatus().getValue(),
@@ -447,7 +447,7 @@ public class ScheduleService {
 
                     }
                 });
-        return getLessonScheduleResponseList;
+        return getScheduleByLessonResponseList;
 
 
 

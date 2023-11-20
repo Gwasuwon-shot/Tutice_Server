@@ -13,7 +13,7 @@ import gwasuwonshot.tutice.lesson.dto.response.getLessonByTeacher.GetLessonByTea
 import gwasuwonshot.tutice.lesson.dto.response.getLessonDetail.GetLessonDetailResponse;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonExistenceByUser.GetLessonExistenceByUserResponse;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonRegularSchedule.GetLessonRegularScheduleResponse;
-import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenanceLessonByTeacher.GetMissingMaintenanceLessonResponse;
+import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenanceLessonByTeacher.GetMissingMaintenanceLessonByTeacherResponse;
 import gwasuwonshot.tutice.lesson.service.LessonService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -91,9 +91,9 @@ public class LessonController {
 
     @GetMapping("/missing-maintenance")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<GetMissingMaintenanceLessonResponse> getMissingMaintenanceLessonByTeacher(@UserIdx final Long userIdx) {
+    public ApiResponse<GetMissingMaintenanceLessonByTeacherResponse> getMissingMaintenanceLessonByTeacher(@UserIdx final Long userIdx) {
         return ApiResponse.success(SuccessStatus.GET_MISSING_MAINTENANCE_LESSON_BY_TEACHER_SUCCESS,
-                GetMissingMaintenanceLessonResponse.of(lessonService.getMissingMaintenanceLessonByTeacher(userIdx))
+                GetMissingMaintenanceLessonByTeacherResponse.of(lessonService.getMissingMaintenanceLessonByTeacher(userIdx))
         );
     }
 
