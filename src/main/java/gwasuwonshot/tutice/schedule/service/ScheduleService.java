@@ -444,7 +444,7 @@ public class ScheduleService {
         return !scheduleList.isEmpty();
     }
 
-    public List<GetLessonScheduleResponseDto> getLessonSchedule(Long userIdx, Long lessonIdx) {
+    public List<GetLessonScheduleResponseDto> getScheduleByLesson(Long userIdx, Long lessonIdx) {
         // 유저 존재 여부 확인
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
@@ -494,7 +494,7 @@ public class ScheduleService {
 
     }
 
-    public Boolean getAttendanceExistenceByTeacher(Long userIdx, Long scheduleIdx) {
+    public Boolean getAttendanceExistenceBySchedule(Long userIdx, Long scheduleIdx) {
         // 유저 존재 여부
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));

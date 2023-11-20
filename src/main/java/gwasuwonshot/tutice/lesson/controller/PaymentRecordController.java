@@ -24,17 +24,6 @@ import java.util.List;
 public class PaymentRecordController {
     private final PaymentRecordService paymentRecordService;
 
-    @PatchMapping("")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto updatePaymentRecord(
-            @UserIdx final Long userIdx,
-            @Valid @RequestBody final UpdatePaymentRecordRequestDto request) {
-
-        paymentRecordService.updatePaymentRecord(userIdx, request.getPaymentRecordIdx(),DateAndTimeConvert.stringConvertLocalDate(request.getPaymentDate()));
-
-        return ApiResponseDto.success(SuccessStatus.UPDATE_PAYMENT_RECORD_SUCCESS);
-
-    }
 
     @GetMapping("/lesson/{lessonIdx}")
     @ResponseStatus(HttpStatus.OK)
@@ -42,7 +31,7 @@ public class PaymentRecordController {
             @UserIdx final Long userIdx,
             @PathVariable final Long lessonIdx
     ) {
-        return ApiResponseDto.success(SuccessStatus.GET_PAYMENT_RECORD_SUCCESS,
+        return ApiResponseDto.success(SuccessStatus.GET_PAYMENT_RECORD_BY_LESSON_SUCCESS,
                 paymentRecordService.getPaymentRecordByLesson(userIdx, lessonIdx));
     }
 
@@ -55,4 +44,15 @@ public class PaymentRecordController {
                 paymentRecordService.getPaymentRecordCycle(userIdx, paymentRecordIdx));
     }
 
+    @PatchMapping("")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponseDto updatePaymentRecord(
+            @UserIdx final Long userIdx,
+            @Valid @RequestBody final UpdatePaymentRecordRequestDto request) {
+
+        paymentRecordService.updatePaymentRecord(userIdx, request.getPaymentRecordIdx(),DateAndTimeConvert.stringConvertLocalDate(request.getPaymentDate()));
+
+        return ApiResponseDto.success(SuccessStatus.UPDATE_PAYMENT_RECORD_SUCCESS);
+
+    }
 }
