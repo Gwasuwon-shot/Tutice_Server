@@ -5,7 +5,7 @@ ex. [feat] searchPublicCourse -->
 
 ---
 <!-- 해당 pr과 연결된 이슈를 닫아주세요. close #이슈넘버 -->
-closes #<!-- 번호 -->
+close #<!-- 번호 -->
 
 
 <br/>

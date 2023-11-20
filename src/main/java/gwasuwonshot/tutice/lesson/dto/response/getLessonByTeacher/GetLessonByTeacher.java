@@ -17,10 +17,11 @@ public class GetLessonByTeacher {
     private String studentName;
     private String subject;
     private Long percent;
-    private List<String> dayOfWeekList;
+    private Boolean isFinished;
+    private GetLessonByTeacherLatestRegularSchedule latestRegularSchedule;
 
-    public static GetLessonByTeacher of(Long idx, String studentName,String subject,Long percent, List<String> dayOfWeekList) {
-        return new GetLessonByTeacher(idx, studentName, subject, percent, dayOfWeekList);
+    public static GetLessonByTeacher of(Long idx, String studentName,String subject,Long percent, Boolean isFinished, GetLessonByTeacherLatestRegularSchedule latestRegularSchedule) {
+        return new GetLessonByTeacher(idx, studentName, subject, percent, isFinished, latestRegularSchedule);
 
     }
 }

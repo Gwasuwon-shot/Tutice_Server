@@ -8,12 +8,12 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class GetLessonByUserResponseDto {
+public class GetLessonExistenceByUserResponseDto {
     private Boolean isLesson;
     private String userName;
 
-    public static GetLessonByUserResponseDto of(Boolean isLesson, String userName) {
-        return new GetLessonByUserResponseDto(isLesson, userName);
+    public static GetLessonExistenceByUserResponseDto of(Boolean isLesson, String userName) {
+        return new GetLessonExistenceByUserResponseDto(isLesson, userName);
     }
 
 }
