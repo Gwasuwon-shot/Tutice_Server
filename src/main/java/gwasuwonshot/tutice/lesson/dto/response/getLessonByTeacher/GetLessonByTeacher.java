@@ -1,7 +1,5 @@
 package gwasuwonshot.tutice.lesson.dto.response.getLessonByTeacher;
 
-import gwasuwonshot.tutice.lesson.dto.response.getLessonByParents.GetLessonByParents;
-import gwasuwonshot.tutice.lesson.dto.response.getLessonByParents.GetLessonByParentsResponseDto;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
