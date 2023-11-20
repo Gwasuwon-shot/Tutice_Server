@@ -3,25 +3,18 @@ package gwasuwonshot.tutice.lesson.service;
 import gwasuwonshot.tutice.common.exception.ErrorStatus;
 import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
 import gwasuwonshot.tutice.common.module.ReturnLongMath;
-import gwasuwonshot.tutice.lesson.dto.request.createLesson.CreateLessonRequestDto;
-import gwasuwonshot.tutice.lesson.dto.response.CreateLessonResponseDto;
-import gwasuwonshot.tutice.lesson.dto.response.GetLessonDetailResponseDto;
-import gwasuwonshot.tutice.lesson.dto.response.GetLessonExistenceByUserResponseDto;
-import gwasuwonshot.tutice.lesson.dto.response.GetLessonProgressResponseDto;
+import gwasuwonshot.tutice.lesson.dto.request.createLesson.CreateLessonRequest;
+import gwasuwonshot.tutice.lesson.dto.response.CreateLessonResponse;
+import gwasuwonshot.tutice.lesson.dto.response.GetLessonDetailResponse;
+import gwasuwonshot.tutice.lesson.dto.response.GetLessonExistenceByUserResponse;
+import gwasuwonshot.tutice.lesson.dto.response.GetLessonProgressResponse;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonByParents.GetLessonByParents;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonByTeacher.GetLessonByTeacher;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonByTeacher.GetLessonByTeacherLatestRegularSchedule;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonRegularSchedule.GetLessonRegularSchedule;
-import gwasuwonshot.tutice.lesson.dto.response.getLessonRegularSchedule.GetLessonRegularScheduleResponseDto;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonRegularSchedule.GetLessonRegularScheduleResponse;
 import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenance.GetMissingMaintenanceLesson;
 import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenance.MissingMaintenanceLesson;
-import gwasuwonshot.tutice.lesson.entity.Lesson;
-import gwasuwonshot.tutice.lesson.entity.RegularSchedule;
-import gwasuwonshot.tutice.schedule.entity.ScheduleStatus;
-import gwasuwonshot.tutice.schedule.repository.ScheduleRepository;
-import gwasuwonshot.tutice.user.entity.Role;
-import gwasuwonshot.tutice.user.entity.User;
-import gwasuwonshot.tutice.user.exception.userException.InvalidRoleException;
 import gwasuwonshot.tutice.lesson.entity.*;
 import gwasuwonshot.tutice.lesson.exception.conflict.AlreadyExistLessonParentsException;
 import gwasuwonshot.tutice.lesson.exception.conflict.AlreadyFinishedLessonException;
@@ -32,7 +25,12 @@ import gwasuwonshot.tutice.lesson.repository.LessonRepository;
 import gwasuwonshot.tutice.lesson.repository.PaymentRecordRepository;
 import gwasuwonshot.tutice.lesson.repository.RegularScheduleRepository;
 import gwasuwonshot.tutice.schedule.entity.Schedule;
+import gwasuwonshot.tutice.schedule.entity.ScheduleStatus;
+import gwasuwonshot.tutice.schedule.repository.ScheduleRepository;
 import gwasuwonshot.tutice.user.entity.Account;
+import gwasuwonshot.tutice.user.entity.Role;
+import gwasuwonshot.tutice.user.entity.User;
+import gwasuwonshot.tutice.user.exception.userException.InvalidRoleException;
 import gwasuwonshot.tutice.user.exception.userException.NotFoundUserException;
 import gwasuwonshot.tutice.user.repository.AccountRepository;
 import gwasuwonshot.tutice.user.repository.UserRepository;
@@ -57,8 +55,8 @@ public class LessonService {
 
 
     @Transactional
-    public CreateLessonResponseDto createLesson(
-            final Long userIdx, final CreateLessonRequestDto request) {
+    public CreateLessonResponse createLesson(
+            final Long userIdx, final CreateLessonRequest request) {
 
         User teacher = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
@@ -138,10 +136,10 @@ public class LessonService {
         if (lesson.isMatchedPayment(Payment.PRE_PAYMENT)) {
             //선불인경우만 payment와 lessonIdx 주기
             //제대로 오나?
-            return CreateLessonResponseDto.of(createdLessonCode, prePaymentRecordIdx, lesson.getIdx());
+            return CreateLessonResponse.of(createdLessonCode, prePaymentRecordIdx, lesson.getIdx());
 
         }
-        return CreateLessonResponseDto.of(createdLessonCode, null, null);
+        return CreateLessonResponse.of(createdLessonCode, null, null);
 
     }
 
@@ -203,16 +201,16 @@ public class LessonService {
 
 
     @Transactional
-    public GetLessonExistenceByUserResponseDto getLessonExistenceByUser(final Long userIdx) {
+    public GetLessonExistenceByUserResponse getLessonExistenceByUser(final Long userIdx) {
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
 
         if (user.isMatchedRole(Role.PARENTS)) {
-            return GetLessonExistenceByUserResponseDto.of(!(lessonRepository.findAllByParentsIdxAndIsFinishedAndDeletedAtIsNull(user.getIdx(), false).isEmpty())
+            return GetLessonExistenceByUserResponse.of(!(lessonRepository.findAllByParentsIdxAndIsFinishedAndDeletedAtIsNull(user.getIdx(), false).isEmpty())
                     , user.getName());
 
         } else if (user.isMatchedRole(Role.TEACHER)) {
-            return GetLessonExistenceByUserResponseDto.of(!(lessonRepository.findAllByTeacherIdxAndIsFinishedAndDeletedAtIsNull(user.getIdx(), false).isEmpty())
+            return GetLessonExistenceByUserResponse.of(!(lessonRepository.findAllByTeacherIdxAndIsFinishedAndDeletedAtIsNull(user.getIdx(), false).isEmpty())
                     , user.getName());
         } else {
             return null; // 관리자 계정일경우..... 뭐하지??
@@ -350,7 +348,7 @@ public class LessonService {
     }
 
 
-    public GetLessonProgressResponseDto getLessonProgress(Long userIdx, Long lessonIdx) {
+    public GetLessonProgressResponse getLessonProgress(Long userIdx, Long lessonIdx) {
         // 유저 존재 여부 확인
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
@@ -368,10 +366,10 @@ public class LessonService {
         // - [ ] percent : 전체카운트와 진짜카운트의 백분율
         Long percent = ReturnLongMath.getPercentage(nowCount, lesson.getCount());
 
-        return GetLessonProgressResponseDto.of(lesson.getIdx(), lesson.getCount(), nowCount, percent);
+        return GetLessonProgressResponse.of(lesson.getIdx(), lesson.getCount(), nowCount, percent);
     }
 
-    public GetLessonRegularScheduleResponseDto getLessonRegularSchedule(Long userIdx, Long lessonIdx) {
+    public GetLessonRegularScheduleResponse getLessonRegularSchedule(Long userIdx, Long lessonIdx) {
         // 유저 존재 여부 확인
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
@@ -424,12 +422,12 @@ public class LessonService {
         }
 
 
-        return GetLessonRegularScheduleResponseDto.of(getLessonRegularScheduleList);
+        return GetLessonRegularScheduleResponse.of(getLessonRegularScheduleList);
 
 
     }
 
-    public GetLessonDetailResponseDto getLessonDetail(Long userIdx, Long lessonIdx) {
+    public GetLessonDetailResponse getLessonDetail(Long userIdx, Long lessonIdx) {
         // 유저 존재 여부 확인
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
@@ -444,7 +442,7 @@ public class LessonService {
         if (!lesson.isMatchedUser(user))
             throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION, ErrorStatus.INVALID_LESSON_CODE_EXCEPTION.getMessage());
 
-        return GetLessonDetailResponseDto.of(lesson);
+        return GetLessonDetailResponse.of(lesson);
     }
 
 

@@ -1,11 +1,11 @@
 package gwasuwonshot.tutice.user.controller;
 
-import gwasuwonshot.tutice.common.dto.ApiResponseDto;
+import gwasuwonshot.tutice.common.dto.ApiResponse;
 import gwasuwonshot.tutice.common.exception.SuccessStatus;
-import gwasuwonshot.tutice.user.dto.request.CheckDuplicationEmailRequestDto;
-import gwasuwonshot.tutice.user.dto.request.LocalLoginRequestDto;
-import gwasuwonshot.tutice.user.dto.request.LocalSignUpRequestDto;
-import gwasuwonshot.tutice.user.dto.response.LoginResponseDto;
+import gwasuwonshot.tutice.user.dto.request.CheckDuplicationEmailRequest;
+import gwasuwonshot.tutice.user.dto.request.LocalLoginRequest;
+import gwasuwonshot.tutice.user.dto.request.LocalSignUpRequest;
+import gwasuwonshot.tutice.user.dto.response.LoginResponse;
 import gwasuwonshot.tutice.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,21 +22,21 @@ public class AuthController {
 
     @PostMapping("/local/sign-up")
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponseDto<LoginResponseDto> localSignUp(@RequestBody @Valid final LocalSignUpRequestDto request) {
-        return ApiResponseDto.success(SuccessStatus.SIGNUP_SUCCESS, userService.localSignUp(request));
+    public ApiResponse<LoginResponse> localSignUp(@RequestBody @Valid final LocalSignUpRequest request) {
+        return ApiResponse.success(SuccessStatus.SIGNUP_SUCCESS, userService.localSignUp(request));
     }
 
     @PostMapping("/local/login")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<LoginResponseDto> localLogin(@RequestBody @Valid final LocalLoginRequestDto request) {
-        return ApiResponseDto.success(SuccessStatus.LOGIN_SUCCESS, userService.localLogin(request));
+    public ApiResponse<LoginResponse> localLogin(@RequestBody @Valid final LocalLoginRequest request) {
+        return ApiResponse.success(SuccessStatus.LOGIN_SUCCESS, userService.localLogin(request));
     }
 
     @PostMapping("/email/duplication")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto checkDuplicationEmail(@RequestBody @Valid final CheckDuplicationEmailRequestDto request) {
+    public ApiResponse checkDuplicationEmail(@RequestBody @Valid final CheckDuplicationEmailRequest request) {
         userService.checkDuplicationEmail(request);
-        return ApiResponseDto.success(SuccessStatus.CHECK_DUPLICATION_EMAIL_SUCCESS);
+        return ApiResponse.success(SuccessStatus.CHECK_DUPLICATION_EMAIL_SUCCESS);
     }
 
 }

@@ -3,16 +3,25 @@ package gwasuwonshot.tutice.schedule.service;
 import gwasuwonshot.tutice.common.exception.ErrorStatus;
 import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
 import gwasuwonshot.tutice.external.firebase.service.FCMService;
-import gwasuwonshot.tutice.lesson.dto.response.getLessonSchedule.GetLessonScheduleResponseDto;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonSchedule.GetLessonScheduleResponse;
 import gwasuwonshot.tutice.lesson.entity.Lesson;
 import gwasuwonshot.tutice.lesson.entity.RegularSchedule;
 import gwasuwonshot.tutice.lesson.exception.invalid.InvalidLessonException;
 import gwasuwonshot.tutice.lesson.exception.notfound.NotFoundLessonException;
 import gwasuwonshot.tutice.lesson.repository.LessonRepository;
-import gwasuwonshot.tutice.schedule.dto.request.GetTemporaryScheduleRequestDto;
-import gwasuwonshot.tutice.schedule.dto.request.UpdateScheduleAttendanceRequestDto;
-import gwasuwonshot.tutice.schedule.dto.request.UpdateScheduleRequestDto;
-import gwasuwonshot.tutice.schedule.dto.response.*;
+import gwasuwonshot.tutice.schedule.dto.request.GetTemporaryScheduleRequest;
+import gwasuwonshot.tutice.schedule.dto.request.UpdateScheduleAttendanceRequest;
+import gwasuwonshot.tutice.schedule.dto.request.UpdateScheduleRequest;
+import gwasuwonshot.tutice.schedule.dto.response.getLatestScheduleByTeacher.GetLatestScheduleByTeacherResponse;
+import gwasuwonshot.tutice.schedule.dto.response.getMissingAttendanceScheduleByTeacher.GetMissingAttendanceScheduleResponse;
+import gwasuwonshot.tutice.schedule.dto.response.getMissingAttendanceScheduleByTeacher.MissingScheduleByDate;
+import gwasuwonshot.tutice.schedule.dto.response.getScheduleByUser.GetScheduleByUserResponse;
+import gwasuwonshot.tutice.schedule.dto.response.getScheduleByUser.ScheduleByDate;
+import gwasuwonshot.tutice.schedule.dto.response.getTemporarySchedule.GetTemporaryScheduleResponse;
+import gwasuwonshot.tutice.schedule.dto.response.getTemporarySchedule.TemporarySchedule;
+import gwasuwonshot.tutice.schedule.dto.response.getTodayScheduleByParents.GetTodayScheduleByParentsResponse;
+import gwasuwonshot.tutice.schedule.dto.response.getTodayScheduleByTeacher.GetTodayScheduleByTeacherResponse;
+import gwasuwonshot.tutice.schedule.dto.response.updateScheduleAttendance.UpdateScheduleAttendanceResponse;
 import gwasuwonshot.tutice.schedule.entity.Schedule;
 import gwasuwonshot.tutice.schedule.entity.ScheduleStatus;
 import gwasuwonshot.tutice.schedule.exception.*;
@@ -53,7 +62,6 @@ public class ScheduleService {
     private final NotificationLogRepository notificationLogRepository;
 
 
-
     @Transactional
     public void postMissingAttendance() throws IOException {
         // 누락 출결 수업 종료 후 30분까지
@@ -73,7 +81,7 @@ public class ScheduleService {
     }
 
 
-    public GetTodayScheduleByParentsResponseDto getTodayScheduleByParents(Long userIdx) {
+    public GetTodayScheduleByParentsResponse getTodayScheduleByParents(Long userIdx) {
         // 유저 존재 여부 확인
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
@@ -86,13 +94,11 @@ public class ScheduleService {
         // TODO 부모님 수업 리스트 양방향 매핑으로 수정하기
         List<Lesson> lessonList = lessonRepository.findAllByParentsIdxAndIsFinishedAndDeletedAtIsNull(userIdx,false);
         List<Schedule> todayScheduleList = scheduleRepository.findAllByDateAndLessonIn(now, lessonList);
-        if(todayScheduleList == null) return GetTodayScheduleByParentsResponseDto.of(user.getName());
-        return GetTodayScheduleByParentsResponseDto.ofTodaySchedule(user.getName(), now, todayScheduleList);
+        if(todayScheduleList == null) return GetTodayScheduleByParentsResponse.of(user.getName());
+        return GetTodayScheduleByParentsResponse.ofTodaySchedule(user.getName(), now, todayScheduleList);
     }
 
-
-
-    public GetScheduleByUserResponseDto getScheduleByUser(Long userIdx, String month) {
+    public GetScheduleByUserResponse getScheduleByUser(Long userIdx, String month) {
         // 유저 존재 여부 확인
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
@@ -115,7 +121,7 @@ public class ScheduleService {
         // TODO 최적화 코드 생각해서 리팩하기 (날짜 별 스케줄 묶기)
         List<Schedule> scheduleList = scheduleRepository.findAllByDateBetweenAndLessonInOrderByDate(startDate, endDate, lessonList);
         if (scheduleList.isEmpty()) {
-            return GetScheduleByUserResponseDto.of();
+            return GetScheduleByUserResponse.of();
         }
         else {
             // 날짜 별 스케줄 리스트
@@ -133,12 +139,12 @@ public class ScheduleService {
             }
             dailyScheduleList.add(ScheduleByDate.of(DateAndTimeConvert.localDateConvertString(scheduleDate), DateAndTimeConvert.localDateConvertDayOfWeek(scheduleDate), scheduleListOfDate));
 
-            return GetScheduleByUserResponseDto.ofDailySchedule(dailyScheduleList);
+            return GetScheduleByUserResponse.ofDailySchedule(dailyScheduleList);
         }
     }
 
     // TODO 리팩.. 리팩.. 깔깔
-    public GetTodayScheduleByTeacherResponseDto getTodayScheduleByTeacher(Long userIdx) {
+    public GetTodayScheduleByTeacherResponse getTodayScheduleByTeacher(Long userIdx) {
         // 유저 존재 여부 확인
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
@@ -165,7 +171,7 @@ public class ScheduleService {
             if(nowTime.isBefore(schedule.getStartTime())) {
                 timeStatus=BEFORE_SCHEDULE;
                 // case 2
-                return GetTodayScheduleByTeacherResponseDto.of(schedule, timeStatus, expectedCount);
+                return GetTodayScheduleByTeacherResponse.of(schedule, timeStatus, expectedCount);
             }
             // 수업 중
             else if(nowTime.equals(schedule.getStartTime()) || nowTime.isBefore(schedule.getEndTime())) {
@@ -173,7 +179,7 @@ public class ScheduleService {
                 // 수업 체크 여부
                 if(schedule.getStatus()==ScheduleStatus.NO_STATUS) {
                     // case 3
-                    return GetTodayScheduleByTeacherResponseDto.of(schedule, timeStatus, expectedCount);
+                    return GetTodayScheduleByTeacherResponse.of(schedule, timeStatus, expectedCount);
                 } else {
                     // 다음 수업 여부
                     if(i==todayScheduleList.size()) {
@@ -193,13 +199,13 @@ public class ScheduleService {
                     // 다음 수업 여부
                     if(i==todayScheduleList.size()) {
                         // 수업X
-                        return GetTodayScheduleByTeacherResponseDto.of(schedule, timeStatus, expectedCount);
+                        return GetTodayScheduleByTeacherResponse.of(schedule, timeStatus, expectedCount);
                     } else {
                         // 수업O
                         // 다음 수업 시작 여부
                         if(nowTime.isBefore(todayScheduleList.get(i).getStartTime())) {
                             // 시작X
-                            return GetTodayScheduleByTeacherResponseDto.of(schedule, timeStatus, expectedCount);
+                            return GetTodayScheduleByTeacherResponse.of(schedule, timeStatus, expectedCount);
                         } else {
                             // 시작O
                             continue;
@@ -226,7 +232,7 @@ public class ScheduleService {
         List<Schedule> scheduleList = scheduleRepository.findAllByDateAndStatusAndLessonInOrderByStartTimeDesc(now, ScheduleStatus.NO_STATUS, lessonList);
         if(!scheduleList.isEmpty()) {
             Schedule schedule = scheduleList.get(0);
-            return GetTodayScheduleByTeacherResponseDto.of(schedule, AFTER_SCHEDULE, getExpectedScheduleCount(schedule));
+            return GetTodayScheduleByTeacherResponse.of(schedule, AFTER_SCHEDULE, getExpectedScheduleCount(schedule));
         }
         return null;
     }
@@ -244,7 +250,7 @@ public class ScheduleService {
 
 
 
-    public GetMissingAttendanceScheduleResponseDto getMissingAttendanceScheduleByTeacher(Long userIdx) {
+    public GetMissingAttendanceScheduleResponse getMissingAttendanceScheduleByTeacher(Long userIdx) {
         // 유저 존재 여부
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
@@ -259,7 +265,7 @@ public class ScheduleService {
         missingScheduleList.sort(Comparator.comparing(Schedule::getDate));
 
         // 누락 수업 없는 경우
-        if(missingScheduleList.isEmpty()) return GetMissingAttendanceScheduleResponseDto.of();
+        if(missingScheduleList.isEmpty()) return GetMissingAttendanceScheduleResponse.of();
 
         // 누락 수업 시간별 묶기
         List<Schedule> scheduleList = new ArrayList<>();
@@ -281,12 +287,12 @@ public class ScheduleService {
             scheduleList.add(schedule);
         }
         scheduleListByDateList.add(MissingScheduleByDate.of(DateAndTimeConvert.localDateConvertString(scheduleDate), DateAndTimeConvert.localDateConvertDayOfWeek(scheduleDate), scheduleList, scheduleCountList));
-        return GetMissingAttendanceScheduleResponseDto.ofSchedule(scheduleListByDateList);
+        return GetMissingAttendanceScheduleResponse.ofSchedule(scheduleListByDateList);
     }
 
 
 
-    public GetLatestScheduleByTeacherResponseDto getLatestScheduleByTeacher(Long userIdx) {
+    public GetLatestScheduleByTeacherResponse getLatestScheduleByTeacher(Long userIdx) {
         // 유저 존재 여부
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
@@ -305,7 +311,7 @@ public class ScheduleService {
             else break;
         }
         latestScheduleList.sort(Comparator.comparing(Schedule::getStartTime));
-        return GetLatestScheduleByTeacherResponseDto.of(standardDate, latestScheduleList);
+        return GetLatestScheduleByTeacherResponse.of(standardDate, latestScheduleList);
     }
 
     @Transactional
@@ -326,7 +332,7 @@ public class ScheduleService {
 
 
 
-    public GetTemporaryScheduleResponseDto getTemporarySchedule(GetTemporaryScheduleRequestDto request) {
+    public GetTemporaryScheduleResponse getTemporarySchedule(GetTemporaryScheduleRequest request) {
         List<RegularSchedule> regularScheduleList = request.getRegularScheduleList().stream().map(r -> RegularSchedule.toTemporaryEntity(r.getDayOfWeek(), r.getStartTime(), r.getEndTime())).collect(Collectors.toList());
 
         List<Schedule> scheduleList = Schedule.autoCreateTemporarySchedule(DateAndTimeConvert.stringConvertLocalDate(request.getStartDate()), request.getCount(), regularScheduleList);
@@ -343,7 +349,7 @@ public class ScheduleService {
             temporaryScheduleByTime.add(schedule);
         }
         temporaryScheduleList.add(TemporarySchedule.of(request.getStudentName(), request.getSubject(), DateAndTimeConvert.localDateConvertString(scheduleDate), temporaryScheduleByTime));
-        return GetTemporaryScheduleResponseDto.of(temporaryScheduleList);
+        return GetTemporaryScheduleResponse.of(temporaryScheduleList);
     }
 
     public Boolean getMissingAttendanceExistenceByLesson(Long userIdx, Long lessonIdx) {
@@ -397,7 +403,7 @@ public class ScheduleService {
         return !scheduleList.isEmpty();
     }
 
-    public List<GetLessonScheduleResponseDto> getScheduleByLesson(Long userIdx, Long lessonIdx) {
+    public List<GetLessonScheduleResponse> getScheduleByLesson(Long userIdx, Long lessonIdx) {
         // 유저 존재 여부 확인
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
@@ -413,13 +419,13 @@ public class ScheduleService {
         LocalTime nowTime = LocalTime.now();
 
         // 레슨 스케쥴 정보 구성
-        List<GetLessonScheduleResponseDto> getLessonScheduleResponseDtoList = new ArrayList<>();
+        List<GetLessonScheduleResponse> getLessonScheduleResponseList = new ArrayList<>();
         scheduleRepository.findAllByLessonAndCycleOrderByDateDesc(lesson,lesson.getCycle())
                 .forEach(s->{
                     //스케쥴날짜가 오늘날짜보다 이전인지 확인
                     if(today.isAfter(s.getDate())){
-                        getLessonScheduleResponseDtoList.add(
-                                GetLessonScheduleResponseDto.of(
+                        getLessonScheduleResponseList.add(
+                                GetLessonScheduleResponse.of(
                                         s.getIdx(),
                                         DateAndTimeConvert.localDateConvertString(s.getDate()),
                                         s.getStatus().getValue(),
@@ -430,8 +436,8 @@ public class ScheduleService {
                         //수업시작시간확인
 
                         if(!nowTime.isBefore(s.getStartTime())){
-                            getLessonScheduleResponseDtoList.add(
-                                    GetLessonScheduleResponseDto.of(
+                            getLessonScheduleResponseList.add(
+                                    GetLessonScheduleResponse.of(
                                             s.getIdx(),
                                             DateAndTimeConvert.localDateConvertString(s.getDate()),
                                             s.getStatus().getValue(),
@@ -441,7 +447,7 @@ public class ScheduleService {
 
                     }
                 });
-        return getLessonScheduleResponseDtoList;
+        return getLessonScheduleResponseList;
 
 
 
@@ -462,7 +468,7 @@ public class ScheduleService {
 
 
     @Transactional
-    public void updateSchedule(Long userIdx, UpdateScheduleRequestDto request) {
+    public void updateSchedule(Long userIdx, UpdateScheduleRequest request) {
         // 유저 존재 여부
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
@@ -485,7 +491,7 @@ public class ScheduleService {
     }
 
     @Transactional
-    public UpdateScheduleAttendanceResponseDto updateScheduleAttendance(Long userIdx, UpdateScheduleAttendanceRequestDto request) {
+    public UpdateScheduleAttendanceResponse updateScheduleAttendance(Long userIdx, UpdateScheduleAttendanceRequest request) {
         // 유저 존재 여부
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
@@ -511,6 +517,6 @@ public class ScheduleService {
 
         // 진짜 마지막 회차인지 여부 (마지막 스케줄인지)
         boolean isLastCount = !scheduleRepository.existsByLessonAndCycleAndStatus(schedule.getLesson(), schedule.getCycle(), ScheduleStatus.NO_STATUS);
-        return UpdateScheduleAttendanceResponseDto.of(isLastCount, LocalDate.now());
+        return UpdateScheduleAttendanceResponse.of(isLastCount, LocalDate.now());
     }
 }

@@ -1,10 +1,10 @@
 package gwasuwonshot.tutice.user.controller;
 
-import gwasuwonshot.tutice.common.dto.ApiResponseDto;
+import gwasuwonshot.tutice.common.dto.ApiResponse;
 import gwasuwonshot.tutice.common.exception.SuccessStatus;
 import gwasuwonshot.tutice.common.resolver.userIdx.UserIdx;
-import gwasuwonshot.tutice.user.dto.response.RequestAttendanceNotificationResponseDto;
-import gwasuwonshot.tutice.user.dto.response.RequestPaymentRecordNotificationResponseDto;
+import gwasuwonshot.tutice.user.dto.response.RequestAttendanceNotificationResponse;
+import gwasuwonshot.tutice.user.dto.response.RequestPaymentRecordNotificationResponse;
 import gwasuwonshot.tutice.user.service.NotificationService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -22,12 +22,12 @@ public class NotificationController {
 
     @GetMapping("/schedule/{scheduleIdx}/attendance")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<RequestAttendanceNotificationResponseDto> requestAttendanceNotification(
+    public ApiResponse<RequestAttendanceNotificationResponse> requestAttendanceNotification(
             @UserIdx final Long userIdx,
             @PathVariable final Long scheduleIdx) {
 
-        return ApiResponseDto.success(SuccessStatus.REQUEST_ATTENDANCE_NOTIFICATION_SUCCESS,
-                RequestAttendanceNotificationResponseDto.of(
+        return ApiResponse.success(SuccessStatus.REQUEST_ATTENDANCE_NOTIFICATION_SUCCESS,
+                RequestAttendanceNotificationResponse.of(
                         notificationService.requestAttendanceNotification(userIdx,scheduleIdx)
                 ));
 
@@ -35,12 +35,12 @@ public class NotificationController {
 
     @GetMapping("/lesson/{lessonIdx}/payment-record")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<RequestPaymentRecordNotificationResponseDto> requestPaymentRecordNotification(
+    public ApiResponse<RequestPaymentRecordNotificationResponse> requestPaymentRecordNotification(
             @UserIdx final Long userIdx,
             @PathVariable final Long lessonIdx) {
 
-        return ApiResponseDto.success(SuccessStatus.REQUEST_PAYMENT_RECORD_NOTIFICATION_SUCCESS,
-                RequestPaymentRecordNotificationResponseDto.of(
+        return ApiResponse.success(SuccessStatus.REQUEST_PAYMENT_RECORD_NOTIFICATION_SUCCESS,
+                RequestPaymentRecordNotificationResponse.of(
                         notificationService.requestPaymentRecordNotification(userIdx,lessonIdx)
                 ));
 
