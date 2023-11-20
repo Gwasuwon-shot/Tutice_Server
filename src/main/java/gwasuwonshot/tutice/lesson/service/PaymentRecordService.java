@@ -3,7 +3,7 @@ package gwasuwonshot.tutice.lesson.service;
 
 import gwasuwonshot.tutice.common.exception.ErrorStatus;
 import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
-import gwasuwonshot.tutice.lesson.dto.response.GetPaymentRecordCycleResponseDto;
+import gwasuwonshot.tutice.lesson.dto.response.GetPaymentRecordCycleResponse;
 import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecord.*;
 import gwasuwonshot.tutice.lesson.entity.Lesson;
 import gwasuwonshot.tutice.lesson.entity.Payment;
@@ -69,7 +69,7 @@ public class PaymentRecordService {
 
     }
 
-    public List<GetPaymentRecordResponseDto> getPaymentRecordByLesson(Long userIdx, Long lessonIdx) {
+    public List<GetPaymentRecordResponse> getPaymentRecordByLesson(Long userIdx, Long lessonIdx) {
         // 유저 존재 여부 확인
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
@@ -92,14 +92,14 @@ public class PaymentRecordService {
             }
         });
 
-        List<GetPaymentRecordResponseDto> paymentRecordList = new ArrayList<>();
+        List<GetPaymentRecordResponse> paymentRecordList = new ArrayList<>();
         if(lesson.isMatchedPayment(Payment.PRE_PAYMENT)){
             //선불
             //- [ ] 사이클개수대로 payment 가져오기
             lesson.getPaymenRecordList()
                     .forEach(pr -> {
                         paymentRecordList.add(
-                                GetPaymentRecordResponseDto.of(
+                                GetPaymentRecordResponse.of(
                                         pr.getIdx(),
                                         (pr.getDate() == null) ? null : DateAndTimeConvert.localDateConvertString(pr.getDate()),
                                         pr.getAmount(), pr.getStatus()));
@@ -109,7 +109,7 @@ public class PaymentRecordService {
             lesson.getPaymenRecordList().subList(0, lesson.getCycle().intValue() - 1)
                     .forEach(pr -> {
                                 paymentRecordList.add(
-                                        GetPaymentRecordResponseDto.of(
+                                        GetPaymentRecordResponse.of(
                                                 pr.getIdx(),
                                                 (pr.getDate() == null) ? null : DateAndTimeConvert.localDateConvertString(pr.getDate()),
                                                 pr.getAmount(), pr.getStatus()));
@@ -119,7 +119,7 @@ public class PaymentRecordService {
         return paymentRecordList;
     }
 
-    public GetPaymentRecordCycleResponseDto getPaymentRecordCycle(Long userIdx, Long paymentRecordIdx) {
+    public GetPaymentRecordCycleResponse getPaymentRecordCycle(Long userIdx, Long paymentRecordIdx) {
         // 유저 존재 여부 확인
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
@@ -153,7 +153,7 @@ public class PaymentRecordService {
         Schedule endSchedule = scheduleRepository.findTopByLessonAndCycleAndStatusNotOrderByDateDesc(lesson, cycle, ScheduleStatus.CANCEL);
         Schedule startSchedule = scheduleRepository.findTopByLessonAndCycleAndStatusNotOrderByDateAsc(lesson, cycle, ScheduleStatus.CANCEL);
 
-        return GetPaymentRecordCycleResponseDto.of(paymentRecord.getIdx(), cycle, startSchedule, endSchedule);
+        return GetPaymentRecordCycleResponse.of(paymentRecord.getIdx(), cycle, startSchedule, endSchedule);
     }
 }
 

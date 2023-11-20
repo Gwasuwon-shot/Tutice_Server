@@ -1,13 +1,13 @@
 package gwasuwonshot.tutice.lesson.controller;
 
 
-import gwasuwonshot.tutice.common.dto.ApiResponseDto;
+import gwasuwonshot.tutice.common.dto.ApiResponse;
 import gwasuwonshot.tutice.common.exception.SuccessStatus;
 import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
 import gwasuwonshot.tutice.common.resolver.userIdx.UserIdx;
-import gwasuwonshot.tutice.lesson.dto.request.UpdatePaymentRecordRequestDto;
-import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecord.GetPaymentRecordResponseDto;
-import gwasuwonshot.tutice.lesson.dto.response.GetPaymentRecordCycleResponseDto;
+import gwasuwonshot.tutice.lesson.dto.request.UpdatePaymentRecordRequest;
+import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecord.GetPaymentRecordResponse;
+import gwasuwonshot.tutice.lesson.dto.response.GetPaymentRecordCycleResponse;
 import gwasuwonshot.tutice.lesson.service.PaymentRecordService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -26,32 +26,32 @@ public class PaymentRecordController {
 
     @PatchMapping("")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto updatePaymentRecord(
+    public ApiResponse updatePaymentRecord(
             @UserIdx final Long userIdx,
-            @Valid @RequestBody final UpdatePaymentRecordRequestDto request) {
+            @Valid @RequestBody final UpdatePaymentRecordRequest request) {
 
         paymentRecordService.updatePaymentRecord(userIdx, request.getPaymentRecordIdx(),DateAndTimeConvert.stringConvertLocalDate(request.getPaymentDate()));
 
-        return ApiResponseDto.success(SuccessStatus.UPDATE_PAYMENT_RECORD_SUCCESS);
+        return ApiResponse.success(SuccessStatus.UPDATE_PAYMENT_RECORD_SUCCESS);
 
     }
 
     @GetMapping("/lesson/{lessonIdx}")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<List<GetPaymentRecordResponseDto>> getPaymentRecordByLesson(
+    public ApiResponse<List<GetPaymentRecordResponse>> getPaymentRecordByLesson(
             @UserIdx final Long userIdx,
             @PathVariable final Long lessonIdx
     ) {
-        return ApiResponseDto.success(SuccessStatus.GET_PAYMENT_RECORD_SUCCESS,
+        return ApiResponse.success(SuccessStatus.GET_PAYMENT_RECORD_SUCCESS,
                 paymentRecordService.getPaymentRecordByLesson(userIdx, lessonIdx));
     }
 
     @GetMapping("/{paymentRecordIdx}/cycle")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<GetPaymentRecordCycleResponseDto> getPaymentRecordCycle(
+    public ApiResponse<GetPaymentRecordCycleResponse> getPaymentRecordCycle(
             @UserIdx final Long userIdx,
             @PathVariable final Long paymentRecordIdx) {
-        return ApiResponseDto.success(SuccessStatus.GET_PAYMENT_RECORD_CYCLE_SUCCESS,
+        return ApiResponse.success(SuccessStatus.GET_PAYMENT_RECORD_CYCLE_SUCCESS,
                 paymentRecordService.getPaymentRecordCycle(userIdx, paymentRecordIdx));
     }
 

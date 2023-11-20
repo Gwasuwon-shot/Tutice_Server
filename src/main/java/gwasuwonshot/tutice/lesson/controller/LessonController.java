@@ -2,17 +2,17 @@ package gwasuwonshot.tutice.lesson.controller;
 
 import gwasuwonshot.tutice.common.exception.SuccessStatus;
 import gwasuwonshot.tutice.common.resolver.userIdx.UserIdx;
-import gwasuwonshot.tutice.common.dto.ApiResponseDto;
-import gwasuwonshot.tutice.lesson.dto.request.CreateLessonMaintenanceRequestDto;
-import gwasuwonshot.tutice.lesson.dto.request.createLesson.CreateLessonRequestDto;
-import gwasuwonshot.tutice.lesson.dto.request.UpdateLessonParentsRequestDto;
-import gwasuwonshot.tutice.lesson.dto.response.CreateLessonResponseDto;
-import gwasuwonshot.tutice.lesson.dto.response.GetLessonByUserResponseDto;
-import gwasuwonshot.tutice.lesson.dto.response.GetLessonDetailResponseDto;
-import gwasuwonshot.tutice.lesson.dto.response.GetLessonProgressResponseDto;
-import gwasuwonshot.tutice.lesson.dto.response.getLessonByParents.GetLessonByParentsResponseDto;
-import gwasuwonshot.tutice.lesson.dto.response.getLessonByTeacher.GetLessonByTeacherResponseDto;
-import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenance.GetMissingMaintenanceLessonResponseDto;
+import gwasuwonshot.tutice.common.dto.ApiResponse;
+import gwasuwonshot.tutice.lesson.dto.request.CreateLessonMaintenanceRequest;
+import gwasuwonshot.tutice.lesson.dto.request.createLesson.CreateLessonRequest;
+import gwasuwonshot.tutice.lesson.dto.request.UpdateLessonParentsRequest;
+import gwasuwonshot.tutice.lesson.dto.response.CreateLessonResponse;
+import gwasuwonshot.tutice.lesson.dto.response.GetLessonByUserResponse;
+import gwasuwonshot.tutice.lesson.dto.response.GetLessonDetailResponse;
+import gwasuwonshot.tutice.lesson.dto.response.GetLessonProgressResponse;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonByParents.GetLessonByParentsResponse;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonByTeacher.GetLessonByTeacherResponse;
+import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenance.GetMissingMaintenanceLessonResponse;
 import gwasuwonshot.tutice.lesson.service.LessonService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -31,21 +31,21 @@ public class LessonController {
 
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponseDto<CreateLessonResponseDto> createLesson(
+    public ApiResponse<CreateLessonResponse> createLesson(
             @UserIdx final Long userIdx,
-            @Valid @RequestBody final CreateLessonRequestDto request) {
+            @Valid @RequestBody final CreateLessonRequest request) {
 
 
-        return ApiResponseDto.success(SuccessStatus.CREATE_LESSON_SUCCESS, lessonService.createLesson(userIdx, request));
+        return ApiResponse.success(SuccessStatus.CREATE_LESSON_SUCCESS, lessonService.createLesson(userIdx, request));
 
     }
 
     @GetMapping("/existence")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<GetLessonByUserResponseDto> getLessonExistenceByUser(@UserIdx final Long userIdx) {
+    public ApiResponse<GetLessonByUserResponse> getLessonExistenceByUser(@UserIdx final Long userIdx) {
 
         // TODO! DTO에도 existence 붙이기
-        return ApiResponseDto.success(SuccessStatus.GET_LESSON_EXISTENCE_BY_USER_SUCCESS,
+        return ApiResponse.success(SuccessStatus.GET_LESSON_EXISTENCE_BY_USER_SUCCESS,
                 lessonService.getLessonExistenceByUser(userIdx));
 
 
@@ -65,11 +65,11 @@ public class LessonController {
 
     @GetMapping("/teacher")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<GetLessonByTeacherResponseDto> getLessonByTeacher(@UserIdx final Long userIdx) {
+    public ApiResponse<GetLessonByTeacherResponse> getLessonByTeacher(@UserIdx final Long userIdx) {
 
 
-        return ApiResponseDto.success(SuccessStatus.GET_LESSON_BY_TEACHER_SUCCESS,
-                GetLessonByTeacherResponseDto.of(lessonService.getLessonByTeacher(userIdx))
+        return ApiResponse.success(SuccessStatus.GET_LESSON_BY_TEACHER_SUCCESS,
+                GetLessonByTeacherResponse.of(lessonService.getLessonByTeacher(userIdx))
         );
 
 
@@ -78,11 +78,11 @@ public class LessonController {
 
     @GetMapping("/parents")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<GetLessonByParentsResponseDto> getLessonByParents(@UserIdx final Long userIdx) {
+    public ApiResponse<GetLessonByParentsResponse> getLessonByParents(@UserIdx final Long userIdx) {
 
 
-        return ApiResponseDto.success(SuccessStatus.GET_LESSON_BY_PARENTS_SUCCESS,
-                GetLessonByParentsResponseDto.of(lessonService.getLessonByParents(userIdx))
+        return ApiResponse.success(SuccessStatus.GET_LESSON_BY_PARENTS_SUCCESS,
+                GetLessonByParentsResponse.of(lessonService.getLessonByParents(userIdx))
         );
 
 
@@ -90,20 +90,20 @@ public class LessonController {
 
     @PatchMapping("/parents")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto updateLessonParents(
+    public ApiResponse updateLessonParents(
             @UserIdx final Long userIdx,
-            @Valid @RequestBody final UpdateLessonParentsRequestDto request) {
+            @Valid @RequestBody final UpdateLessonParentsRequest request) {
 
         lessonService.updateLessonParents(userIdx, request.getLessonCode());
-        return ApiResponseDto.success(SuccessStatus.UPDATE_LESSON_PARENTS_SUCCESS);
+        return ApiResponse.success(SuccessStatus.UPDATE_LESSON_PARENTS_SUCCESS);
 
     }
 
     @PostMapping("/maintenance")
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponseDto createLessonMaintenance(
+    public ApiResponse createLessonMaintenance(
             @UserIdx final Long userIdx,
-            @Valid @RequestBody final CreateLessonMaintenanceRequestDto request) {
+            @Valid @RequestBody final CreateLessonMaintenanceRequest request) {
 
 //        //연장시
 //        //연장안할때
@@ -114,11 +114,11 @@ public class LessonController {
 //        가짜 paymentRecord생성
 //        startDate는 해당 수업의 마지막 스케쥴날짜 +1
         if(lessonService.createLessonMaintenance(userIdx,request.getLessonIdx(),request.getIsLessonMaintenance())){
-            return ApiResponseDto.success(SuccessStatus.AUTO_CREATE_SCHEDULE_FROM_LESSON_MAINTENANCE_SUCCESS);
+            return ApiResponse.success(SuccessStatus.AUTO_CREATE_SCHEDULE_FROM_LESSON_MAINTENANCE_SUCCESS);
 
         }
         else{
-            return ApiResponseDto.success(SuccessStatus.FINISH_LESSON_SUCCESS);
+            return ApiResponse.success(SuccessStatus.FINISH_LESSON_SUCCESS);
 
         }
 
@@ -130,11 +130,11 @@ public class LessonController {
 
     @GetMapping("/missing-maintenance")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<GetMissingMaintenanceLessonResponseDto> getMissingMaintenanceLessonByUser(@UserIdx final Long userIdx) {
+    public ApiResponse<GetMissingMaintenanceLessonResponse> getMissingMaintenanceLessonByUser(@UserIdx final Long userIdx) {
 
 
-        return ApiResponseDto.success(SuccessStatus.GET_MISSING_MAINTENANCE_LESSON_SUCCESS,
-                GetMissingMaintenanceLessonResponseDto.of(lessonService.getMissingMaintenanceLessonByUser(userIdx))
+        return ApiResponse.success(SuccessStatus.GET_MISSING_MAINTENANCE_LESSON_SUCCESS,
+                GetMissingMaintenanceLessonResponse.of(lessonService.getMissingMaintenanceLessonByUser(userIdx))
         );
 
 
@@ -150,32 +150,32 @@ public class LessonController {
 
     @GetMapping("/{lessonIdx}/progress")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<GetLessonProgressResponseDto> getLessonProgress(@UserIdx final Long userIdx,
-                                                                          @PathVariable final Long lessonIdx) {
-        return ApiResponseDto.success(SuccessStatus.GET_LESSON_PROGRESS_SUCCESS, lessonService.getLessonProgress(userIdx, lessonIdx));
+    public ApiResponse<GetLessonProgressResponse> getLessonProgress(@UserIdx final Long userIdx,
+                                                                    @PathVariable final Long lessonIdx) {
+        return ApiResponse.success(SuccessStatus.GET_LESSON_PROGRESS_SUCCESS, lessonService.getLessonProgress(userIdx, lessonIdx));
     }
 
     @GetMapping("/{lessonIdx}/detail")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<GetLessonDetailResponseDto> getLessonDetail(@UserIdx final Long userIdx,
-                                                                      @PathVariable final Long lessonIdx) {
-        return ApiResponseDto.success(SuccessStatus.GET_LESSON_DETAIL_SUCCESS, lessonService.getLessonDetail(userIdx, lessonIdx));
+    public ApiResponse<GetLessonDetailResponse> getLessonDetail(@UserIdx final Long userIdx,
+                                                                @PathVariable final Long lessonIdx) {
+        return ApiResponse.success(SuccessStatus.GET_LESSON_DETAIL_SUCCESS, lessonService.getLessonDetail(userIdx, lessonIdx));
     }
 
     @GetMapping("/missing-maintenance/existence")
     // TODO SuccessMessage등 자잘한 변경사항 필요
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<Boolean> getMissingMaintenanceExistenceByTeacher(@UserIdx final Long userIdx) {
-        return ApiResponseDto.success(SuccessStatus.GET_MISSING_MAINTENANCE_EXIST_SUCCESS, lessonService.getMissingMaintenanceExistenceByTeacher(userIdx) );
+    public ApiResponse<Boolean> getMissingMaintenanceExistenceByTeacher(@UserIdx final Long userIdx) {
+        return ApiResponse.success(SuccessStatus.GET_MISSING_MAINTENANCE_EXIST_SUCCESS, lessonService.getMissingMaintenanceExistenceByTeacher(userIdx) );
     }
 
     @DeleteMapping("/{lessonIdx}")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto deleteLesson(@UserIdx final Long userIdx,
-                                       @PathVariable final Long lessonIdx) {
+    public ApiResponse deleteLesson(@UserIdx final Long userIdx,
+                                    @PathVariable final Long lessonIdx) {
         lessonService.deleteLesson(userIdx, lessonIdx);
 
-        return ApiResponseDto.success(SuccessStatus.DELETE_LESSON_SUCCESS);
+        return ApiResponse.success(SuccessStatus.DELETE_LESSON_SUCCESS);
     }
 
 
