@@ -1,4 +1,4 @@
-package gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenance;
+package gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenanceLessonByTeacher;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -11,8 +11,9 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class GetMissingMaintenanceLessonResponse {
-    private List<GetMissingMaintenanceLesson> missingMaintenanceLessonList;
-    public static GetMissingMaintenanceLessonResponse of(List<GetMissingMaintenanceLesson> missingMaintenanceLessonList) {
+    private List<MissingMaintenanceLesson> missingMaintenanceLessonList;
+
+    public static GetMissingMaintenanceLessonResponse of(List<MissingMaintenanceLesson> missingMaintenanceLessonList) {
         return new GetMissingMaintenanceLessonResponse(missingMaintenanceLessonList);
 
     }

@@ -5,21 +5,19 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class GetLessonByTeacher {
+public class LessonByTeacher {
     private Long idx;
     private String studentName;
     private String subject;
     private Long percent;
     private Boolean isFinished;
-    private GetLessonByTeacherLatestRegularSchedule latestRegularSchedule;
+    private LatestRegularSchedule latestRegularSchedule;
 
-    public static GetLessonByTeacher of(Long idx, String studentName,String subject,Long percent, Boolean isFinished, GetLessonByTeacherLatestRegularSchedule latestRegularSchedule) {
-        return new GetLessonByTeacher(idx, studentName, subject, percent, isFinished, latestRegularSchedule);
+    public static LessonByTeacher of(Long idx, String studentName, String subject, Long percent, Boolean isFinished, LatestRegularSchedule latestRegularSchedule) {
+        return new LessonByTeacher(idx, studentName, subject, percent, isFinished, latestRegularSchedule);
 
     }
 }
