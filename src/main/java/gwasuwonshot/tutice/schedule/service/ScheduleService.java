@@ -109,7 +109,7 @@ public class ScheduleService {
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
 
         // month(YYYY-MM) 바탕 한 달 기준 설정
-        LocalDate standardDate = DateAndTimeConvert.stringConvertLocalDate(month + "-01");
+        LocalDate standardDate = DateAndTimeConvert.stringConvertFirstLocalDate(month);
         LocalDate startDate = standardDate.withDayOfMonth(1);
         LocalDate endDate = standardDate.withDayOfMonth(standardDate.lengthOfMonth());
 

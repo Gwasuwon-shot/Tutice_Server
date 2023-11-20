@@ -72,4 +72,8 @@ public class DateAndTimeConvert {
 
         }
     }
+
+    public static LocalDate stringConvertFirstLocalDate(String month) {
+        return stringConvertLocalDate(month + "-01");
+    }
 }
