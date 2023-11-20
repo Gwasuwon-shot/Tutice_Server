@@ -8,12 +8,12 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
-public class LatestSchedule {
+public class LatestScheduleByTeacher {
     private TodayScheduleByTeacher lesson;
     private ScheduleByTime schedule;
 
-    public static LatestSchedule of(Lesson lesson, Schedule schedule) {
-        return LatestSchedule.builder()
+    public static LatestScheduleByTeacher of(Lesson lesson, Schedule schedule) {
+        return LatestScheduleByTeacher.builder()
                 .lesson(TodayScheduleByTeacher.of(lesson.getIdx(), lesson.getStudentName(), lesson.getSubject()))
                 .schedule(ScheduleByTime.of(schedule.getIdx(), schedule.getStartTime(), schedule.getEndTime()))
                 .build();
