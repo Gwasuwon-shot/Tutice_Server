@@ -20,26 +20,27 @@ public class UserController {
 
     private final UserService userService;
 
-    @PatchMapping("/device-token")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponse updateUserDeviceToken(@UserIdx final Long userIdx,
-                                             @RequestBody @Valid final UpdateUserDeviceTokenRequest request) {
-        userService.updateUserDeviceToken(userIdx, request);
-        return ApiResponse.success(SuccessStatus.UPDATE_DEVICE_TOKEN_SUCCESS);
-    }
-
     @GetMapping("/name")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<GetUserNameResponse> getUserName(@UserIdx final Long userIdx) {
-        return ApiResponse.success(SuccessStatus.GET_USER_NAME_SUCCESS, userService.getUserName(userIdx));
+        return ApiResponse.success(SuccessStatus.GET_USER_NAME_SUCCESS,
+                userService.getUserName(userIdx));
     }
 
     @GetMapping("/account/lesson/{lessonIdx}")
     @ResponseStatus(HttpStatus.OK)
-    // TODO url만 변경 dto, 함수명 변경 필요
     public ApiResponse<GetLessonAccountResponse> getAccountByLesson(@UserIdx final Long userIdx,
-                                                                    @PathVariable final Long lessonIdx) {
-        return ApiResponse.success(SuccessStatus.GET_LESSON_ACCOUNT_SUCCESS, userService.getAccountByLesson(userIdx, lessonIdx));
+                                                                        @PathVariable final Long lessonIdx) {
+        return ApiResponse.success(SuccessStatus.GET_ACCOUNT_BY_LESSON_SUCCESS,
+                userService.getAccountByLesson(userIdx, lessonIdx));
+    }
+
+    @PatchMapping("/device-token")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse updateUserDeviceToken(@UserIdx final Long userIdx,
+                                                @RequestBody @Valid final UpdateUserDeviceTokenRequest request) {
+        userService.updateUserDeviceToken(userIdx, request);
+        return ApiResponse.success(SuccessStatus.UPDATE_DEVICE_TOKEN_SUCCESS);
     }
 
     @PatchMapping("/logout")

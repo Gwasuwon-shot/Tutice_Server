@@ -26,59 +26,11 @@ public class ScheduleController {
 
  private final ScheduleService scheduleService;
 
- @GetMapping("/today/parents")
+ @PostMapping("/temporary")
  @ResponseStatus(HttpStatus.OK)
- public ApiResponse<?> getTodayScheduleByParents(@UserIdx final Long userIdx) {
-  return ApiResponse.success(SuccessStatus.GET_TODAY_SCHEDULE_BY_PARENTS_SUCCESS, scheduleService.getTodayScheduleByParents(userIdx) );
- }
-
- @GetMapping("/lesson/{lessonIdx}")
- @ResponseStatus(HttpStatus.OK)
- public ApiResponse<List<GetLessonScheduleResponse>> getLessonSchedule(
-         @UserIdx final Long userIdx,
-         @PathVariable final Long lessonIdx) {
-
-  return ApiResponse.success(SuccessStatus.GET_LESSON_SCHEDULE_SUCCESS,
-          scheduleService.getLessonSchedule(userIdx, lessonIdx));
- }
- @GetMapping("")
- @ResponseStatus(HttpStatus.OK)
- public ApiResponse<GetScheduleByUserResponse> getScheduleByUser(@UserIdx final Long userIdx,
-                                                                 @RequestParam final String month) {
-  return ApiResponse.success(SuccessStatus.GET_SCHEDULE_BY_USER_SUCCESS, scheduleService.getScheduleByUser(userIdx, month) );
- }
-
- @GetMapping("/today/teacher")
- @ResponseStatus(HttpStatus.OK)
- public ApiResponse<GetTodayScheduleByTeacherResponse> getTodayScheduleByTeacher(@UserIdx final Long userIdx) {
-  return ApiResponse.success(SuccessStatus.GET_TODAY_SCHEDULE_BY_TEACHER_SUCCESS, scheduleService.getTodayScheduleByTeacher(userIdx) );
- }
-
- @GetMapping("/missing-attendance")
- @ResponseStatus(HttpStatus.OK)
- public ApiResponse<GetMissingAttendanceScheduleResponse> getMissingAttendanceScheduleByTeacher(@UserIdx final Long userIdx) {
-  return ApiResponse.success(SuccessStatus.GET_MISSING_ATTENDANCE_SCHEDULE_SUCCESS, scheduleService.getMissingAttendanceScheduleByTeacher(userIdx) );
- }
-
- @PatchMapping("")
- @ResponseStatus(HttpStatus.OK)
- public ApiResponse updateSchedule(@UserIdx final Long userIdx,
-                                   @RequestBody @Valid final UpdateScheduleRequest request) {
-  scheduleService.updateSchedule(userIdx, request);
-  return ApiResponse.success(SuccessStatus.UPDATE_SCHEDULE);
- }
-
- @GetMapping("/latest")
- @ResponseStatus(HttpStatus.OK)
- public ApiResponse<GetLatestScheduleByTeacherResponse> getLatestScheduleByTeacher(@UserIdx final Long userIdx) {
-  return ApiResponse.success(SuccessStatus.GET_LATEST_SCHEDULE_BY_TEACHER, scheduleService.getLatestScheduleByTeacher(userIdx) );
- }
-
- @PatchMapping("/attendance")
- @ResponseStatus(HttpStatus.OK)
- public ApiResponse<UpdateScheduleAttendanceResponse> updateScheduleAttendance(@UserIdx final Long userIdx,
-                                                                               @RequestBody @Valid final UpdateScheduleAttendanceRequest request) {
-  return ApiResponse.success(SuccessStatus.UPDATE_SCHEDULE_ATTENDANCE_SUCCESS, scheduleService.updateScheduleAttendance(userIdx, request));
+ public ApiResponse<GetTemporaryScheduleResponse> getTemporarySchedule(@RequestBody @Valid final GetTemporaryScheduleRequest request) {
+  return ApiResponse.success(SuccessStatus.GET_TEMPORARY_SCHEDULE_SUCCESS,
+          scheduleService.getTemporarySchedule(request) );
  }
 
  @Scheduled(cron="0 0/30 * * * ?", zone="GMT+9:00")
@@ -87,40 +39,105 @@ public class ScheduleController {
   scheduleService.postMissingAttendance();
  }
 
- @PostMapping("/temporary")
+ @GetMapping("")
  @ResponseStatus(HttpStatus.OK)
- public ApiResponse<GetTemporaryScheduleResponse> getTemporarySchedule(@RequestBody @Valid final GetTemporaryScheduleRequest request) {
-  return ApiResponse.success(SuccessStatus.GET_TEMPORARY_SCHEDULE_SUCCESS, scheduleService.getTemporarySchedule(request) );
+ public ApiResponse<GetScheduleByUserResponse> getScheduleByUser(@UserIdx final Long userIdx,
+                                                                       @RequestParam final String month) {
+  return ApiResponse.success(SuccessStatus.GET_SCHEDULE_BY_USER_SUCCESS,
+          scheduleService.getScheduleByUser(userIdx, month) );
  }
+
+ @GetMapping("/today/parents")
+ @ResponseStatus(HttpStatus.OK)
+ public ApiResponse<?> getTodayScheduleByParents(@UserIdx final Long userIdx) {
+  return ApiResponse.success(SuccessStatus.GET_TODAY_SCHEDULE_BY_PARENTS_SUCCESS,
+          scheduleService.getTodayScheduleByParents(userIdx) );
+ }
+
+ @GetMapping("/lesson/{lessonIdx}")
+ @ResponseStatus(HttpStatus.OK)
+ public ApiResponse<List<GetLessonScheduleResponse>> getScheduleByLesson(
+         @UserIdx final Long userIdx,
+         @PathVariable final Long lessonIdx) {
+
+  return ApiResponse.success(SuccessStatus.GET_SCHEDULE_BY_LESSON_SUCCESS,
+          scheduleService.getScheduleByLesson(userIdx, lessonIdx));
+ }
+
+
+ @GetMapping("/today/teacher")
+ @ResponseStatus(HttpStatus.OK)
+ public ApiResponse<GetTodayScheduleByTeacherResponse> getTodayScheduleByTeacher(@UserIdx final Long userIdx) {
+  return ApiResponse.success(SuccessStatus.GET_TODAY_SCHEDULE_BY_TEACHER_SUCCESS,
+          scheduleService.getTodayScheduleByTeacher(userIdx) );
+ }
+
+ @GetMapping("/missing-attendance")
+ @ResponseStatus(HttpStatus.OK)
+ public ApiResponse<GetMissingAttendanceScheduleResponse> getMissingAttendanceScheduleByTeacher(@UserIdx final Long userIdx) {
+  return ApiResponse.success(SuccessStatus.GET_MISSING_ATTENDANCE_SCHEDULE_BY_TEACHER_SUCCESS,
+          scheduleService.getMissingAttendanceScheduleByTeacher(userIdx) );
+ }
+
+
+
+ @GetMapping("/latest")
+ @ResponseStatus(HttpStatus.OK)
+ public ApiResponse<GetLatestScheduleByTeacherResponse> getLatestScheduleByTeacher(@UserIdx final Long userIdx) {
+  return ApiResponse.success(SuccessStatus.GET_LATEST_SCHEDULE_BY_TEACHER,
+          scheduleService.getLatestScheduleByTeacher(userIdx) );
+ }
+
 
 
  @GetMapping("/lesson/{lessonIdx}/missing-attendance/existence")
  @ResponseStatus(HttpStatus.OK)
  public ApiResponse<Boolean> getMissingAttendanceExistenceByLesson(@UserIdx final Long userIdx,
-                                                                   @PathVariable final Long lessonIdx) {
-  return ApiResponse.success(SuccessStatus.GET_MISSING_MAINTENANCE_BY_LESSON_EXIST_SUCCESS, scheduleService.getMissingAttendanceExistenceByLesson(userIdx, lessonIdx));
+                                                                      @PathVariable final Long lessonIdx) {
+  return ApiResponse.success(SuccessStatus.GET_MISSING_ATTENDANCE_EXISTENCE_BY_LESSON_EXIST_SUCCESS,
+          scheduleService.getMissingAttendanceExistenceByLesson(userIdx, lessonIdx));
  }
 
  @GetMapping("/missing-attendance/existence")
  @ResponseStatus(HttpStatus.OK)
  public ApiResponse<Boolean> getMissingAttendanceExistenceByTeacher(@UserIdx final Long userIdx) {
-  return ApiResponse.success(SuccessStatus.GET_MISSING_ATTENDANCE_EXIST_SUCCESS, scheduleService.getMissingAttendanceExistenceByTeacher(userIdx) );
+  return ApiResponse.success(SuccessStatus.GET_MISSING_ATTENDANCE_EXISTENCE_BY_TEACHER_SUCCESS,
+          scheduleService.getMissingAttendanceExistenceByTeacher(userIdx) );
  }
-
 
 
  @GetMapping("/today/existence")
  @ResponseStatus(HttpStatus.OK)
  public ApiResponse<Boolean> getTodayScheduleExistenceByTeacher(@UserIdx final Long userIdx) {
-  return ApiResponse.success(SuccessStatus.GET_TODAY_SCHEDULE_EXIST_SUCCESS, scheduleService.getTodayScheduleExistenceByTeacher(userIdx) );
+  return ApiResponse.success(SuccessStatus.GET_TODAY_SCHEDULE_EXISTENCE_BY_TEACHER_SUCCESS,
+          scheduleService.getTodayScheduleExistenceByTeacher(userIdx) );
  }
 
- @GetMapping("{scheduleIdx}/attendance/existence")
+ @GetMapping("/{scheduleIdx}/attendance/existence")
  @ResponseStatus(HttpStatus.OK)
- public ApiResponse<Boolean> getAttendanceExistenceByTeacher(@UserIdx final Long userIdx,
-                                                             @PathVariable final Long scheduleIdx) {
-  return ApiResponse.success(SuccessStatus.GET_TODAY_SCHEDULE_EXIST_SUCCESS, scheduleService.getAttendanceExistenceByTeacher(userIdx, scheduleIdx));
+ public ApiResponse<Boolean> getAttendanceExistenceBySchedule(@UserIdx final Long userIdx,
+                                                                 @PathVariable final Long scheduleIdx) {
+  return ApiResponse.success(SuccessStatus.GET_ATTENDANCE_EXISTENCE_BY_SCHEDULE,
+          scheduleService.getAttendanceExistenceBySchedule(userIdx, scheduleIdx));
+ }
+
+
+ @PatchMapping("")
+ @ResponseStatus(HttpStatus.OK)
+ public ApiResponse updateSchedule(@UserIdx final Long userIdx,
+                                      @RequestBody @Valid final UpdateScheduleRequest request) {
+  scheduleService.updateSchedule(userIdx, request);
+  return ApiResponse.success(SuccessStatus.UPDATE_SCHEDULE_SUCCESS);
+ }
+
+ @PatchMapping("/attendance")
+ @ResponseStatus(HttpStatus.OK)
+ public ApiResponse<UpdateScheduleAttendanceResponse> updateScheduleAttendance(@UserIdx final Long userIdx,
+                                                                                     @RequestBody @Valid final UpdateScheduleAttendanceRequest request) {
+  return ApiResponse.success(SuccessStatus.UPDATE_SCHEDULE_ATTENDANCE_SUCCESS,
+          scheduleService.updateScheduleAttendance(userIdx, request));
  }
 
 }
+
 

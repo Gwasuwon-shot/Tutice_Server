@@ -20,24 +20,25 @@ public enum SuccessStatus {
 
 
     GET_LESSON_EXISTENCE_BY_USER_SUCCESS(HttpStatus.OK, "유저별로 연결된 수업 여부를 가져오는데 성공했습니다."),
-    GET_LESSON_SCHEDULE_SUCCESS(HttpStatus.OK,"수업 내역(출결 상황) 가져오기 성공"),
+    GET_SCHEDULE_BY_LESSON_SUCCESS(HttpStatus.OK,"수업 내역(출결 상황) 가져오기 성공"),
     GET_LESSON_PROGRESS_SUCCESS(HttpStatus.OK,"수업 진행 정도를 가져오는데 성공했습니다."),
+    GET_LESSON_REGULAR_SCHEDULE_SUCCESS(HttpStatus.OK,"수업 정보의 정기수업을 가져오는데 성공했습니다."),
     GET_LESSON_DETAIL_SUCCESS(HttpStatus.OK,"수업 정보를 가져오는데 성공했습니다."),
     GET_SCHEDULE_BY_USER_SUCCESS(HttpStatus.OK, "스케줄 메인 뷰를 가져오는데 성공했습니다."),
-    GET_MISSING_ATTENDANCE_SCHEDULE_SUCCESS(HttpStatus.OK, "선생님의 출결 누락 뷰를 가져오는데 성공했습니다."),
-    GET_MISSING_MAINTENANCE_LESSON_SUCCESS(HttpStatus.OK, "연장여부를 알려주지 않은 수업 리스트 가져오기 성공"),
+    GET_MISSING_ATTENDANCE_SCHEDULE_BY_TEACHER_SUCCESS(HttpStatus.OK, "선생님의 출결 누락 뷰를 가져오는데 성공했습니다."),
+    GET_MISSING_MAINTENANCE_LESSON_BY_TEACHER_SUCCESS(HttpStatus.OK, "연장여부를 알려주지 않은 수업 리스트 가져오기 성공"),
     GET_PAYMENT_RECORD_POST_VIEW_SUCCESS(HttpStatus.OK,"입금 등록 뷰 정보 가져오기 성공"),
     GET_PAYMENT_RECORD_CYCLE_SUCCESS(HttpStatus.OK,"입금 내역의 사이클 정보를 가져오는데 성공했습니다."),
-    GET_LESSON_ACCOUNT_SUCCESS(HttpStatus.OK,"수업에 연결된 계좌를 가져오는데 성공했습니다."),
-    GET_PAYMENT_RECORD_SUCCESS(HttpStatus.OK,"입금 내역을 가져오는데 성공했습니다."),
-
-    GET_MISSING_MAINTENANCE_BY_LESSON_EXIST_SUCCESS(HttpStatus.OK, "수업 이전 회차 누락 출결 유무를 가져오는데 성공했습니다."),
-
+    GET_ACCOUNT_BY_LESSON_SUCCESS(HttpStatus.OK,"수업에 연결된 계좌를 가져오는데 성공했습니다."),
+    GET_PAYMENT_RECORD_BY_LESSON_SUCCESS(HttpStatus.OK,"입금 내역을 가져오는데 성공했습니다."),
+    GET_MISSING_ATTENDANCE_EXISTENCE_BY_LESSON_EXIST_SUCCESS(HttpStatus.OK, "수업 이전 회차 누락 출결 유무를 가져오는데 성공했습니다."),
 
 
-    GET_MISSING_ATTENDANCE_EXIST_SUCCESS(HttpStatus.OK, "누락 출결 유무를 가져오는데 성공했습니다."),
-    GET_MISSING_MAINTENANCE_EXIST_SUCCESS(HttpStatus.OK, "연장 필요 수업 유무를 가져오는데 성공했습니다."),
-    GET_TODAY_SCHEDULE_EXIST_SUCCESS(HttpStatus.OK, "오늘 수업 유무를 가져오는데 성공했습니다."),
+    GET_MISSING_ATTENDANCE_EXISTENCE_BY_TEACHER_SUCCESS(HttpStatus.OK, "누락 출결 유무를 가져오는데 성공했습니다."),
+    GET_MISSING_MAINTENANCE_EXIST_BY_TEACHER_SUCCESS(HttpStatus.OK, "연장 필요 수업 유무를 가져오는데 성공했습니다."),
+
+    GET_ATTENDANCE_EXISTENCE_BY_SCHEDULE(HttpStatus.OK,"스케쥴의 출석유무를 가져오는데 성공했습니다."),
+    GET_TODAY_SCHEDULE_EXISTENCE_BY_TEACHER_SUCCESS(HttpStatus.OK, "오늘 수업 유무를 가져오는데 성공했습니다."),
     GET_SCHEDULE_ATTENDANCE_EXIST_SUCCESS(HttpStatus.OK, "스케줄의 출석 체크 유무를 가져오는데 성공했습니다."),
 
 
@@ -58,7 +59,7 @@ public enum SuccessStatus {
     UPDATE_PAYMENT_RECORD_SUCCESS(HttpStatus.OK,"입금 등록 성공"),
     UPDATE_DEVICE_TOKEN_SUCCESS(HttpStatus.OK, "디바이스 토큰 업데이트 성공"),
     UPDATE_LESSON_PARENTS_SUCCESS(HttpStatus.OK, "수업과 학부모 연결 성공"),
-    UPDATE_SCHEDULE(HttpStatus.OK,"스케줄 수정에 성공했습니다."),
+    UPDATE_SCHEDULE_SUCCESS(HttpStatus.OK,"스케줄 수정에 성공했습니다."),
     UPDATE_SCHEDULE_ATTENDANCE_SUCCESS(HttpStatus.OK,"출석 상태 변경 성공"),
 
 

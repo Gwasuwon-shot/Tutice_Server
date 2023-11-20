@@ -29,4 +29,12 @@ public enum DayOfWeek implements EnumModel {
                 .filter(p -> p.getValue().equals(value))
                 .findAny().orElseThrow();
     }
+
+    public static Long getIndexByValue(String value){
+        return Arrays.stream(DayOfWeek.values())
+                .filter(p -> p.getValue().equals(value))
+                .map(DayOfWeek::getIndex)
+                .findAny()
+                .orElseThrow();
+    }
 }
