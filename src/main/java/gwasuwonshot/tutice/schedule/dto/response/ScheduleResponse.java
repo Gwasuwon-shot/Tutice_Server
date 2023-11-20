@@ -1,5 +1,6 @@
 package gwasuwonshot.tutice.schedule.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
 import lombok.*;
 
@@ -9,6 +10,7 @@ import java.time.LocalTime;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ScheduleResponse {
     private Long idx;
     private String studentName;
@@ -22,6 +24,15 @@ public class ScheduleResponse {
                 .idx(idx)
                 .studentName(studentName)
                 .teacherName(teacherName)
+                .subject(subject)
+                .startTime(DateAndTimeConvert.localTimeConvertString(startTime))
+                .endTime(DateAndTimeConvert.localTimeConvertString(endTime))
+                .build();
+    }
+
+    public static ScheduleResponse of(String studentName, String subject, LocalTime startTime, LocalTime endTime) {
+        return ScheduleResponse.builder()
+                .studentName(studentName)
                 .subject(subject)
                 .startTime(DateAndTimeConvert.localTimeConvertString(startTime))
                 .endTime(DateAndTimeConvert.localTimeConvertString(endTime))

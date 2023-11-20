@@ -14,13 +14,13 @@ import java.util.stream.Collectors;
 @Builder
 public class TemporarySchedule {
     private String date;
-    private List<TemporaryScheduleByTime> scheduleList;
+    private List<ScheduleResponse> scheduleList;
 
 
     public static TemporarySchedule of(String studentName, String subject, String date, List<Schedule> scheduleList) {
         return TemporarySchedule.builder()
                 .date(date)
-                .scheduleList(scheduleList.stream().map(s -> TemporaryScheduleByTime.of(studentName, subject, s.getStartTime(), s.getEndTime())).collect(Collectors.toList()))
+                .scheduleList(scheduleList.stream().map(s -> ScheduleResponse.of(studentName, subject, s.getStartTime(), s.getEndTime())).collect(Collectors.toList()))
                 .build();
     }
 }
