@@ -12,8 +12,9 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class GetLessonRegularScheduleResponse {
 
-    private List<GetLessonRegularSchedule> regularScheduleList;
-    public static GetLessonRegularScheduleResponse of(List<GetLessonRegularSchedule> regularScheduleList) {
+    private List<LessonRegularSchedule> regularScheduleList;
+
+    public static GetLessonRegularScheduleResponse of(List<LessonRegularSchedule> regularScheduleList) {
         return new GetLessonRegularScheduleResponse(regularScheduleList);
     }
 }

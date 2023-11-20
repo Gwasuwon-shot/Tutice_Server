@@ -1,4 +1,4 @@
-package gwasuwonshot.tutice.lesson.dto.response;
+package gwasuwonshot.tutice.lesson.dto.response.getLessonExistenceByUser;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

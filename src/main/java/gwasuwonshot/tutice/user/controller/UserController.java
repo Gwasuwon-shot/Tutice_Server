@@ -3,7 +3,7 @@ package gwasuwonshot.tutice.user.controller;
 import gwasuwonshot.tutice.common.dto.ApiResponse;
 import gwasuwonshot.tutice.common.exception.SuccessStatus;
 import gwasuwonshot.tutice.common.resolver.userIdx.UserIdx;
-import gwasuwonshot.tutice.lesson.dto.response.GetLessonAccountResponse;
+import gwasuwonshot.tutice.lesson.dto.response.getAccountByLesson.GetLessonAccountResponse;
 import gwasuwonshot.tutice.user.dto.request.UpdateUserDeviceTokenRequest;
 import gwasuwonshot.tutice.user.dto.response.GetUserNameResponse;
 import gwasuwonshot.tutice.user.service.UserService;

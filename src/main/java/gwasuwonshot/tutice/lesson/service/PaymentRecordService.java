@@ -3,8 +3,8 @@ package gwasuwonshot.tutice.lesson.service;
 
 import gwasuwonshot.tutice.common.exception.ErrorStatus;
 import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
-import gwasuwonshot.tutice.lesson.dto.response.GetPaymentRecordCycleResponse;
-import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecord.*;
+import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecordCycle.GetPaymentRecordCycleResponse;
+import gwasuwonshot.tutice.lesson.dto.response.getPaymentRecordByLesson.GetPaymentRecordResponse;
 import gwasuwonshot.tutice.lesson.entity.Lesson;
 import gwasuwonshot.tutice.lesson.entity.Payment;
 import gwasuwonshot.tutice.lesson.entity.PaymentRecord;

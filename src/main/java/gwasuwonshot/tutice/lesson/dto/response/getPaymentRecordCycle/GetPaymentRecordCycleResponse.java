@@ -1,4 +1,4 @@
-package gwasuwonshot.tutice.lesson.dto.response;
+package gwasuwonshot.tutice.lesson.dto.response.getPaymentRecordCycle;
 
 import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
 import gwasuwonshot.tutice.schedule.entity.Schedule;

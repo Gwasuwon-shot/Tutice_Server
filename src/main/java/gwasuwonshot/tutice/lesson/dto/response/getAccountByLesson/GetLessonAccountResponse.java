@@ -1,4 +1,4 @@
-package gwasuwonshot.tutice.lesson.dto.response;
+package gwasuwonshot.tutice.lesson.dto.response.getAccountByLesson;
 
 import gwasuwonshot.tutice.user.entity.Account;
 import lombok.*;

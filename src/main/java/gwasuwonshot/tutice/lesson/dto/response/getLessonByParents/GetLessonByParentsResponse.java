@@ -1,5 +1,6 @@
 package gwasuwonshot.tutice.lesson.dto.response.getLessonByParents;
 
+import gwasuwonshot.tutice.lesson.dto.response.LessonResponse;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,9 +12,9 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class GetLessonByParentsResponse {
-    List<GetLessonByParents> lessonList;
+    List<LessonResponse> lessonList;
 
-    public static GetLessonByParentsResponse of(List<GetLessonByParents> lessonList) {
+    public static GetLessonByParentsResponse of(List<LessonResponse> lessonList) {
         return new GetLessonByParentsResponse(lessonList);
 
     }

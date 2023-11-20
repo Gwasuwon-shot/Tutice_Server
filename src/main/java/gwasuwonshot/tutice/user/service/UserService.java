@@ -2,7 +2,7 @@ package gwasuwonshot.tutice.user.service;
 
 import gwasuwonshot.tutice.common.exception.ErrorStatus;
 import gwasuwonshot.tutice.config.jwt.JwtService;
-import gwasuwonshot.tutice.lesson.dto.response.GetLessonAccountResponse;
+import gwasuwonshot.tutice.lesson.dto.response.getAccountByLesson.GetLessonAccountResponse;
 import gwasuwonshot.tutice.lesson.entity.Lesson;
 import gwasuwonshot.tutice.lesson.exception.invalid.InvalidLessonException;
 import gwasuwonshot.tutice.lesson.exception.notfound.NotFoundLessonException;

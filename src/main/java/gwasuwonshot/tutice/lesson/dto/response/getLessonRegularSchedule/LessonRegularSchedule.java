@@ -14,16 +14,15 @@ import java.util.stream.Collectors;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class GetLessonRegularSchedule {
-
+public class LessonRegularSchedule {
 
     private List<String> dayOfWeekList;
     private String startTime;
     private String endTime;
 
-    public static GetLessonRegularSchedule of(List<DayOfWeek> dayOfWeekList, LocalTime startTime, LocalTime endTime) {
+    public static LessonRegularSchedule of(List<DayOfWeek> dayOfWeekList, LocalTime startTime, LocalTime endTime) {
 
-        return new GetLessonRegularSchedule(
+        return new LessonRegularSchedule(
                 dayOfWeekList.stream().map(DayOfWeek::getValue).collect(Collectors.toList()),
                 DateAndTimeConvert.localTimeConvertString(startTime),
                 DateAndTimeConvert.localTimeConvertString(endTime));

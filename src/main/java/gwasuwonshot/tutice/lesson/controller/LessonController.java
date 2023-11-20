@@ -6,14 +6,15 @@ import gwasuwonshot.tutice.common.resolver.userIdx.UserIdx;
 import gwasuwonshot.tutice.lesson.dto.request.CreateLessonMaintenanceRequest;
 import gwasuwonshot.tutice.lesson.dto.request.UpdateLessonParentsRequest;
 import gwasuwonshot.tutice.lesson.dto.request.createLesson.CreateLessonRequest;
-import gwasuwonshot.tutice.lesson.dto.response.CreateLessonResponse;
-import gwasuwonshot.tutice.lesson.dto.response.GetLessonDetailResponse;
-import gwasuwonshot.tutice.lesson.dto.response.GetLessonExistenceByUserResponse;
-import gwasuwonshot.tutice.lesson.dto.response.GetLessonProgressResponse;
+import gwasuwonshot.tutice.lesson.dto.response.LessonResponse;
+import gwasuwonshot.tutice.lesson.dto.response.createLesson.CreateLessonResponse;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonByParents.GetLessonByParentsResponse;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonByTeacher.GetLessonByTeacherResponse;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonDetail.GetLessonDetailResponse;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonExistenceByUser.GetLessonExistenceByUserResponse;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonRegularSchedule.GetLessonRegularScheduleResponse;
 import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenance.GetMissingMaintenanceLessonByTeacherResponse;
+import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenanceLessonByTeacher.GetMissingMaintenanceLessonResponse;
 import gwasuwonshot.tutice.lesson.service.LessonService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -107,8 +108,8 @@ public class LessonController {
 
     @GetMapping("/{lessonIdx}/progress")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<GetLessonProgressResponse> getLessonProgress(@UserIdx final Long userIdx,
-                                                                    @PathVariable final Long lessonIdx) {
+    public ApiResponse<LessonResponse> getLessonProgress(@UserIdx final Long userIdx,
+                                                         @PathVariable final Long lessonIdx) {
         return ApiResponse.success(SuccessStatus.GET_LESSON_PROGRESS_SUCCESS, lessonService.getLessonProgress(userIdx, lessonIdx));
     }
 
