@@ -35,6 +35,7 @@ import gwasuwonshot.tutice.user.exception.userException.NotFoundUserException;
 import gwasuwonshot.tutice.user.repository.NotificationLogRepository;
 import gwasuwonshot.tutice.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -113,14 +114,7 @@ public class ScheduleService {
         LocalDate endDate = standardDate.withDayOfMonth(standardDate.lengthOfMonth());
 
         // 유저 역할 따라 스케줄 가져오기
-        List<Lesson> lessonList;
-        if (user.isMatchedRole(Role.PARENTS)) {
-            lessonList = lessonRepository.findAllByParentsIdxAndIsFinishedAndDeletedAtIsNull(userIdx,false);
-        } else if (user.isMatchedRole(Role.TEACHER)) {
-            lessonList = lessonRepository.findAllByTeacherIdxAndIsFinishedAndDeletedAtIsNull(userIdx,false);
-        } else {
-            return null;
-        }
+        List<Lesson> lessonList = getLessons(user);
 
         // TODO 최적화 코드 생각해서 리팩하기 (날짜 별 스케줄 묶기)
         List<Schedule> scheduleList = scheduleRepository.findAllByDateBetweenAndLessonInOrderByDate(startDate, endDate, lessonList);
@@ -145,6 +139,14 @@ public class ScheduleService {
 
             return GetScheduleByUserResponse.ofDailySchedule(dailyScheduleList);
         }
+    }
+
+    @Nullable
+    private List<Lesson> getLessons(User user) {
+        List<Lesson> lessonList = null;
+        if (user.isMatchedRole(Role.PARENTS)) lessonList = lessonRepository.findAllByParentsIdxAndIsFinishedAndDeletedAtIsNull(user.getIdx(),false);
+        if (user.isMatchedRole(Role.TEACHER)) lessonList = lessonRepository.findAllByTeacherIdxAndIsFinishedAndDeletedAtIsNull(user.getIdx(),false);
+        return lessonList;
     }
 
     // TODO 리팩.. 리팩.. 깔깔
