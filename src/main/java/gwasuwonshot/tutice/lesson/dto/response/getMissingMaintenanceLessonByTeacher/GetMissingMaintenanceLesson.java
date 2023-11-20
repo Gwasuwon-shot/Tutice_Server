@@ -1,4 +1,4 @@
-package gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenance;
+package gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenanceLessonByTeacher;
 
 import gwasuwonshot.tutice.lesson.dto.response.LessonResponse;
 import lombok.AccessLevel;

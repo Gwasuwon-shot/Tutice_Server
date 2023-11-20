@@ -1,4 +1,4 @@
-package gwasuwonshot.tutice.lesson.dto.response.getPaymentRecord;
+package gwasuwonshot.tutice.lesson.dto.response.getPaymentRecordByLesson;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
