@@ -1,6 +1,5 @@
 package gwasuwonshot.tutice.schedule.dto.request;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +9,7 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @NoArgsConstructor
-public class UpdateScheduleRequestSchedule {
+public class UpdateSchedule {
     @NotNull(message = "스케줄 idx가 없습니다.")
     @Min(1)
     private Long idx;

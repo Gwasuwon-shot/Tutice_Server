@@ -11,5 +11,5 @@ import javax.validation.constraints.NotNull;
 public class UpdateScheduleRequest {
     @Valid
     @NotNull(message = "스케줄 정보가 없습니다.")
-    private UpdateScheduleRequestSchedule schedule;
+    private UpdateSchedule schedule;
 }
