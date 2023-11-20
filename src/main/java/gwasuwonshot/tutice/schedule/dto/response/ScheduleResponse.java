@@ -1,4 +1,4 @@
-package gwasuwonshot.tutice.schedule.dto;
+package gwasuwonshot.tutice.schedule.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import gwasuwonshot.tutice.common.module.DateAndTimeConvert;

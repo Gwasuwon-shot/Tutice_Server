@@ -1,4 +1,4 @@
-package gwasuwonshot.tutice.schedule.dto.response;
+package gwasuwonshot.tutice.schedule.dto.response.getLatestScheduleByTeacher;
 
 import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
 import gwasuwonshot.tutice.schedule.entity.Schedule;

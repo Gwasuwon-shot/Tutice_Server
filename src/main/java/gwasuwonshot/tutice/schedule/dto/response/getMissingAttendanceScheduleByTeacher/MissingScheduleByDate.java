@@ -1,4 +1,4 @@
-package gwasuwonshot.tutice.schedule.dto.response;
+package gwasuwonshot.tutice.schedule.dto.response.getMissingAttendanceScheduleByTeacher;
 
 import gwasuwonshot.tutice.schedule.entity.Schedule;
 import lombok.*;

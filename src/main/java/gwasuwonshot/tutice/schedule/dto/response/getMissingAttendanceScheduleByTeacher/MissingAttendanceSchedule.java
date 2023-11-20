@@ -1,7 +1,7 @@
-package gwasuwonshot.tutice.schedule.dto.response;
+package gwasuwonshot.tutice.schedule.dto.response.getMissingAttendanceScheduleByTeacher;
 
 import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
-import gwasuwonshot.tutice.schedule.dto.ScheduleResponse;
+import gwasuwonshot.tutice.schedule.dto.response.ScheduleResponse;
 import gwasuwonshot.tutice.schedule.entity.Schedule;
 import lombok.*;
 

@@ -1,4 +1,4 @@
-package gwasuwonshot.tutice.schedule.dto.response;
+package gwasuwonshot.tutice.schedule.dto.response.getTemporarySchedule;
 
 import lombok.*;
 

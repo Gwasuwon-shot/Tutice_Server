@@ -7,7 +7,13 @@ import gwasuwonshot.tutice.lesson.dto.response.getLessonSchedule.GetLessonSchedu
 import gwasuwonshot.tutice.schedule.dto.request.GetTemporaryScheduleRequest;
 import gwasuwonshot.tutice.schedule.dto.request.UpdateScheduleAttendanceRequest;
 import gwasuwonshot.tutice.schedule.dto.request.UpdateScheduleRequest;
-import gwasuwonshot.tutice.schedule.dto.response.*;
+import gwasuwonshot.tutice.schedule.dto.response.getLatestScheduleByTeacher.GetLatestScheduleByTeacherResponse;
+import gwasuwonshot.tutice.schedule.dto.response.getMissingAttendanceScheduleByTeacher.GetMissingAttendanceScheduleResponse;
+import gwasuwonshot.tutice.schedule.dto.response.getScheduleByUser.GetScheduleByUserResponse;
+import gwasuwonshot.tutice.schedule.dto.response.getTemporarySchedule.GetTemporaryScheduleResponse;
+import gwasuwonshot.tutice.schedule.dto.response.getTodayScheduleByParents.GetTodayScheduleByParentsResponse;
+import gwasuwonshot.tutice.schedule.dto.response.getTodayScheduleByTeacher.GetTodayScheduleByTeacherResponse;
+import gwasuwonshot.tutice.schedule.dto.response.updateScheduleAttendance.UpdateScheduleAttendanceResponse;
 import gwasuwonshot.tutice.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -42,14 +48,14 @@ public class ScheduleController {
  @GetMapping("")
  @ResponseStatus(HttpStatus.OK)
  public ApiResponse<GetScheduleByUserResponse> getScheduleByUser(@UserIdx final Long userIdx,
-                                                                       @RequestParam final String month) {
+                                                                 @RequestParam final String month) {
   return ApiResponse.success(SuccessStatus.GET_SCHEDULE_BY_USER_SUCCESS,
           scheduleService.getScheduleByUser(userIdx, month) );
  }
 
  @GetMapping("/today/parents")
  @ResponseStatus(HttpStatus.OK)
- public ApiResponse<?> getTodayScheduleByParents(@UserIdx final Long userIdx) {
+ public ApiResponse<GetTodayScheduleByParentsResponse> getTodayScheduleByParents(@UserIdx final Long userIdx) {
   return ApiResponse.success(SuccessStatus.GET_TODAY_SCHEDULE_BY_PARENTS_SUCCESS,
           scheduleService.getTodayScheduleByParents(userIdx) );
  }
@@ -133,7 +139,7 @@ public class ScheduleController {
  @PatchMapping("/attendance")
  @ResponseStatus(HttpStatus.OK)
  public ApiResponse<UpdateScheduleAttendanceResponse> updateScheduleAttendance(@UserIdx final Long userIdx,
-                                                                                     @RequestBody @Valid final UpdateScheduleAttendanceRequest request) {
+                                                                               @RequestBody @Valid final UpdateScheduleAttendanceRequest request) {
   return ApiResponse.success(SuccessStatus.UPDATE_SCHEDULE_ATTENDANCE_SUCCESS,
           scheduleService.updateScheduleAttendance(userIdx, request));
  }

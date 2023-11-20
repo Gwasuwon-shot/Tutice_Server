@@ -1,7 +1,7 @@
-package gwasuwonshot.tutice.schedule.dto.response;
+package gwasuwonshot.tutice.schedule.dto.response.getLatestScheduleByTeacher;
 
 import gwasuwonshot.tutice.lesson.entity.Lesson;
-import gwasuwonshot.tutice.schedule.dto.ScheduleResponse;
+import gwasuwonshot.tutice.schedule.dto.response.ScheduleResponse;
 import gwasuwonshot.tutice.schedule.entity.Schedule;
 import lombok.*;
 
