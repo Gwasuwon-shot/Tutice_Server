@@ -35,4 +35,12 @@ public class NotificationLog extends AuditingTimeEntity {
         this.content=content;
 
     }
+
+    public static NotificationLog toEntity(User user, String title, String content) {
+        return NotificationLog.builder()
+                .user(user)
+                .title(title)
+                .content(content)
+                .build();
+    }
 }

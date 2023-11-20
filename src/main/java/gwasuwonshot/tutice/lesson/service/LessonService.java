@@ -24,7 +24,6 @@ import gwasuwonshot.tutice.lesson.repository.RegularScheduleRepository;
 import gwasuwonshot.tutice.schedule.entity.Schedule;
 import gwasuwonshot.tutice.schedule.entity.ScheduleStatus;
 import gwasuwonshot.tutice.schedule.repository.ScheduleRepository;
-import gwasuwonshot.tutice.user.dto.assembler.AccountAssembler;
 import gwasuwonshot.tutice.user.entity.Account;
 import gwasuwonshot.tutice.user.entity.Role;
 import gwasuwonshot.tutice.user.entity.User;
@@ -47,7 +46,6 @@ import java.util.stream.Collectors;
 public class LessonService {
     private final LessonRepository lessonRepository;
     private final UserRepository userRepository;
-    private final AccountAssembler accountAssembler;
     private final AccountRepository accountRepository;
     private final RegularScheduleRepository regularScheduleRepository;
     private final PaymentRecordRepository paymentRecordRepository;
@@ -167,12 +165,12 @@ public class LessonService {
         //1. 선생님 계좌등록
         Payment payment = Payment.getPaymentByValue(request.getLesson().getPayment());
 
-        Account account = accountAssembler.toEntity(
+        Account account = Account.toEntity(
                 teacher,
                 request.getAccount().getName(),
                 request.getAccount().getBank(),
                 request.getAccount().getNumber()
-                );
+        );
         teacher.addAccount(account);
         accountRepository.save(account);
 

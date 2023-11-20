@@ -17,8 +17,8 @@ import gwasuwonshot.tutice.schedule.entity.Schedule;
 import gwasuwonshot.tutice.schedule.entity.ScheduleStatus;
 import gwasuwonshot.tutice.schedule.exception.*;
 import gwasuwonshot.tutice.schedule.repository.ScheduleRepository;
-import gwasuwonshot.tutice.user.dto.assembler.NotificationLogAssembler;
 import gwasuwonshot.tutice.user.entity.NotificationConstant;
+import gwasuwonshot.tutice.user.entity.NotificationLog;
 import gwasuwonshot.tutice.user.entity.Role;
 import gwasuwonshot.tutice.user.entity.User;
 import gwasuwonshot.tutice.user.exception.userException.InvalidRoleException;
@@ -51,7 +51,6 @@ public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final LessonRepository lessonRepository;
     private final NotificationLogRepository notificationLogRepository;
-    private final NotificationLogAssembler notificationLogAssembler;
 
     public GetTodayScheduleByParentsResponseDto getTodayScheduleByParents(Long userIdx) {
         // 유저 존재 여부 확인
@@ -348,7 +347,7 @@ public class ScheduleService {
                 String title = NotificationConstant.getAttendanceImmediateCheckTitle();
                 String body = NotificationConstant.getAttendanceImmediateCheckContent();
                 fcmService.sendMessage(user.getDeviceToken(), title, body);
-                notificationLogRepository.save(notificationLogAssembler.toEntity(schedule.getLesson().getParents(), title, body));
+                notificationLogRepository.save(NotificationLog.toEntity(schedule.getLesson().getParents(), title, body));
             }
         }
     }
@@ -366,7 +365,7 @@ public class ScheduleService {
                 String title = NotificationConstant.getAttendanceLateCheckTitle();
                 String body = NotificationConstant.getAttendanceLateCheckContent();
                 fcmService.sendMessage(user.getDeviceToken(), title, body);
-                notificationLogRepository.save(notificationLogAssembler.toEntity(schedule.getLesson().getParents(), title, body));
+                notificationLogRepository.save(NotificationLog.toEntity(schedule.getLesson().getParents(), title, body));
             }
         }
     }

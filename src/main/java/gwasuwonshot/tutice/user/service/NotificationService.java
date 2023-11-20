@@ -12,8 +12,8 @@ import gwasuwonshot.tutice.schedule.exception.InvalidScheduleException;
 import gwasuwonshot.tutice.schedule.exception.NotFoundScheduleException;
 import gwasuwonshot.tutice.schedule.repository.ScheduleRepository;
 import gwasuwonshot.tutice.schedule.service.ScheduleService;
-import gwasuwonshot.tutice.user.dto.assembler.NotificationLogAssembler;
 import gwasuwonshot.tutice.user.entity.NotificationConstant;
+import gwasuwonshot.tutice.user.entity.NotificationLog;
 import gwasuwonshot.tutice.user.entity.Role;
 import gwasuwonshot.tutice.user.entity.User;
 import gwasuwonshot.tutice.user.exception.NotificationFailException;
@@ -37,7 +37,6 @@ public class NotificationService {
     private final FCMService fcmService;
     private final UserRepository userRepository;
     private final ScheduleService scheduleService;
-    private final NotificationLogAssembler notificationLogAssembler;
     private final LessonRepository lessonRepository;
 
 
@@ -81,7 +80,7 @@ public class NotificationService {
         }
 
         //  보내진게 맞으면  알림 기록하기
-        notificationLogRepository.save(notificationLogAssembler.toEntity(schedule.getLesson().getParents(),title,content));
+        notificationLogRepository.save(NotificationLog.toEntity(schedule.getLesson().getParents(), title, content));
 
         return schedule.getIdx();
 
@@ -128,7 +127,7 @@ public class NotificationService {
         }
 
         //  보내진게 맞으면  알림 기록하기
-        notificationLogRepository.save(notificationLogAssembler.toEntity(lesson.getParents(),title,content));
+        notificationLogRepository.save(NotificationLog.toEntity(lesson.getParents(), title, content));
 
         return lesson.getIdx();
 
