@@ -13,8 +13,12 @@ public enum ErrorStatus {
      * 400 BAD REQUEST
      */
     REQUEST_VALIDATION_EXCEPTION(HttpStatus.BAD_REQUEST, "잘못된 요청입니다"),
+    NOT_READABLE_REQUEST_EXCEPTION(HttpStatus.BAD_REQUEST, "읽을 수 없는 요청입니다."),
     NO_REQUEST_PARAMETER_EXCEPTION(HttpStatus.BAD_REQUEST, "요청 파라미터 값이 없습니다"),
     VALIDATION_WRONG_TYPE_EXCEPTION(HttpStatus.BAD_REQUEST, "잘못된 타입이 입력되었습니다"),
+    MISSING_REQUEST_HEADER_EXCEPTION(HttpStatus.BAD_REQUEST, "요청 헤더값이 입력되지 않았습니다."),
+    MISSING_REQUEST_PARAMETER_EXCEPTION(HttpStatus.BAD_REQUEST,"요청 파라미터 값이 입력되지 않았습니다."),
+    MISSING_REQUEST_PATH_VARIABLE_EXCEPTION(HttpStatus.BAD_REQUEST, "요청 url path variable 값이 입력되지 않았습니다."),
     PARAMETER_TYPE_MISMATCH_EXCEPTION(HttpStatus.BAD_REQUEST, "파라미터의 타입이 잘못됐습니다"),
     INVALID_PASSWORD_EXCEPTION(HttpStatus.BAD_REQUEST, "잘못된 비밀번호가 입력됐습니다."),
     INVALID_DATE_EXCEPTION(HttpStatus.BAD_REQUEST, "날짜의 형태는 yyyy-mm-dd 형태여야합니다."),
