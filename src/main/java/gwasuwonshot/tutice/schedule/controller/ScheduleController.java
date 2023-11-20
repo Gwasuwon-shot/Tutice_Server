@@ -3,12 +3,12 @@ package gwasuwonshot.tutice.schedule.controller;
 import gwasuwonshot.tutice.common.dto.ApiResponse;
 import gwasuwonshot.tutice.common.exception.SuccessStatus;
 import gwasuwonshot.tutice.common.resolver.userIdx.UserIdx;
-import gwasuwonshot.tutice.lesson.dto.response.getLessonSchedule.GetLessonScheduleResponse;
+import gwasuwonshot.tutice.schedule.dto.response.getScheduleByLesson.GetScheduleByLessonResponse;
 import gwasuwonshot.tutice.schedule.dto.request.GetTemporaryScheduleRequest;
 import gwasuwonshot.tutice.schedule.dto.request.UpdateScheduleAttendanceRequest;
 import gwasuwonshot.tutice.schedule.dto.request.UpdateScheduleRequest;
 import gwasuwonshot.tutice.schedule.dto.response.getLatestScheduleByTeacher.GetLatestScheduleByTeacherResponse;
-import gwasuwonshot.tutice.schedule.dto.response.getMissingAttendanceScheduleByTeacher.GetMissingAttendanceScheduleResponse;
+import gwasuwonshot.tutice.schedule.dto.response.getMissingAttendanceScheduleByTeacher.GetMissingAttendanceScheduleByTeacherResponse;
 import gwasuwonshot.tutice.schedule.dto.response.getScheduleByUser.GetScheduleByUserResponse;
 import gwasuwonshot.tutice.schedule.dto.response.getTemporarySchedule.GetTemporaryScheduleResponse;
 import gwasuwonshot.tutice.schedule.dto.response.getTodayScheduleByParents.GetTodayScheduleByParentsResponse;
@@ -62,7 +62,7 @@ public class ScheduleController {
 
  @GetMapping("/lesson/{lessonIdx}")
  @ResponseStatus(HttpStatus.OK)
- public ApiResponse<List<GetLessonScheduleResponse>> getScheduleByLesson(
+ public ApiResponse<List<GetScheduleByLessonResponse>> getScheduleByLesson(
          @UserIdx final Long userIdx,
          @PathVariable final Long lessonIdx) {
 
@@ -80,7 +80,7 @@ public class ScheduleController {
 
  @GetMapping("/missing-attendance")
  @ResponseStatus(HttpStatus.OK)
- public ApiResponse<GetMissingAttendanceScheduleResponse> getMissingAttendanceScheduleByTeacher(@UserIdx final Long userIdx) {
+ public ApiResponse<GetMissingAttendanceScheduleByTeacherResponse> getMissingAttendanceScheduleByTeacher(@UserIdx final Long userIdx) {
   return ApiResponse.success(SuccessStatus.GET_MISSING_ATTENDANCE_SCHEDULE_BY_TEACHER_SUCCESS,
           scheduleService.getMissingAttendanceScheduleByTeacher(userIdx) );
  }
