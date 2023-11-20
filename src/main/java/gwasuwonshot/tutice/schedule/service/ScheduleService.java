@@ -113,34 +113,31 @@ public class ScheduleService {
         LocalDate startDate = standardDate.withDayOfMonth(1);
         LocalDate endDate = standardDate.withDayOfMonth(standardDate.lengthOfMonth());
 
-        // 유저 역할 따라 스케줄 가져오기
         List<Lesson> lessonList = getLessons(user);
-
-        // TODO 최적화 코드 생각해서 리팩하기 (날짜 별 스케줄 묶기)
         List<Schedule> scheduleList = scheduleRepository.findAllByDateBetweenAndLessonInOrderByDate(startDate, endDate, lessonList);
-        if (scheduleList.isEmpty()) {
-            return GetScheduleByUserResponse.of();
-        }
-        else {
-            // 날짜 별 스케줄 리스트
-            LocalDate scheduleDate = scheduleList.get(0).getDate();
-            List<Schedule> scheduleListOfDate = new ArrayList<>();
-            List<ScheduleByDate> dailyScheduleList = new ArrayList<>();
-
-            for (Schedule schedule : scheduleList) {
-                if (!scheduleDate.isEqual(schedule.getDate())) {
-                    dailyScheduleList.add(ScheduleByDate.of(DateAndTimeConvert.localDateConvertString(scheduleDate), DateAndTimeConvert.localDateConvertDayOfWeek(scheduleDate), scheduleListOfDate));
-                    scheduleDate = schedule.getDate();
-                    scheduleListOfDate.clear();
-                }
-                scheduleListOfDate.add(schedule);
-            }
-            dailyScheduleList.add(ScheduleByDate.of(DateAndTimeConvert.localDateConvertString(scheduleDate), DateAndTimeConvert.localDateConvertDayOfWeek(scheduleDate), scheduleListOfDate));
-
-            return GetScheduleByUserResponse.ofDailySchedule(dailyScheduleList);
-        }
+        return scheduleList.isEmpty() ? GetScheduleByUserResponse.of()
+                : GetScheduleByUserResponse.ofDailySchedule(getScheduleByDate(scheduleList));
     }
 
+    // 날짜별 스케줄 리스트
+    private static List<ScheduleByDate> getScheduleByDate(List<Schedule> scheduleList) {
+        LocalDate scheduleDate = scheduleList.get(0).getDate();
+        List<Schedule> scheduleListOfDate = new ArrayList<>();
+        List<ScheduleByDate> dailyScheduleList = new ArrayList<>();
+
+        for (Schedule schedule : scheduleList) {
+            if (!scheduleDate.isEqual(schedule.getDate())) {
+                dailyScheduleList.add(ScheduleByDate.of(DateAndTimeConvert.localDateConvertString(scheduleDate), DateAndTimeConvert.localDateConvertDayOfWeek(scheduleDate), scheduleListOfDate));
+                scheduleDate = schedule.getDate();
+                scheduleListOfDate.clear();
+            }
+            scheduleListOfDate.add(schedule);
+        }
+        dailyScheduleList.add(ScheduleByDate.of(DateAndTimeConvert.localDateConvertString(scheduleDate), DateAndTimeConvert.localDateConvertDayOfWeek(scheduleDate), scheduleListOfDate));
+        return dailyScheduleList;
+    }
+
+    // 유저 역할 따라 스케줄 가져오기
     @Nullable
     private List<Lesson> getLessons(User user) {
         List<Lesson> lessonList = null;
