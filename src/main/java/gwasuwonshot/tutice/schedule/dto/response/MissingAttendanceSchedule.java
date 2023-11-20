@@ -1,6 +1,7 @@
 package gwasuwonshot.tutice.schedule.dto.response;
 
 import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
+import gwasuwonshot.tutice.schedule.dto.ScheduleResponse;
 import gwasuwonshot.tutice.schedule.entity.Schedule;
 import lombok.*;
 
