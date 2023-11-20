@@ -38,4 +38,12 @@ public class ScheduleResponse {
                 .endTime(DateAndTimeConvert.localTimeConvertString(endTime))
                 .build();
     }
+
+    public static ScheduleResponse of(Long idx, String studentName, String subject) {
+        return ScheduleResponse.builder()
+                .idx(idx)
+                .studentName(studentName)
+                .subject(subject)
+                .build();
+    }
 }
