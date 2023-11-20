@@ -3,7 +3,7 @@ package gwasuwonshot.tutice.user.controller;
 import gwasuwonshot.tutice.common.dto.ApiResponse;
 import gwasuwonshot.tutice.common.exception.SuccessStatus;
 import gwasuwonshot.tutice.common.resolver.userIdx.UserIdx;
-import gwasuwonshot.tutice.lesson.dto.response.getAccountByLesson.GetLessonAccountResponse;
+import gwasuwonshot.tutice.user.dto.response.GetAccountByLessonResponse;
 import gwasuwonshot.tutice.user.dto.request.UpdateUserDeviceTokenRequest;
 import gwasuwonshot.tutice.user.dto.response.GetUserNameResponse;
 import gwasuwonshot.tutice.user.service.UserService;
@@ -29,8 +29,8 @@ public class UserController {
 
     @GetMapping("/account/lesson/{lessonIdx}")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<GetLessonAccountResponse> getAccountByLesson(@UserIdx final Long userIdx,
-                                                                        @PathVariable final Long lessonIdx) {
+    public ApiResponse<GetAccountByLessonResponse> getAccountByLesson(@UserIdx final Long userIdx,
+                                                                      @PathVariable final Long lessonIdx) {
         return ApiResponse.success(SuccessStatus.GET_ACCOUNT_BY_LESSON_SUCCESS,
                 userService.getAccountByLesson(userIdx, lessonIdx));
     }
