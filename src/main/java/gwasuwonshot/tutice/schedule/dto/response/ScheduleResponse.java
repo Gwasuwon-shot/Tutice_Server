@@ -46,4 +46,12 @@ public class ScheduleResponse {
                 .subject(subject)
                 .build();
     }
+
+    public static ScheduleResponse of(Long idx, LocalTime startTime, LocalTime endTime) {
+        return ScheduleResponse.builder()
+                .idx(idx)
+                .startTime(DateAndTimeConvert.localTimeConvertString(startTime))
+                .endTime(DateAndTimeConvert.localTimeConvertString(endTime))
+                .build();
+    }
 }

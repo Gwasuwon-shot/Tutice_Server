@@ -10,12 +10,12 @@ import lombok.*;
 @Builder
 public class LatestScheduleByTeacher {
     private ScheduleResponse lesson;
-    private ScheduleByTime schedule;
+    private ScheduleResponse schedule;
 
     public static LatestScheduleByTeacher of(Lesson lesson, Schedule schedule) {
         return LatestScheduleByTeacher.builder()
                 .lesson(ScheduleResponse.of(lesson.getIdx(), lesson.getStudentName(), lesson.getSubject()))
-                .schedule(ScheduleByTime.of(schedule.getIdx(), schedule.getStartTime(), schedule.getEndTime()))
+                .schedule(ScheduleResponse.of(schedule.getIdx(), schedule.getStartTime(), schedule.getEndTime()))
                 .build();
     }
 
