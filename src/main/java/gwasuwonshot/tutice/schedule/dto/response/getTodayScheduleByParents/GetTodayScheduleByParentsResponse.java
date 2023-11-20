@@ -24,7 +24,7 @@ public class GetTodayScheduleByParentsResponse {
                 .build();
     }
 
-    public static GetTodayScheduleByParentsResponse ofTodaySchedule(String name, LocalDate now, List<Schedule> scheduleList) {
+    public static GetTodayScheduleByParentsResponse ofTodaySchedule(String name, List<Schedule> scheduleList) {
         return GetTodayScheduleByParentsResponse.builder()
                 .parentsName(name)
                 .today(GetTodayDateResponse.of())

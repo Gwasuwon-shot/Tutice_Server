@@ -89,13 +89,12 @@ public class ScheduleService {
         checkUserRole(user, Role.PARENTS);
         // 오늘의 수업 있는지 체크
         LocalDate now = LocalDate.now();
-
         // 학부모-레슨리스트 -> 스케줄 중 해당 레슨 있는지 + 오늘 날짜인지
         // TODO 부모님 수업 리스트 양방향 매핑으로 수정하기
         List<Lesson> lessonList = lessonRepository.findAllByParentsIdxAndIsFinishedAndDeletedAtIsNull(userIdx,false);
         List<Schedule> todayScheduleList = scheduleRepository.findAllByDateAndLessonIn(now, lessonList);
-        if(todayScheduleList == null) return GetTodayScheduleByParentsResponse.of(user.getName());
-        return GetTodayScheduleByParentsResponse.ofTodaySchedule(user.getName(), now, todayScheduleList);
+        if(todayScheduleList.isEmpty()) return GetTodayScheduleByParentsResponse.of(user.getName());
+        return GetTodayScheduleByParentsResponse.ofTodaySchedule(user.getName(), todayScheduleList);
     }
 
     private static void checkUserRole(User user, Role parents) {
