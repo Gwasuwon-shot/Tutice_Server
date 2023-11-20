@@ -61,16 +61,16 @@ public class LessonService {
 
 
     @Transactional
-    public GetLessonByUserResponseDto getLessonExistenceByUser(final Long userIdx){
+    public GetLessonExistenceByUserResponseDto getLessonExistenceByUser(final Long userIdx){
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
 
         if(user.isMatchedRole(Role.PARENTS)){
-            return GetLessonByUserResponseDto.of(!(lessonRepository.findAllByParentsIdxAndIsFinishedAndDeletedAtIsNull(user.getIdx(), false).isEmpty())
+            return GetLessonExistenceByUserResponseDto.of(!(lessonRepository.findAllByParentsIdxAndIsFinishedAndDeletedAtIsNull(user.getIdx(), false).isEmpty())
                     ,user.getName());
 
         } else if (user.isMatchedRole(Role.TEACHER)) {
-            return GetLessonByUserResponseDto.of(!(lessonRepository.findAllByTeacherIdxAndIsFinishedAndDeletedAtIsNull(user.getIdx(),false).isEmpty())
+            return GetLessonExistenceByUserResponseDto.of(!(lessonRepository.findAllByTeacherIdxAndIsFinishedAndDeletedAtIsNull(user.getIdx(),false).isEmpty())
                     ,user.getName());
         }
         else{
@@ -312,7 +312,7 @@ public class LessonService {
     }
 
     @Transactional
-    public List<GetMissingMaintenanceLesson> getMissingMaintenanceLessonByUser(Long userIdx){
+    public List<GetMissingMaintenanceLesson> getMissingMaintenanceLessonByTeacher(Long userIdx){
 
         //1.  유저가져와서 역할검사
         User teacher = userRepository.findById(userIdx)
