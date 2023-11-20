@@ -13,8 +13,7 @@ import gwasuwonshot.tutice.lesson.dto.response.getLessonByTeacher.GetLessonByTea
 import gwasuwonshot.tutice.lesson.dto.response.getLessonDetail.GetLessonDetailResponse;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonExistenceByUser.GetLessonExistenceByUserResponse;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonRegularSchedule.GetLessonRegularScheduleResponse;
-import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenance.GetMissingMaintenanceLessonByTeacherResponse;
-import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenanceLessonByTeacher.GetMissingMaintenanceLessonResponse;
+import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenanceLessonByTeacher.GetMissingMaintenanceLessonByTeacherResponse;
 import gwasuwonshot.tutice.lesson.service.LessonService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
