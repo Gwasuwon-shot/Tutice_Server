@@ -39,4 +39,12 @@ public class Account extends AuditingTimeEntity {
 
     }
 
+    public static Account toEntity(User teacher, String name, String bank, String number) {
+        return Account.builder()
+                .teacher(teacher)
+                .name(name)
+                .bank(bank)
+                .number(number)
+                .build();
+    }
 }

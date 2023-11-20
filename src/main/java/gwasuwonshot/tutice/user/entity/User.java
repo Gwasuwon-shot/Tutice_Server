@@ -62,6 +62,17 @@ public class User extends AuditingTimeEntity {
     @OneToMany(mappedBy = "user")
     private List<NotificationLog> notificationLogList;
 
+    public static User toEntity(String email, String password, String name, Role role, Boolean isMarketing) {
+        return User.builder()
+                .email(email)
+                .provider(Provider.LOCAL)
+                .password(password)
+                .name(name)
+                .role(role)
+                .isMarketing(isMarketing)
+                .build();
+    }
+
     public void addAccount(Account account){
         accountList.add(account);
     }
