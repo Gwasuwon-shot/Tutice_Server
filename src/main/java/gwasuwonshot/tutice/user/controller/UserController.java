@@ -20,6 +20,22 @@ public class UserController {
 
     private final UserService userService;
 
+
+    @GetMapping("/name")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponseDto<GetUserNameResponseDto> getUserName(@UserIdx final Long userIdx) {
+        return ApiResponseDto.success(SuccessStatus.GET_USER_NAME_SUCCESS,
+                userService.getUserName(userIdx));
+    }
+
+    @GetMapping("/account/lesson/{lessonIdx}")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponseDto<GetLessonAccountResponseDto> getAccountByLesson(@UserIdx final Long userIdx,
+                                                                        @PathVariable final Long lessonIdx) {
+        return ApiResponseDto.success(SuccessStatus.GET_ACCOUNT_BY_LESSON_SUCCESS,
+                userService.getAccountByLesson(userIdx, lessonIdx));
+    }
+
     @PatchMapping("/device-token")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponseDto updateUserDeviceToken(@UserIdx final Long userIdx,
@@ -28,24 +44,12 @@ public class UserController {
         return ApiResponseDto.success(SuccessStatus.UPDATE_DEVICE_TOKEN_SUCCESS);
     }
 
-    @GetMapping("/name")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<GetUserNameResponseDto> getUserName(@UserIdx final Long userIdx) {
-        return ApiResponseDto.success(SuccessStatus.GET_USER_NAME_SUCCESS, userService.getUserName(userIdx));
-    }
-
-    @GetMapping("/account/lesson/{lessonIdx}")
-    @ResponseStatus(HttpStatus.OK)
-    // TODO url만 변경 dto, 함수명 변경 필요
-    public ApiResponseDto<GetLessonAccountResponseDto> getAccountByLesson(@UserIdx final Long userIdx,
-                                                                        @PathVariable final Long lessonIdx) {
-        return ApiResponseDto.success(SuccessStatus.GET_LESSON_ACCOUNT_SUCCESS, userService.getAccountByLesson(userIdx, lessonIdx));
-    }
-
     @PatchMapping("/logout")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponseDto logout(@UserIdx final Long userIdx) {
         userService.logout(userIdx);
         return ApiResponseDto.success(SuccessStatus.LOGOUT_SUCCESS);
     }
+
+
 }

@@ -35,7 +35,8 @@ public class LessonController {
     public ApiResponseDto<CreateLessonResponseDto> createLesson(
             @UserIdx final Long userIdx,
             @Valid @RequestBody final CreateLessonRequestDto request) {
-        return ApiResponseDto.success(SuccessStatus.CREATE_LESSON_SUCCESS, lessonService.createLesson(userIdx, request));
+        return ApiResponseDto.success(SuccessStatus.CREATE_LESSON_SUCCESS,
+                lessonService.createLesson(userIdx, request));
     }
 
 

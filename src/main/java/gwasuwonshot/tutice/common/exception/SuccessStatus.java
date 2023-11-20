@@ -29,7 +29,7 @@ public enum SuccessStatus {
     GET_MISSING_MAINTENANCE_LESSON_BY_TEACHER_SUCCESS(HttpStatus.OK, "연장여부를 알려주지 않은 수업 리스트 가져오기 성공"),
     GET_PAYMENT_RECORD_POST_VIEW_SUCCESS(HttpStatus.OK,"입금 등록 뷰 정보 가져오기 성공"),
     GET_PAYMENT_RECORD_CYCLE_SUCCESS(HttpStatus.OK,"입금 내역의 사이클 정보를 가져오는데 성공했습니다."),
-    GET_LESSON_ACCOUNT_SUCCESS(HttpStatus.OK,"수업에 연결된 계좌를 가져오는데 성공했습니다."),
+    GET_ACCOUNT_BY_LESSON_SUCCESS(HttpStatus.OK,"수업에 연결된 계좌를 가져오는데 성공했습니다."),
     GET_PAYMENT_RECORD_BY_LESSON_SUCCESS(HttpStatus.OK,"입금 내역을 가져오는데 성공했습니다."),
     GET_MISSING_ATTENDANCE_EXISTENCE_BY_LESSON_EXIST_SUCCESS(HttpStatus.OK, "수업 이전 회차 누락 출결 유무를 가져오는데 성공했습니다."),
 
