@@ -3,7 +3,6 @@ package gwasuwonshot.tutice.schedule.service;
 import gwasuwonshot.tutice.common.exception.ErrorStatus;
 import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
 import gwasuwonshot.tutice.external.firebase.service.FCMService;
-import gwasuwonshot.tutice.lesson.dto.assembler.RegularScheduleAssembler;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonSchedule.GetLessonScheduleResponseDto;
 import gwasuwonshot.tutice.lesson.entity.Lesson;
 import gwasuwonshot.tutice.lesson.entity.RegularSchedule;
@@ -53,7 +52,6 @@ public class ScheduleService {
     private final LessonRepository lessonRepository;
     private final NotificationLogRepository notificationLogRepository;
     private final NotificationLogAssembler notificationLogAssembler;
-    private final RegularScheduleAssembler regularScheduleAssembler;
 
     public GetTodayScheduleByParentsResponseDto getTodayScheduleByParents(Long userIdx) {
         // 유저 존재 여부 확인
@@ -374,7 +372,7 @@ public class ScheduleService {
     }
 
     public GetTemporaryScheduleResponseDto getTemporarySchedule(GetTemporaryScheduleRequestDto request) {
-        List<RegularSchedule> regularScheduleList = request.getRegularScheduleList().stream().map(r -> regularScheduleAssembler.toTemporaryEntity(r.getDayOfWeek(), r.getStartTime(), r.getEndTime())).collect(Collectors.toList());
+        List<RegularSchedule> regularScheduleList = request.getRegularScheduleList().stream().map(r -> RegularSchedule.toTemporaryEntity(r.getDayOfWeek(), r.getStartTime(), r.getEndTime())).collect(Collectors.toList());
 
         List<Schedule> scheduleList = Schedule.autoCreateTemporarySchedule(DateAndTimeConvert.stringConvertLocalDate(request.getStartDate()), request.getCount(), regularScheduleList);
         List<TemporarySchedule> temporaryScheduleList = new ArrayList<>();

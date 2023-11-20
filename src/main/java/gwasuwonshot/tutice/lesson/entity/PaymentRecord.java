@@ -38,6 +38,13 @@ public class PaymentRecord extends AuditingTimeEntity {
 
     }
 
+    public static PaymentRecord toEntity(Lesson lesson) {
+        return PaymentRecord.builder()
+                .lesson(lesson)
+                .amount(lesson.getAmount())
+                .build();
+    }
+
     public void recordDate(LocalDate date) {
         this.date=date;
         this.status=true;

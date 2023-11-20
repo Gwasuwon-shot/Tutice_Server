@@ -2,6 +2,7 @@ package gwasuwonshot.tutice.lesson.entity;
 
 
 import gwasuwonshot.tutice.common.entity.AuditingTimeEntity;
+import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,6 +14,8 @@ import java.time.LocalTime;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import static gwasuwonshot.tutice.lesson.entity.DayOfWeek.getDayOfWeekByValue;
 
 
 @Entity
@@ -125,4 +128,20 @@ public class RegularSchedule extends AuditingTimeEntity {
 
     }
 
+    public static RegularSchedule toEntity(Lesson lesson, LocalTime startTime, LocalTime endTime, DayOfWeek dayOfWeek) {
+        return RegularSchedule.builder()
+                .lesson(lesson)
+                .startTime(startTime)
+                .endTime(endTime)
+                .dayOfWeek(dayOfWeek)
+                .build();
+    }
+
+    public static RegularSchedule toTemporaryEntity(String dayOfWeek, String startTime, String endTime) {
+        return RegularSchedule.builder()
+                .dayOfWeek(getDayOfWeekByValue(dayOfWeek))
+                .startTime(DateAndTimeConvert.stringConvertLocalTime(startTime))
+                .endTime(DateAndTimeConvert.stringConvertLocalTime(endTime))
+                .build();
+    }
 }
