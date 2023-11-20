@@ -1,15 +1,19 @@
 package gwasuwonshot.tutice.common.advice;
 
-import gwasuwonshot.tutice.common.exception.BasicException;
+import javax.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestHeaderException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import gwasuwonshot.tutice.common.dto.ApiResponseDto;
 import gwasuwonshot.tutice.common.exception.ErrorStatus;
+import gwasuwonshot.tutice.common.exception.BasicException;
 
 import java.util.Objects;
 
@@ -20,11 +24,45 @@ public class ControllerExceptionAdvice {
      * 400 BAD_REQUEST
      */
 
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class) //@Vlid에서 걸러지는 에러들
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ApiResponseDto handleHttpMessageNotReadableException( final HttpMessageNotReadableException e) {
+        return ApiResponseDto.error(ErrorStatus.NOT_READABLE_REQUEST_EXCEPTION, String.format("%s",ErrorStatus.NOT_READABLE_REQUEST_EXCEPTION.getMessage()));
+
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class) //@Valid에서 걸러지는 에러들
     protected ApiResponseDto handleMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
         FieldError fieldError = Objects.requireNonNull(e.getFieldError());
         return ApiResponseDto.error(ErrorStatus.REQUEST_VALIDATION_EXCEPTION, String.format("%s", fieldError.getDefaultMessage()));
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MissingRequestHeaderException.class)
+    protected ApiResponseDto handleMissingRequestHeaderException(final MissingRequestHeaderException e) {
+        return ApiResponseDto.error(ErrorStatus.MISSING_REQUEST_HEADER_EXCEPTION, String.format("%s. (%s)", ErrorStatus.MISSING_REQUEST_HEADER_EXCEPTION.getMessage(), e.getHeaderName()));
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    protected ApiResponseDto handleMissingRequestParameterException(final MissingServletRequestParameterException e) {
+        return ApiResponseDto.error(ErrorStatus.MISSING_REQUEST_PARAMETER_EXCEPTION, String.format("%s. (%s)", ErrorStatus.MISSING_REQUEST_PARAMETER_EXCEPTION.getMessage(), e.getParameterName()));
+    }
+
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ConstraintViolationException.class)
+    protected ApiResponseDto handleMissingRequestParameterException(final ConstraintViolationException e) {
+        return ApiResponseDto.error(ErrorStatus.MISSING_REQUEST_PARAMETER_EXCEPTION, String.format("%s. (%s)", ErrorStatus.MISSING_REQUEST_PARAMETER_EXCEPTION.getMessage(), e.getConstraintViolations()));
+    }
+
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(IllegalArgumentException.class)
+    protected ApiResponseDto handleMissingRequestPathVariableException(final IllegalArgumentException e) {
+        return ApiResponseDto.error(ErrorStatus.MISSING_REQUEST_PATH_VARIABLE_EXCEPTION, String.format("%s. (%s)", ErrorStatus.MISSING_REQUEST_PATH_VARIABLE_EXCEPTION.getMessage(), e.getMessage()));
     }
 
 
