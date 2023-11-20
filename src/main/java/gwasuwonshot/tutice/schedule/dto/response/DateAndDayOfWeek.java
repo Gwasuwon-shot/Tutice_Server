@@ -6,12 +6,12 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
-public class TodayResponse {
+public class DateAndDayOfWeek {
     private String date;
     private String dayOfWeek;
 
-    public static TodayResponse of(String date, String dayOfWeek) {
-        return TodayResponse.builder()
+    public static DateAndDayOfWeek of(String date, String dayOfWeek) {
+        return DateAndDayOfWeek.builder()
                 .date(date)
                 .dayOfWeek(dayOfWeek)
                 .build();

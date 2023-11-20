@@ -13,12 +13,12 @@ import java.util.stream.Collectors;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 public class GetLatestScheduleByTeacherResponse {
-    private TodayResponse latestScheduleDay;
+    private DateAndDayOfWeek latestScheduleDay;
     private List<LatestScheduleByTeacher> latestScheduleByTeacherList;
 
     public static GetLatestScheduleByTeacherResponse of(LocalDate date, List<Schedule> latestScheduleList) {
         return GetLatestScheduleByTeacherResponse.builder()
-                .latestScheduleDay(TodayResponse.of(DateAndTimeConvert.localDateConvertString(date), DateAndTimeConvert.localDateConvertDayOfWeek(date)))
+                .latestScheduleDay(DateAndDayOfWeek.of(DateAndTimeConvert.localDateConvertString(date), DateAndTimeConvert.localDateConvertDayOfWeek(date)))
                 .latestScheduleByTeacherList(latestScheduleList.stream().map(s -> LatestScheduleByTeacher.of(s.getLesson(), s)).collect(Collectors.toList()))
                 .build();
     }
