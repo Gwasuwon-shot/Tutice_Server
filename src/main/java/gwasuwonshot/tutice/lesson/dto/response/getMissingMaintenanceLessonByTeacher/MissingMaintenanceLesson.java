@@ -9,12 +9,12 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class GetMissingMaintenanceLesson {
+public class MissingMaintenanceLesson {
     private LessonResponse lesson;
-    private String endScheduleDate; //"2023-05-25"
+    private String endScheduleDate;
 
-    public static GetMissingMaintenanceLesson of(LessonResponse lesson, String endScheduleDate) {
-        return new GetMissingMaintenanceLesson(lesson, endScheduleDate);
+    public static MissingMaintenanceLesson of(LessonResponse lesson, String endScheduleDate) {
+        return new MissingMaintenanceLesson(lesson, endScheduleDate);
 
     }
 }

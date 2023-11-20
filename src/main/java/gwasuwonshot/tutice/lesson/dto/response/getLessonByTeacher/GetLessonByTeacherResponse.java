@@ -11,9 +11,9 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class GetLessonByTeacherResponse {
-    private List<GetLessonByTeacher> lessonList;
+    private List<LessonByTeacher> lessonList;
 
-    public static GetLessonByTeacherResponse of(List<GetLessonByTeacher> lessonList) {
+    public static GetLessonByTeacherResponse of(List<LessonByTeacher> lessonList) {
         return new GetLessonByTeacherResponse(lessonList);
 
     }

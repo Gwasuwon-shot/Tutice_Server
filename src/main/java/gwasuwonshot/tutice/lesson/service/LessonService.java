@@ -6,13 +6,13 @@ import gwasuwonshot.tutice.common.module.ReturnLongMath;
 import gwasuwonshot.tutice.lesson.dto.request.createLesson.CreateLessonRequest;
 import gwasuwonshot.tutice.lesson.dto.response.LessonResponse;
 import gwasuwonshot.tutice.lesson.dto.response.createLesson.CreateLessonResponse;
-import gwasuwonshot.tutice.lesson.dto.response.getLessonByTeacher.GetLessonByTeacher;
-import gwasuwonshot.tutice.lesson.dto.response.getLessonByTeacher.GetLessonByTeacherLatestRegularSchedule;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonByTeacher.LessonByTeacher;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonByTeacher.LatestRegularSchedule;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonDetail.GetLessonDetailResponse;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonExistenceByUser.GetLessonExistenceByUserResponse;
-import gwasuwonshot.tutice.lesson.dto.response.getLessonRegularSchedule.GetLessonRegularSchedule;
+import gwasuwonshot.tutice.lesson.dto.response.getLessonRegularSchedule.LessonRegularSchedule;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonRegularSchedule.GetLessonRegularScheduleResponse;
-import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenanceLessonByTeacher.GetMissingMaintenanceLesson;
+import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenanceLessonByTeacher.MissingMaintenanceLesson;
 import gwasuwonshot.tutice.lesson.entity.*;
 import gwasuwonshot.tutice.lesson.exception.conflict.AlreadyExistLessonParentsException;
 import gwasuwonshot.tutice.lesson.exception.conflict.AlreadyFinishedLessonException;
@@ -217,8 +217,8 @@ public class LessonService {
 
 
     @Transactional
-    public List<GetLessonByTeacher> getLessonByTeacher(final Long userIdx) {
-        List<GetLessonByTeacher> getLessonByTeacherList = new ArrayList<>();
+    public List<LessonByTeacher> getLessonByTeacher(final Long userIdx) {
+        List<LessonByTeacher> lessonByTeacherList = new ArrayList<>();
 
 //        유저가 존재하고 선생님이 맞는지 확인
         User teacher = userRepository.findById(userIdx)
@@ -249,13 +249,13 @@ public class LessonService {
             //                - [ ] percent : 전체카운트와 진짜카운트의 백분율
             Long percent = ReturnLongMath.getPercentage(nowCount, l.getCount());
 
-            getLessonByTeacherList.add(GetLessonByTeacher.of(l.getIdx(), l.getStudentName(), l.getSubject(), percent, l.getIsFinished(),
-                    GetLessonByTeacherLatestRegularSchedule.of(latestRegularSchedule.getDayOfWeek().getValue(), latestRegularSchedule.getStartTime(), latestRegularSchedule.getEndTime())));
+            lessonByTeacherList.add(LessonByTeacher.of(l.getIdx(), l.getStudentName(), l.getSubject(), percent, l.getIsFinished(),
+                    LatestRegularSchedule.of(latestRegularSchedule.getDayOfWeek().getValue(), latestRegularSchedule.getStartTime(), latestRegularSchedule.getEndTime())));
 
 
         });
 
-        return getLessonByTeacherList;
+        return lessonByTeacherList;
     }
 
 
@@ -298,7 +298,7 @@ public class LessonService {
 
 
     @Transactional
-    public List<GetMissingMaintenanceLesson> getMissingMaintenanceLessonByTeacher(Long userIdx) {
+    public List<MissingMaintenanceLesson> getMissingMaintenanceLessonByTeacher(Long userIdx) {
 
         //1.  유저가져와서 역할검사
         User teacher = userRepository.findById(userIdx)
@@ -309,7 +309,7 @@ public class LessonService {
         }
 
 
-        List<GetMissingMaintenanceLesson> getMissingMaintenanceLessonList = new ArrayList<>();
+        List<MissingMaintenanceLesson> missingMaintenanceLessonList = new ArrayList<>();
 
         // TODO : 아래의 로직좀더 효율적으로 리팩하기
         //2. 유저에 연결된 레슨가져오기
@@ -319,7 +319,7 @@ public class LessonService {
                     // 2.2 간단플래그 : 현재사이클의 가장 최근 스케쥴의 상태가 상태없음이 아닐경우 (사실 최근스케쥴은 출석 or 결석만 되긴함)
                     Schedule endSchedule = scheduleRepository.findTopByLessonAndCycleAndStatusNotOrderByDateDesc(lfn, lfn.getCycle(), ScheduleStatus.CANCEL);
                     if (!endSchedule.isMatchedStatus(ScheduleStatus.NO_STATUS)) {
-                        getMissingMaintenanceLessonList.add(GetMissingMaintenanceLesson.of(
+                        missingMaintenanceLessonList.add(MissingMaintenanceLesson.of(
                                 LessonResponse.of(
                                         lfn.getIdx(), lfn.getStudentName(), lfn.getSubject(), lfn.getCount())
                                 , DateAndTimeConvert.localDateConvertString(endSchedule.getDate()))
@@ -329,7 +329,7 @@ public class LessonService {
 
                 });
 
-        return getMissingMaintenanceLessonList;
+        return missingMaintenanceLessonList;
 
 
     }
@@ -382,7 +382,7 @@ public class LessonService {
             throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION, ErrorStatus.INVALID_LESSON_CODE_EXCEPTION.getMessage());
 
 
-        List<GetLessonRegularSchedule> getLessonRegularScheduleList = new ArrayList<>();
+        List<LessonRegularSchedule> lessonRegularScheduleList = new ArrayList<>();
 
         // 정기일정중 시간이 중복되는 경우 검사
         RegularSchedule.groupByTimeRegularScheduleIndexList(lesson.getRegularScheduleList())
@@ -405,14 +405,14 @@ public class LessonService {
                         });
                     }
 
-                    getLessonRegularScheduleList.add(GetLessonRegularSchedule.of(dayOfWeeksList, startTime, endTime));
+                    lessonRegularScheduleList.add(LessonRegularSchedule.of(dayOfWeeksList, startTime, endTime));
                 });
 
         // 첫번째 DayOfWeek 순서로 정렬필요
-        if (getLessonRegularScheduleList.size() > 1) {
-            Collections.sort(getLessonRegularScheduleList, new Comparator<GetLessonRegularSchedule>() {
+        if (lessonRegularScheduleList.size() > 1) {
+            Collections.sort(lessonRegularScheduleList, new Comparator<LessonRegularSchedule>() {
                 @Override
-                public int compare(GetLessonRegularSchedule o1, GetLessonRegularSchedule o2) {
+                public int compare(LessonRegularSchedule o1, LessonRegularSchedule o2) {
                     Long difference = DayOfWeek.getIndexByValue(o1.getDayOfWeekList().get(0)) - DayOfWeek.getIndexByValue(o2.getDayOfWeekList().get(0));
                     return difference.intValue();
                 }
@@ -420,7 +420,7 @@ public class LessonService {
         }
 
 
-        return GetLessonRegularScheduleResponse.of(getLessonRegularScheduleList);
+        return GetLessonRegularScheduleResponse.of(lessonRegularScheduleList);
 
 
     }
