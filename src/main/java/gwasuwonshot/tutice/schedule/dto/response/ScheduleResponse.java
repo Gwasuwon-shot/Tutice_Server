@@ -54,4 +54,14 @@ public class ScheduleResponse {
                 .endTime(DateAndTimeConvert.localTimeConvertString(endTime))
                 .build();
     }
+
+    public static ScheduleResponse of(Long idx, String studentName, String subject, String startTime, String endTime) {
+        return ScheduleResponse.builder()
+                .idx(idx)
+                .studentName(studentName)
+                .subject(subject)
+                .startTime(startTime)
+                .endTime(endTime)
+                .build();
+    }
 }

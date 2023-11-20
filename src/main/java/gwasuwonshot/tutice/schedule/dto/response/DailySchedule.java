@@ -11,12 +11,12 @@ import lombok.*;
 public class DailySchedule {
 
     private Long lessonIdx;
-    private ScheduleByUser schedule;
+    private ScheduleResponse schedule;
 
     public static DailySchedule of(Long lessonIdx, Schedule schedule) {
         return DailySchedule.builder()
                 .lessonIdx(lessonIdx)
-                .schedule(ScheduleByUser.of(schedule.getIdx(),
+                .schedule(ScheduleResponse.of(schedule.getIdx(),
                         schedule.getLesson().getStudentName(),
                         schedule.getLesson().getSubject(),
                         DateAndTimeConvert.localTimeConvertString(schedule.getStartTime()),
