@@ -1,6 +1,6 @@
 package gwasuwonshot.tutice.schedule.dto.response;
 
-import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
+import gwasuwonshot.tutice.common.dto.GetTodayDateResponse;
 import gwasuwonshot.tutice.schedule.entity.Schedule;
 import lombok.*;
 
@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @Builder
 public class GetTodayScheduleByParentsResponse {
     private String parentsName;
-    private TodayResponse today;
+    private GetTodayDateResponse today;
     private List<ScheduleResponse> scheduleList;
 
     public static GetTodayScheduleByParentsResponse of(String name) {
@@ -26,7 +26,7 @@ public class GetTodayScheduleByParentsResponse {
     public static GetTodayScheduleByParentsResponse ofTodaySchedule(String name, LocalDate now, List<Schedule> scheduleList) {
         return GetTodayScheduleByParentsResponse.builder()
                 .parentsName(name)
-                .today(TodayResponse.of(DateAndTimeConvert.localDateConvertString(now), DateAndTimeConvert.localDateConvertString(now)))
+                .today(GetTodayDateResponse.of())
                 .scheduleList(scheduleList.stream().map(s -> ScheduleResponse.of(s.getIdx(), s.getLesson().getStudentName(), s.getLesson().getTeacher().getName(), s.getLesson().getSubject(), s.getStartTime(), s.getEndTime())).collect(Collectors.toList()))
                 .build();
     }

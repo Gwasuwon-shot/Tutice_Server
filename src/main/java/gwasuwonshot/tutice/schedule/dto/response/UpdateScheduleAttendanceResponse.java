@@ -1,6 +1,6 @@
 package gwasuwonshot.tutice.schedule.dto.response;
 
-import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
+import gwasuwonshot.tutice.common.dto.GetTodayDateResponse;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -11,12 +11,12 @@ import java.time.LocalDate;
 @Builder
 public class UpdateScheduleAttendanceResponse {
     private boolean isLastCount;
-    private TodayResponse attendanceSchedule;
+    private GetTodayDateResponse attendanceSchedule;
 
     public static UpdateScheduleAttendanceResponse of(boolean isLastCount, LocalDate now) {
         return UpdateScheduleAttendanceResponse.builder()
                 .isLastCount(isLastCount)
-                .attendanceSchedule(TodayResponse.of(DateAndTimeConvert.localDateConvertString(now), DateAndTimeConvert.localDateConvertDayOfWeek(now)))
+                .attendanceSchedule(GetTodayDateResponse.of())
                 .build();
     }
 }
