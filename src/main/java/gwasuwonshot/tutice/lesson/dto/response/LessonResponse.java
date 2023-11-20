@@ -30,4 +30,12 @@ public class LessonResponse {
                 .build();
         }
 
+    public static LessonResponse of(Long idx, String studentName, String subject, Long count) {
+        return LessonResponse.builder()
+                .idx(idx)
+                .studentName(studentName)
+                .subject(subject)
+                .count(count)
+                .build();
+    }
 }

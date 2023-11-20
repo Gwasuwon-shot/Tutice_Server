@@ -4,17 +4,12 @@ import gwasuwonshot.tutice.common.exception.ErrorStatus;
 import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
 import gwasuwonshot.tutice.common.module.ReturnLongMath;
 import gwasuwonshot.tutice.lesson.dto.request.createLesson.CreateLessonRequest;
-import gwasuwonshot.tutice.lesson.dto.response.CreateLessonResponse;
-import gwasuwonshot.tutice.lesson.dto.response.GetLessonDetailResponse;
-import gwasuwonshot.tutice.lesson.dto.response.GetLessonExistenceByUserResponse;
-import gwasuwonshot.tutice.lesson.dto.response.GetLessonProgressResponse;
-import gwasuwonshot.tutice.lesson.dto.response.getLessonByParents.GetLessonByParents;
+import gwasuwonshot.tutice.lesson.dto.response.*;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonByTeacher.GetLessonByTeacher;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonByTeacher.GetLessonByTeacherLatestRegularSchedule;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonRegularSchedule.GetLessonRegularSchedule;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonRegularSchedule.GetLessonRegularScheduleResponse;
 import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenance.GetMissingMaintenanceLesson;
-import gwasuwonshot.tutice.lesson.dto.response.getMissingMaintenance.MissingMaintenanceLesson;
 import gwasuwonshot.tutice.lesson.entity.*;
 import gwasuwonshot.tutice.lesson.exception.conflict.AlreadyExistLessonParentsException;
 import gwasuwonshot.tutice.lesson.exception.conflict.AlreadyFinishedLessonException;
@@ -262,10 +257,10 @@ public class LessonService {
 
 
     @Transactional
-    public List<GetLessonByParents> getLessonByParents(final Long userIdx) {
+    public List<LessonResponse> getLessonByParents(final Long userIdx) {
 //        유저의 역할이 학부모인지 받기
 
-        List<GetLessonByParents> getLessonByParentsList = new ArrayList<>();
+        List<LessonResponse> lessonResponseList = new ArrayList<>();
 
         User parents = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
@@ -286,14 +281,14 @@ public class LessonService {
                             // TODO : nowCount - percent 로직 겹침. 모듈로 빼기
                             Long nowCount = scheduleRepository.countByLessonAndCycleAndStatusIn(pl, pl.getCycle(), ScheduleStatus.getAttendanceScheduleStatusList());
                             Long percent = ReturnLongMath.getPercentage(nowCount, pl.getCount());
-                            getLessonByParentsList.add(
-                                    GetLessonByParents.of(
+                            lessonResponseList.add(
+                                    LessonResponse.of(
                                             pl.getIdx(), pl.getTeacher().getName(), pl.getStudentName(), pl.getSubject(), pl.getCount(), nowCount, percent));
                         }
                 );
 
 
-        return getLessonByParentsList;
+        return lessonResponseList;
 
 
     }
@@ -322,7 +317,7 @@ public class LessonService {
                     Schedule endSchedule = scheduleRepository.findTopByLessonAndCycleAndStatusNotOrderByDateDesc(lfn, lfn.getCycle(), ScheduleStatus.CANCEL);
                     if (!endSchedule.isMatchedStatus(ScheduleStatus.NO_STATUS)) {
                         getMissingMaintenanceLessonList.add(GetMissingMaintenanceLesson.of(
-                                MissingMaintenanceLesson.of(
+                                LessonResponse.of(
                                         lfn.getIdx(), lfn.getStudentName(), lfn.getSubject(), lfn.getCount())
                                 , DateAndTimeConvert.localDateConvertString(endSchedule.getDate()))
 
