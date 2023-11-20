@@ -3,11 +3,11 @@ package gwasuwonshot.tutice.lesson.service;
 import gwasuwonshot.tutice.common.exception.ErrorStatus;
 import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
 import gwasuwonshot.tutice.common.module.ReturnLongMath;
-import gwasuwonshot.tutice.lesson.dto.assembler.LessonAssembler;
-import gwasuwonshot.tutice.lesson.dto.assembler.PaymentRecordAssembler;
-import gwasuwonshot.tutice.lesson.dto.assembler.RegularScheduleAssembler;
 import gwasuwonshot.tutice.lesson.dto.request.createLesson.CreateLessonRequestDto;
-import gwasuwonshot.tutice.lesson.dto.response.*;
+import gwasuwonshot.tutice.lesson.dto.response.CreateLessonResponseDto;
+import gwasuwonshot.tutice.lesson.dto.response.GetLessonByUserResponseDto;
+import gwasuwonshot.tutice.lesson.dto.response.GetLessonDetailResponseDto;
+import gwasuwonshot.tutice.lesson.dto.response.GetLessonProgressResponseDto;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonByParents.GetLessonByParents;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonByTeacher.GetLessonByTeacher;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonByTeacher.GetLessonByTeacherLatestRegularSchedule;
@@ -27,7 +27,6 @@ import gwasuwonshot.tutice.lesson.repository.RegularScheduleRepository;
 import gwasuwonshot.tutice.schedule.entity.Schedule;
 import gwasuwonshot.tutice.schedule.entity.ScheduleStatus;
 import gwasuwonshot.tutice.schedule.repository.ScheduleRepository;
-import gwasuwonshot.tutice.user.dto.assembler.AccountAssembler;
 import gwasuwonshot.tutice.user.entity.Account;
 import gwasuwonshot.tutice.user.entity.Role;
 import gwasuwonshot.tutice.user.entity.User;
@@ -39,7 +38,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
@@ -50,12 +48,8 @@ import java.util.stream.Collectors;
 public class LessonService {
     private final LessonRepository lessonRepository;
     private final UserRepository userRepository;
-    private final LessonAssembler lessonAssembler;
-    private final AccountAssembler accountAssembler;
     private final AccountRepository accountRepository;
-    private final RegularScheduleAssembler regularScheduleAssembler;
     private final RegularScheduleRepository regularScheduleRepository;
-    private final PaymentRecordAssembler paymentRecordAssembler;
     private final PaymentRecordRepository paymentRecordRepository;
     private final ScheduleRepository scheduleRepository;
 
@@ -78,7 +72,7 @@ public class LessonService {
         //1. 선생님 계좌등록
         Payment payment = Payment.getPaymentByValue(request.getLesson().getPayment());
 
-        Account account = accountAssembler.toEntity(
+        Account account = Account.toEntity(
                 teacher,
                 request.getAccount().getName(),
                 request.getAccount().getBank(),
@@ -90,7 +84,7 @@ public class LessonService {
 
 
         //2. 레슨등록
-        Lesson lesson  = lessonAssembler.toEntity(
+        Lesson lesson = Lesson.toEntity(
                 teacher,
                 account,
                 request.getLesson().getSubject(),
@@ -109,9 +103,7 @@ public class LessonService {
         //2.1 레슨이 선불일 경우 가짜 PaymentRecord 생성
         Long prePaymentRecordIdx = -1L;
         if(lesson.isMatchedPayment(Payment.PRE_PAYMENT)){
-            PaymentRecord prePaymentRecord = paymentRecordAssembler.toEntity(lesson
-
-            );
+            PaymentRecord prePaymentRecord = PaymentRecord.toEntity(lesson);
             paymentRecordRepository.save(prePaymentRecord);
             lesson.addPaymentRecord(prePaymentRecord);
             prePaymentRecordIdx=prePaymentRecord.getIdx();
@@ -124,7 +116,7 @@ public class LessonService {
 
         List<RegularSchedule> regularScheduleList = request.getLesson().getRegularScheduleList().stream()
                 .map(rs->regularScheduleRepository.save(
-                        regularScheduleAssembler.toEntity(
+                        RegularSchedule.toEntity(
                                 lesson,
                                 DateAndTimeConvert.stringConvertLocalTime(rs.getStartTime()),
                                 DateAndTimeConvert.stringConvertLocalTime(rs.getEndTime()),
@@ -189,7 +181,7 @@ public class LessonService {
         if(isLessonMaintenance){
             //연장하면
             ////        가짜 paymentRecord생성
-            paymentRecordRepository.save(paymentRecordAssembler.toEntity(lesson));
+            paymentRecordRepository.save(PaymentRecord.toEntity(lesson));
 
             ////        startDate는 해당 수업의 마지막 스케쥴날짜 +1
             LocalDate maintenanceDate = scheduleRepository.findTopByLessonOrderByDateDesc(lesson).getDate().plusDays(1);

@@ -3,7 +3,6 @@ package gwasuwonshot.tutice.schedule.service;
 import gwasuwonshot.tutice.common.exception.ErrorStatus;
 import gwasuwonshot.tutice.common.module.DateAndTimeConvert;
 import gwasuwonshot.tutice.external.firebase.service.FCMService;
-import gwasuwonshot.tutice.lesson.dto.assembler.RegularScheduleAssembler;
 import gwasuwonshot.tutice.lesson.dto.response.getLessonSchedule.GetLessonScheduleResponseDto;
 import gwasuwonshot.tutice.lesson.entity.Lesson;
 import gwasuwonshot.tutice.lesson.entity.RegularSchedule;
@@ -18,8 +17,8 @@ import gwasuwonshot.tutice.schedule.entity.Schedule;
 import gwasuwonshot.tutice.schedule.entity.ScheduleStatus;
 import gwasuwonshot.tutice.schedule.exception.*;
 import gwasuwonshot.tutice.schedule.repository.ScheduleRepository;
-import gwasuwonshot.tutice.user.dto.assembler.NotificationLogAssembler;
 import gwasuwonshot.tutice.user.entity.NotificationConstant;
+import gwasuwonshot.tutice.user.entity.NotificationLog;
 import gwasuwonshot.tutice.user.entity.Role;
 import gwasuwonshot.tutice.user.entity.User;
 import gwasuwonshot.tutice.user.exception.userException.InvalidRoleException;
@@ -52,8 +51,6 @@ public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final LessonRepository lessonRepository;
     private final NotificationLogRepository notificationLogRepository;
-    private final NotificationLogAssembler notificationLogAssembler;
-    private final RegularScheduleAssembler regularScheduleAssembler;
 
 
 
@@ -322,7 +319,7 @@ public class ScheduleService {
                 String title = NotificationConstant.getAttendanceImmediateCheckTitle();
                 String body = NotificationConstant.getAttendanceImmediateCheckContent();
                 fcmService.sendMessage(user.getDeviceToken(), title, body);
-                notificationLogRepository.save(notificationLogAssembler.toEntity(schedule.getLesson().getParents(), title, body));
+                notificationLogRepository.save(NotificationLog.toEntity(schedule.getLesson().getParents(), title, body));
             }
         }
     }
@@ -330,7 +327,7 @@ public class ScheduleService {
 
 
     public GetTemporaryScheduleResponseDto getTemporarySchedule(GetTemporaryScheduleRequestDto request) {
-        List<RegularSchedule> regularScheduleList = request.getRegularScheduleList().stream().map(r -> regularScheduleAssembler.toTemporaryEntity(r.getDayOfWeek(), r.getStartTime(), r.getEndTime())).collect(Collectors.toList());
+        List<RegularSchedule> regularScheduleList = request.getRegularScheduleList().stream().map(r -> RegularSchedule.toTemporaryEntity(r.getDayOfWeek(), r.getStartTime(), r.getEndTime())).collect(Collectors.toList());
 
         List<Schedule> scheduleList = Schedule.autoCreateTemporarySchedule(DateAndTimeConvert.stringConvertLocalDate(request.getStartDate()), request.getCount(), regularScheduleList);
         List<TemporarySchedule> temporaryScheduleList = new ArrayList<>();

@@ -7,7 +7,6 @@ import gwasuwonshot.tutice.lesson.entity.Lesson;
 import gwasuwonshot.tutice.lesson.exception.invalid.InvalidLessonException;
 import gwasuwonshot.tutice.lesson.exception.notfound.NotFoundLessonException;
 import gwasuwonshot.tutice.lesson.repository.LessonRepository;
-import gwasuwonshot.tutice.user.dto.assembler.UserAssembler;
 import gwasuwonshot.tutice.user.dto.request.CheckDuplicationEmailRequestDto;
 import gwasuwonshot.tutice.user.dto.request.LocalLoginRequestDto;
 import gwasuwonshot.tutice.user.dto.request.LocalSignUpRequestDto;
@@ -31,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final PasswordEncoder passwordEncoder;
-    private final UserAssembler userAssembler;
     private final JwtService jwtService;
     private final UserRepository userRepository;
     private final LessonRepository lessonRepository;
@@ -43,7 +41,7 @@ public class UserService {
         // 비밀번호 암호화
         String password = passwordEncoder.encode(request.getPassword());
 
-        User user = userAssembler.toEntity(
+        User user = User.toEntity(
                 request.getEmail(),
                 password,
                 request.getName(),
