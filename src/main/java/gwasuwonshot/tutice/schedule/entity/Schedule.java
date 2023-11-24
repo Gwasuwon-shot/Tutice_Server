@@ -65,51 +65,26 @@ public class Schedule extends AuditingTimeEntity {
     }
 
     public static List<Schedule> autoCreateSchedule(LocalDate startDate, Long count, Lesson lesson){
-        //처음생성시는 lesson의 스타트데이트, 연장시는 마지막 회차+1일
+        //처음생성시는 lesson의 스타트데이트, 연장시는 마지막 회차+1일을 기준으로 시작날짜 정함
+
         //1. List를 startDate에서 가장 가까운 요일순으로 정렬
         List <RegularSchedule> regularScheduleList = lesson.getRegularScheduleList();
-
-        //!!!  잘들어오나?
-        System.out.println("시작날짜 : "+startDate);
-        System.out.println("회차 : "+count);
-        System.out.println("레슨아이디 : "+lesson.getIdx());
-        regularScheduleList.forEach(lrs->System.out.println("수업의 요일들 : "+lrs.getDayOfWeek()));
-
-
-
-        // TODO 정기일정이 1개이면 그냥 하면됨!!
-        List<RegularSchedule> sortedRegularScheduleList
-                = (regularScheduleList.size()>1) ? RegularSchedule.createSortedReglarScheduleList(startDate,regularScheduleList) : regularScheduleList;
+        if(regularScheduleList.size()>1){
+            RegularSchedule.sortedByDateAndDayOfWeek(regularScheduleList,startDate);
+        }
+        List<RegularSchedule> sortedRegularScheduleList = regularScheduleList;
 
 
         //2. 1의 정렬된 리스트에서 count 만큼 반복해 스케쥴 생성
-
-        System.out.println("sortedRegularScheduleList.forEach");
-        sortedRegularScheduleList.forEach(srs->System.out.println(srs.getDayOfWeek()));
-        System.out.println("---------------------------------");
-
-
-
         List<Schedule> createdScheduleList = new ArrayList<>();
         for(int i =0 ; i < count; i++){
-            System.out.println("i : "+i);
-            System.out.println("sortedRegularScheduleList.size() : "+sortedRegularScheduleList.size());
-
             int tempI = i%sortedRegularScheduleList.size();
-            System.out.println("tempI : "+tempI);
-
             int week = i/sortedRegularScheduleList.size();
-            System.out.println("week : "+week);
 
             DayOfWeek dayOfWeek = sortedRegularScheduleList.get(tempI).getDayOfWeek();
-            System.out.println("dayOfWeek : "+dayOfWeek.getValue());
-
             LocalTime startTime = sortedRegularScheduleList.get(tempI).getStartTime();
             LocalTime endTime = sortedRegularScheduleList.get(tempI).getEndTime();
-            System.out.println("startDate : "+startDate );
-            LocalDate date = startDate.plusWeeks(week).with(TemporalAdjusters.nextOrSame(java.time.DayOfWeek.of(dayOfWeek.getIndex().intValue())));
-            System.out.println("date : "+DateAndTimeConvert.localDateConvertString(date));
-            System.out.println();
+            LocalDate date = startDate.plusWeeks(week).with(TemporalAdjusters.nextOrSame(DayOfWeek.getJavaDayOfWeek(dayOfWeek)));
 
             createdScheduleList.add(Schedule.builder()
                     .lesson(lesson)
@@ -118,21 +93,15 @@ public class Schedule extends AuditingTimeEntity {
                     .startTime(startTime)
                     .endTime(endTime)
                     .build());
-
         }
-
-        createdScheduleList.forEach(cs -> System.out.println(cs.getDate()));
-
         return createdScheduleList;
-
-
     }
 
     // TODO 중복 코드 없애기
     public static List<Schedule> autoCreateTemporarySchedule(LocalDate startDate, Long count, List <RegularSchedule> regularScheduleList){
 
         if(regularScheduleList.size()>1){
-            List<RegularSchedule> sortedRegularScheduleList = RegularSchedule.createSortedReglarScheduleList(startDate,regularScheduleList);
+            RegularSchedule.sortedByDateAndDayOfWeek(regularScheduleList, startDate);
         }
 
         List<RegularSchedule> sortedRegularScheduleList = regularScheduleList;
@@ -143,7 +112,7 @@ public class Schedule extends AuditingTimeEntity {
             DayOfWeek dayOfWeek = sortedRegularScheduleList.get(tempI).getDayOfWeek();
             LocalTime startTime = sortedRegularScheduleList.get(tempI).getStartTime();
             LocalTime endTime = sortedRegularScheduleList.get(tempI).getEndTime();
-            LocalDate date = startDate.plusWeeks(week).with(TemporalAdjusters.nextOrSame(java.time.DayOfWeek.of(dayOfWeek.getIndex().intValue())));
+            LocalDate date = startDate.plusWeeks(week).with(TemporalAdjusters.nextOrSame(DayOfWeek.getJavaDayOfWeek(dayOfWeek)));
 
             createdScheduleList.add(Schedule.builder()
                     .date(date)
@@ -153,11 +122,7 @@ public class Schedule extends AuditingTimeEntity {
 
         }
 
-        createdScheduleList.forEach(cs -> System.out.println(cs.getDate()));
-
         return createdScheduleList;
-        //test 용
-        //return null;
     }
 
     public void updateSchedule(LocalDate date, LocalTime startTime, LocalTime endTime) {
