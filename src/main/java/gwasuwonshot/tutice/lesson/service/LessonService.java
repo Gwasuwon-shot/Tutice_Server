@@ -115,7 +115,7 @@ public class LessonService {
                                 lesson,
                                 DateAndTimeConvert.stringConvertLocalTime(rs.getStartTime()),
                                 DateAndTimeConvert.stringConvertLocalTime(rs.getEndTime()),
-                                DayOfWeek.getDayOfWeekByValue(rs.getDayOfWeek())
+                                DayOfWeek.getByValue(rs.getDayOfWeek())
                         )
                 )).collect(Collectors.toList());
 
@@ -395,15 +395,7 @@ public class LessonService {
                             dayOfWeeksList.add(lesson.getRegularScheduleList().get(d).getDayOfWeek()));
 
                     // dayOfWeekList 정렬
-                    if (dayOfWeeksList.size() > 1) {
-                        Collections.sort(dayOfWeeksList, new Comparator<DayOfWeek>() {
-                            @Override
-                            public int compare(DayOfWeek o1, DayOfWeek o2) {
-                                Long difference = o1.getIndex() - o2.getIndex();
-                                return difference.intValue();
-                            }
-                        });
-                    }
+                    DayOfWeek.sorted(dayOfWeeksList);
 
                     lessonRegularScheduleList.add(LessonRegularSchedule.of(dayOfWeeksList, startTime, endTime));
                 });
@@ -413,8 +405,7 @@ public class LessonService {
             Collections.sort(lessonRegularScheduleList, new Comparator<LessonRegularSchedule>() {
                 @Override
                 public int compare(LessonRegularSchedule o1, LessonRegularSchedule o2) {
-                    Long difference = DayOfWeek.getIndexByValue(o1.getDayOfWeekList().get(0)) - DayOfWeek.getIndexByValue(o2.getDayOfWeekList().get(0));
-                    return difference.intValue();
+                    return DayOfWeek.getIndexByValue(o1.getDayOfWeekList().get(0)) - DayOfWeek.getIndexByValue(o2.getDayOfWeekList().get(0));
                 }
             });
         }
