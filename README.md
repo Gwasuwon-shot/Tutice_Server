@@ -114,19 +114,7 @@
 <hr>
 </br>
 
-# 📄 API Docs
 
-<a href="https://suhwa-yu.notion.site/Tutice-Api-Docs-dc96df8dd0e94713a7576df00c9b6c61?pvs=4">api docs</a>
-
-</aside>
-<hr>
-</br>
-
-# 🏃‍ 역할분담 & 구현 진척도
-
-</aside>
-<hr>
-</br>
 
 # 🗣️️ 컨벤션
 
