@@ -119,7 +119,11 @@ public class ScheduleService {
         }
 
         // TODO 최적화 코드 생각해서 리팩하기 (날짜 별 스케줄 묶기)
-        List<Schedule> scheduleList = scheduleRepository.findAllByDateBetweenAndLessonInOrderByDate(startDate, endDate, lessonList);
+        Sort sort = Sort.by(
+                Sort.Order.desc("date"),
+                Sort.Order.asc("startTime")
+        );
+        List<Schedule> scheduleList = scheduleRepository.findAllByDateBetweenAndLessonIn(startDate, endDate, lessonList, sort);
         if (scheduleList.isEmpty()) {
             return GetScheduleByUserResponse.of();
         }
@@ -138,7 +142,6 @@ public class ScheduleService {
                 scheduleListOfDate.add(schedule);
             }
             dailyScheduleList.add(ScheduleByDate.of(DateAndTimeConvert.localDateConvertString(scheduleDate), DateAndTimeConvert.localDateConvertDayOfWeek(scheduleDate), scheduleListOfDate));
-
             return GetScheduleByUserResponse.ofDailySchedule(dailyScheduleList);
         }
     }
