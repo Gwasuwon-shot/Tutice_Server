@@ -17,7 +17,7 @@ public class GetAccountByLessonResponse {
         return GetAccountByLessonResponse.builder()
                 .idx(account.getIdx())
                 .name(account.getName())
-                .bank(account.getBank())
+                .bank(account.getBank().getValue())
                 .number(account.getNumber())
                 .build();
     }
