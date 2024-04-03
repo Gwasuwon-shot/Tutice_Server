@@ -17,6 +17,7 @@ public enum SuccessStatus {
     GET_USER_NAME_SUCCESS(HttpStatus.OK, "유저 이름을 가져오는데 성공했습니다."),
     CHECK_DUPLICATION_EMAIL_SUCCESS(HttpStatus.OK, "사용 가능한 이메일 입니다."),
     LOGOUT_SUCCESS(HttpStatus.OK, "로그아웃에 성공했습니다."),
+    VALIDATE_TIME_RANGE_SUCCESS(HttpStatus.OK, "유효한 시간입니다."),
 
 
     GET_LESSON_EXISTENCE_BY_USER_SUCCESS(HttpStatus.OK, "유저별로 연결된 수업 여부를 가져오는데 성공했습니다."),

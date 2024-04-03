@@ -1,5 +1,7 @@
 package gwasuwonshot.tutice.common.resolver.enumValue;
 
+import gwasuwonshot.tutice.common.exception.ErrorStatus;
+
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.Documented;
@@ -16,7 +18,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = {EnumValidator.class})
 public @interface Enum {
 
-    String message() default "Enum에 없는 값입니다.";
+    String message() default ErrorStatus.NOT_FOUND_ENUM_VALUE;
 
     Class<?>[] groups() default { };
 

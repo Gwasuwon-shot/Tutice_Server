@@ -35,6 +35,7 @@ public enum ErrorStatus {
     INVALID_SCHEDULE_EXCEPTION(HttpStatus.BAD_REQUEST,"유효하지 않은 schedule 입니다."),
     INVALID_LESSON_CODE_EXCEPTION(HttpStatus.BAD_REQUEST,"유효하지 않은 레슨코드입니다."),
     NOTIFICATION_FAIL_EXCEPTION(HttpStatus.BAD_REQUEST, "알림 발송에 실패했습니다."),
+    INVALID_REGULAR_SCHEDULE_TIME(HttpStatus.BAD_REQUEST,ErrorStatus.INVALID_REGULAR_SCHEDULE_TIME_MESSAGE),
 
 
 
@@ -74,6 +75,11 @@ public enum ErrorStatus {
      */
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "알 수 없는 서버 에러가 발생했습니다"),
     ;
+
+
+    //annotaion 에 쓸 상수 에러메시지들
+    public static final String INVALID_REGULAR_SCHEDULE_TIME_MESSAGE = "수업 시작시간이 종료시간보다 늦습니다.";
+    public static final String NOT_FOUND_ENUM_VALUE ="Enum에 없는 값입니다.";
 
     private final HttpStatus httpStatus;
     private final String message;

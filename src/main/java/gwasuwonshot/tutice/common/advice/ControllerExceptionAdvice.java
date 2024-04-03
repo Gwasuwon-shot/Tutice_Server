@@ -1,9 +1,11 @@
 package gwasuwonshot.tutice.common.advice;
 
 import javax.validation.ConstraintViolationException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
@@ -27,13 +29,13 @@ public class ControllerExceptionAdvice {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ApiResponse handleHttpMessageNotReadableException( final HttpMessageNotReadableException e) {
-        return ApiResponse.error(ErrorStatus.NOT_READABLE_REQUEST_EXCEPTION, String.format("%s",ErrorStatus.NOT_READABLE_REQUEST_EXCEPTION.getMessage()));
+    public ApiResponse handleHttpMessageNotReadableException(final HttpMessageNotReadableException e) {
+        return ApiResponse.error(ErrorStatus.NOT_READABLE_REQUEST_EXCEPTION, String.format("%s", ErrorStatus.NOT_READABLE_REQUEST_EXCEPTION.getMessage()));
 
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class) //@Vlid에서 걸러지는 에러들
+    @ExceptionHandler(MethodArgumentNotValidException.class) //@Valid에서 걸러지는 에러들
     protected ApiResponse handleMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
         FieldError fieldError = Objects.requireNonNull(e.getFieldError());
         return ApiResponse.error(ErrorStatus.REQUEST_VALIDATION_EXCEPTION, String.format("%s", fieldError.getDefaultMessage()));
@@ -86,7 +88,6 @@ public class ControllerExceptionAdvice {
         return ResponseEntity.status(e.getHttpStatus())
                 .body(ApiResponse.error(e.getErrorStatus(), e.getMessage()));
     }
-
 
 
 }
