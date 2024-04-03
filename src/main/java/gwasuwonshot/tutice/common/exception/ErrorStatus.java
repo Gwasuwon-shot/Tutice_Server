@@ -35,6 +35,7 @@ public enum ErrorStatus {
     INVALID_SCHEDULE_EXCEPTION(HttpStatus.BAD_REQUEST,"유효하지 않은 schedule 입니다."),
     INVALID_LESSON_CODE_EXCEPTION(HttpStatus.BAD_REQUEST,"유효하지 않은 레슨코드입니다."),
     NOTIFICATION_FAIL_EXCEPTION(HttpStatus.BAD_REQUEST, "알림 발송에 실패했습니다."),
+    INVALID_REGULAR_SCHEDULE_TIME(HttpStatus.BAD_REQUEST,"수업 시작시간이 종료시간보다 늦습니다."),
 
 
 
