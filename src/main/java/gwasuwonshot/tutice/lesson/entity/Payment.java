@@ -1,10 +1,12 @@
 package gwasuwonshot.tutice.lesson.entity;
 
 import gwasuwonshot.tutice.common.resolver.enumValue.EnumModel;
+import gwasuwonshot.tutice.user.entity.Bank;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 @Getter
 @RequiredArgsConstructor
@@ -15,9 +17,14 @@ public enum Payment implements EnumModel {
     private final String key;
     private final String value;
 
-    public static Payment getPaymentByValue(String value){
-        return Arrays.stream(Payment.values())
-                .filter(p -> p.getValue().equals(value))
-                .findAny().orElseThrow();
+    private static HashMap<String, Payment> PaymentByValue = new HashMap<>();
+    static {
+        Arrays.stream(values()).forEach(p -> {
+            PaymentByValue.put(p.getValue(),p);
+        });
     }
+    public static Payment getByValue(String value){
+        return PaymentByValue.getOrDefault(value,null);
+    }
+    
 }
