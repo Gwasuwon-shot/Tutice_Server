@@ -116,7 +116,11 @@
 
 # 📄 API Docs
 
-<a href="https://suhwa-yu.notion.site/Tutice-Api-Docs-dc96df8dd0e94713a7576df00c9b6c61?pvs=4">api docs</a>
+<img width="1333" alt="스크린샷 2024-04-05 오후 6 25 31" src="https://github.com/Gwasuwon-shot/Tutice_Server/assets/65851554/5dfc23bf-2cec-487c-b5c0-1677073f68fe">
+<img width="1333" alt="스크린샷 2024-04-05 오후 6 26 23" src="https://github.com/Gwasuwon-shot/Tutice_Server/assets/65851554/6d0a4a84-6e7f-4ead-988c-daca44b054e9">
+<img width="1333" alt="스크린샷 2024-04-05 오후 6 26 55" src="https://github.com/Gwasuwon-shot/Tutice_Server/assets/65851554/ec85fefa-3a3a-4eb3-882a-56c6d43beee0">
+<img width="1333" alt="스크린샷 2024-04-05 오후 6 27 40" src="https://github.com/Gwasuwon-shot/Tutice_Server/assets/65851554/0a87bd87-be59-4206-bdef-129d5a764d1f">
+
 
 </aside>
 <hr>

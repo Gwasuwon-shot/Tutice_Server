@@ -1,5 +1,8 @@
 package gwasuwonshot.tutice.lesson.dto.request.createLesson;
 
+import gwasuwonshot.tutice.common.resolver.enumValue.Enum;
+import gwasuwonshot.tutice.lesson.entity.DayOfWeek;
+import gwasuwonshot.tutice.user.entity.Bank;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -17,6 +20,7 @@ public class CreateLessonRequestAccount {
 
     @NotBlank(message = "은행이 없습니다.")
     @Schema(description = "은행")
+    @Enum(enumClass = Bank.class, ignoreCase = true, message ="은행 값이 유효하지 않습니다.")
     private String bank;
 
     @NotBlank(message = "계좌번호가 없습니다.")

@@ -26,6 +26,7 @@ import gwasuwonshot.tutice.schedule.entity.Schedule;
 import gwasuwonshot.tutice.schedule.entity.ScheduleStatus;
 import gwasuwonshot.tutice.schedule.repository.ScheduleRepository;
 import gwasuwonshot.tutice.user.entity.Account;
+import gwasuwonshot.tutice.user.entity.Bank;
 import gwasuwonshot.tutice.user.entity.Role;
 import gwasuwonshot.tutice.user.entity.User;
 import gwasuwonshot.tutice.user.exception.userException.InvalidRoleException;
@@ -67,12 +68,12 @@ public class LessonService {
 
 
         //1. 선생님 계좌등록
-        Payment payment = Payment.getPaymentByValue(request.getLesson().getPayment());
+        Payment payment = Payment.getByValue(request.getLesson().getPayment());
 
         Account account = Account.toEntity(
                 teacher,
                 request.getAccount().getName(),
-                request.getAccount().getBank(),
+                Bank.getByValue(request.getAccount().getBank()),
                 request.getAccount().getNumber()
         );
         teacher.addAccount(account);

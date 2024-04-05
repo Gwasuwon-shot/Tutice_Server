@@ -1,6 +1,7 @@
 package gwasuwonshot.tutice.user.entity;
 
 import gwasuwonshot.tutice.common.entity.AuditingTimeEntity;
+import gwasuwonshot.tutice.lesson.entity.DayOfWeek;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,14 +25,15 @@ public class Account extends AuditingTimeEntity {
     private String name;
 
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String bank;
+    private Bank bank;
 
     @Column(nullable = false)
     private String number;
 
 
-    @Builder Account( User teacher, String name, String bank, String number){
+    @Builder Account( User teacher, String name, Bank bank, String number){
         this.teacher=teacher;
         this.name=name;
         this.bank=bank;
@@ -39,7 +41,7 @@ public class Account extends AuditingTimeEntity {
 
     }
 
-    public static Account toEntity(User teacher, String name, String bank, String number) {
+    public static Account toEntity(User teacher, String name, Bank bank, String number) {
         return Account.builder()
                 .teacher(teacher)
                 .name(name)
