@@ -59,7 +59,7 @@ public class UserService {
 
     public LoginResponse localLogin(LocalLoginRequest request) {
         // 유저 존재 여부 확인
-        User user = userRepository.findByEmailAndProvider(request.getEmail(), Provider.LOCAL)
+        User user = userRepository.findByEmailAndProvider(request.getEmail(), Provider.TEMP)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
 
         // 비밀번호 일치 확인

@@ -1,9 +1,7 @@
 package gwasuwonshot.tutice.user.entity;
 
 import gwasuwonshot.tutice.common.entity.AuditingTimeEntity;
-import gwasuwonshot.tutice.common.exception.ErrorStatus;
 import gwasuwonshot.tutice.lesson.entity.Lesson;
-import gwasuwonshot.tutice.user.exception.userException.InvalidRoleException;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,7 +34,13 @@ public class User extends AuditingTimeEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "provider", nullable = false)
-    private Provider provider = Provider.LOCAL;
+    private Provider provider = Provider.TEMP;
+
+    @Column(nullable = false)
+    private String socialToken;
+
+    @Column(nullable = false)
+    private String phoneNumber;
 
     private String password;
 
@@ -65,7 +69,7 @@ public class User extends AuditingTimeEntity {
     public static User toEntity(String email, String password, String name, Role role, Boolean isMarketing) {
         return User.builder()
                 .email(email)
-                .provider(Provider.LOCAL)
+                .provider(Provider.TEMP)
                 .password(password)
                 .name(name)
                 .role(role)
