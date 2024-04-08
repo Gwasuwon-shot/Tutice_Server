@@ -47,6 +47,7 @@ public enum ErrorStatus {
     INVALID_REFRESH_TOKEN_EXCEPTION(HttpStatus.UNAUTHORIZED, "유효하지 않은 리프레시 토큰입니다."),
     INVALID_ACCESS_TOKEN_EXCEPTION(HttpStatus.UNAUTHORIZED, "유효하지 않은 엑세스 토큰입니다."),
     INVALID_ROLE_EXCEPTION(HttpStatus.UNAUTHORIZED,"유효하지 않은 역할의 유저입니다."),
+    INVALID_VALIDATION_NUMBER_EXCEPTION(HttpStatus.UNAUTHORIZED, "인증번호가 일치하지 않습니다."),
 
     /**
      * 404 NOT FOUND
@@ -57,7 +58,7 @@ public enum ErrorStatus {
     NOT_FOUND_SCHEDULE_EXCEPTION(HttpStatus.NOT_FOUND,"스케줄을 찾을 수 없습니다."),
     NOT_FOUND_LESSON_PARENTS_EXCEPTION(HttpStatus.NOT_FOUND, "레슨에 학부모가 연결되지 않았습니다."),
     NOT_ALLOWED_NOTIFICATION_EXCEPTION(HttpStatus.NOT_FOUND, "푸쉬알림 상대가 알림을 허용하지 않았습니다."),
-
+    NOT_FOUND_VALIDATION_NUMBER_EXCEPTION(HttpStatus.NOT_FOUND, "인증번호 입력 시간이 지났습니다."),
 
 
 
