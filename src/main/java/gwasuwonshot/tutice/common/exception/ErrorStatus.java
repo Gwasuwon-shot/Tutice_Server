@@ -49,6 +49,12 @@ public enum ErrorStatus {
     INVALID_ROLE_EXCEPTION(HttpStatus.UNAUTHORIZED,"유효하지 않은 역할의 유저입니다."),
 
     /**
+     * 403 FORBIDDEN
+     */
+    FORBIDDEN_NOTIFICATION_USER_EXCEPTION(HttpStatus.FORBIDDEN, "유저의 알림 상태가 허용되어 있지 않습니다."),
+
+
+    /**
      * 404 NOT FOUND
      */
     NOT_FOUND_USER_EXCEPTION(HttpStatus.NOT_FOUND, "존재하지 않는 유저입니다"),
