@@ -2,21 +2,20 @@ package gwasuwonshot.tutice.user.service;
 
 import gwasuwonshot.tutice.common.exception.ErrorStatus;
 import gwasuwonshot.tutice.config.jwt.JwtService;
+import gwasuwonshot.tutice.config.sms.SmsService;
+import gwasuwonshot.tutice.user.dto.request.*;
 import gwasuwonshot.tutice.user.dto.response.GetAccountByLessonResponse;
 import gwasuwonshot.tutice.lesson.entity.Lesson;
 import gwasuwonshot.tutice.lesson.exception.invalid.InvalidLessonException;
 import gwasuwonshot.tutice.lesson.exception.notfound.NotFoundLessonException;
 import gwasuwonshot.tutice.lesson.repository.LessonRepository;
-import gwasuwonshot.tutice.user.dto.request.CheckDuplicationEmailRequest;
-import gwasuwonshot.tutice.user.dto.request.LocalLoginRequest;
-import gwasuwonshot.tutice.user.dto.request.LocalSignUpRequest;
-import gwasuwonshot.tutice.user.dto.request.UpdateUserDeviceTokenRequest;
 import gwasuwonshot.tutice.user.dto.response.GetUserNameResponse;
 import gwasuwonshot.tutice.user.dto.response.LoginResponse;
 import gwasuwonshot.tutice.user.entity.Provider;
 import gwasuwonshot.tutice.user.entity.Role;
 import gwasuwonshot.tutice.user.entity.User;
 import gwasuwonshot.tutice.user.exception.authException.AlreadyExistEmailException;
+import gwasuwonshot.tutice.user.exception.authException.AlreadyExistPhoneNumberException;
 import gwasuwonshot.tutice.user.exception.authException.InvalidPasswordException;
 import gwasuwonshot.tutice.user.exception.userException.NotFoundUserException;
 import gwasuwonshot.tutice.user.repository.UserRepository;
@@ -31,6 +30,7 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final SmsService smsService;
     private final UserRepository userRepository;
     private final LessonRepository lessonRepository;
 
@@ -113,5 +113,11 @@ public class UserService {
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
         jwtService.logout(userIdx);
+    }
+
+    public void sendValidationNumber(SendValidationNumberRequest request) {
+        // 전화번호 중복 확인
+        if(userRepository.existsByPhoneNumber(request.getPhone())) throw new AlreadyExistPhoneNumberException(ErrorStatus.ALREADY_EXIST_PHONE_NUMBER_EXCEPTION, ErrorStatus.ALREADY_EXIST_PHONE_NUMBER_EXCEPTION.getMessage());
+        smsService.sendSMS(request.getPhone());
     }
 }

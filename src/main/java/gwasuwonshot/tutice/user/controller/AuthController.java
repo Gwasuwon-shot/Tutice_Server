@@ -5,6 +5,7 @@ import gwasuwonshot.tutice.common.exception.SuccessStatus;
 import gwasuwonshot.tutice.user.dto.request.CheckDuplicationEmailRequest;
 import gwasuwonshot.tutice.user.dto.request.LocalLoginRequest;
 import gwasuwonshot.tutice.user.dto.request.LocalSignUpRequest;
+import gwasuwonshot.tutice.user.dto.request.SendValidationNumberRequest;
 import gwasuwonshot.tutice.user.dto.response.LoginResponse;
 import gwasuwonshot.tutice.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,13 @@ public class AuthController {
     public ApiResponse checkDuplicationEmail(@RequestBody @Valid final CheckDuplicationEmailRequest request) {
         userService.checkDuplicationEmail(request);
         return ApiResponse.success(SuccessStatus.CHECK_DUPLICATION_EMAIL_SUCCESS);
+    }
+
+    @PostMapping("/phone")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse sendValidationNumber(@RequestBody @Valid final SendValidationNumberRequest request) {
+        userService.sendValidationNumber(request);
+        return ApiResponse.success(SuccessStatus.SEND_VALIDATION_NUMBER_SUCCESS);
     }
 
 }
