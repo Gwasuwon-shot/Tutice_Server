@@ -49,4 +49,11 @@ public class UserController {
         userService.logout(userIdx);
         return ApiResponse.success(SuccessStatus.LOGOUT_SUCCESS);
     }
+
+    @GetMapping("/notification")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse getNotificationStatus(@UserIdx final Long userIdx) {
+        userService.getNotificationStatus(userIdx);
+        return ApiResponse.success(SuccessStatus.GET_NOTIFICATION_STATUS_SUCCESS);
+    }
 }
