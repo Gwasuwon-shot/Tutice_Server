@@ -2,10 +2,8 @@ package gwasuwonshot.tutice.user.controller;
 
 import gwasuwonshot.tutice.common.dto.ApiResponse;
 import gwasuwonshot.tutice.common.exception.SuccessStatus;
-import gwasuwonshot.tutice.user.dto.request.CheckDuplicationEmailRequest;
-import gwasuwonshot.tutice.user.dto.request.LocalLoginRequest;
-import gwasuwonshot.tutice.user.dto.request.LocalSignUpRequest;
-import gwasuwonshot.tutice.user.dto.request.SendValidationNumberRequest;
+import gwasuwonshot.tutice.config.sms.SmsService;
+import gwasuwonshot.tutice.user.dto.request.*;
 import gwasuwonshot.tutice.user.dto.response.LoginResponse;
 import gwasuwonshot.tutice.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +18,7 @@ import javax.validation.Valid;
 public class AuthController {
 
     private final UserService userService;
+    private final SmsService smsService;
 
     @PostMapping("/local/sign-up")
     @ResponseStatus(HttpStatus.CREATED)
@@ -45,6 +44,13 @@ public class AuthController {
     public ApiResponse sendValidationNumber(@RequestBody @Valid final SendValidationNumberRequest request) {
         userService.sendValidationNumber(request);
         return ApiResponse.success(SuccessStatus.SEND_VALIDATION_NUMBER_SUCCESS);
+    }
+
+    @PostMapping("/phone/validation")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse validatePhone(@RequestBody @Valid final ValidatePhoneRequest request) {
+        smsService.validatePhone(request);
+        return ApiResponse.success(SuccessStatus.VALIDATE_PHONE_SUCCESS);
     }
 
 }
