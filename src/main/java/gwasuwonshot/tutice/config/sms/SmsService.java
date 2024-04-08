@@ -64,6 +64,8 @@ public class SmsService {
         // 발신 정보 설정
         HashMap<String, String> params = makeParams(phoneNumber, validationNumber);
         try {
+            // 재전송인 경우
+            if(Boolean.TRUE.equals(redisTemplate.hasKey(PREFIX + phoneNumber))) redisTemplate.delete(PREFIX + phoneNumber);
             JSONObject obj = (JSONObject) coolsms.send(params);
             redisTemplate.opsForValue().set(PREFIX + phoneNumber, validationNumber, Duration.ofSeconds(LIMIT_TIME));
         } catch (CoolsmsException e) {
