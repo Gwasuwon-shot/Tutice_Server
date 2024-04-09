@@ -19,6 +19,8 @@ import gwasuwonshot.tutice.user.entity.User;
 import gwasuwonshot.tutice.user.exception.authException.AlreadyExistEmailException;
 import gwasuwonshot.tutice.user.exception.authException.AlreadyExistPhoneNumberException;
 import gwasuwonshot.tutice.user.exception.authException.InvalidPasswordException;
+import gwasuwonshot.tutice.user.exception.userException.ForbiddenNotificationUserException;
+import gwasuwonshot.tutice.user.exception.userException.NotAllowedNotificationException;
 import gwasuwonshot.tutice.user.exception.userException.NotFoundUserException;
 import gwasuwonshot.tutice.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -161,5 +163,17 @@ public class UserService {
         String refreshToken = jwtService.issuedRefreshToken(String.valueOf(user.getIdx()));
 
         return LoginResponse.of(accessToken, refreshToken, user);
+    }
+  
+    public void sendValidationNumber(SendValidationNumberRequest request) {
+        // 전화번호 중복 확인
+        if(userRepository.existsByPhoneNumber(request.getPhone())) throw new AlreadyExistPhoneNumberException(ErrorStatus.ALREADY_EXIST_PHONE_NUMBER_EXCEPTION, ErrorStatus.ALREADY_EXIST_PHONE_NUMBER_EXCEPTION.getMessage());
+        smsService.sendSMS(request.getPhone());
+    }
+
+    public void getNotificationStatus(Long userIdx) {
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+        if(user.getDeviceToken() == null || user.getDeviceToken().isBlank()) throw new ForbiddenNotificationUserException(ErrorStatus.FORBIDDEN_NOTIFICATION_USER_EXCEPTION, ErrorStatus.FORBIDDEN_NOTIFICATION_USER_EXCEPTION.getMessage());
     }
 }

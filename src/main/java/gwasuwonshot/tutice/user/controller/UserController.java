@@ -58,4 +58,11 @@ public class UserController {
                                              @RequestBody @Valid final SignUpRequest request) {
         return ApiResponse.success(SuccessStatus.SIGNUP_SUCCESS, userService.signUp(userIdx, request));
     }
+  
+    @GetMapping("/notification")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse getNotificationStatus(@UserIdx final Long userIdx) {
+        userService.getNotificationStatus(userIdx);
+        return ApiResponse.success(SuccessStatus.GET_NOTIFICATION_STATUS_SUCCESS);
+    }
 }
