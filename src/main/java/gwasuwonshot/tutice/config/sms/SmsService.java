@@ -2,6 +2,9 @@ package gwasuwonshot.tutice.config.sms;
 
 import gwasuwonshot.tutice.common.exception.BasicException;
 import gwasuwonshot.tutice.common.exception.ErrorStatus;
+import gwasuwonshot.tutice.user.dto.request.ValidatePhoneRequest;
+import gwasuwonshot.tutice.user.exception.authException.InvalidValidationNumberException;
+import gwasuwonshot.tutice.user.exception.authException.NotFoundValidationNumberException;
 import lombok.RequiredArgsConstructor;
 import net.nurigo.java_sdk.exceptions.CoolsmsException;
 import net.nurigo.java_sdk.api.Message;
@@ -71,5 +74,14 @@ public class SmsService {
         } catch (CoolsmsException e) {
             throw new BasicException(ErrorStatus.INTERNAL_SERVER_ERROR, ErrorStatus.INTERNAL_SERVER_ERROR.getMessage());
         }
+    }
+
+    public void validatePhone(ValidatePhoneRequest request) {
+        String key = PREFIX + request.getPhone();
+        // 인증 시간 초과 확인
+        if(Boolean.FALSE.equals(redisTemplate.hasKey(key))) throw new NotFoundValidationNumberException(ErrorStatus.NOT_FOUND_VALIDATION_NUMBER_EXCEPTION, ErrorStatus.NOT_FOUND_VALIDATION_NUMBER_EXCEPTION.getMessage());
+        // 인증 번호 일치 여부 확인
+        if(!redisTemplate.opsForValue().get(key).equals(request.getValidationNumber())) throw new InvalidValidationNumberException(ErrorStatus.INVALID_VALIDATION_NUMBER_EXCEPTION, ErrorStatus.INVALID_VALIDATION_NUMBER_EXCEPTION.getMessage());
+        redisTemplate.delete(key);
     }
 }
