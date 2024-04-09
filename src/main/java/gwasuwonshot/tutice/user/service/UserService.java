@@ -9,6 +9,8 @@ import gwasuwonshot.tutice.lesson.entity.Lesson;
 import gwasuwonshot.tutice.lesson.exception.invalid.InvalidLessonException;
 import gwasuwonshot.tutice.lesson.exception.notfound.NotFoundLessonException;
 import gwasuwonshot.tutice.lesson.repository.LessonRepository;
+import gwasuwonshot.tutice.user.dto.request.*;
+import gwasuwonshot.tutice.user.dto.response.GetAccountByLessonResponse;
 import gwasuwonshot.tutice.user.dto.response.GetUserNameResponse;
 import gwasuwonshot.tutice.user.dto.response.LoginResponse;
 import gwasuwonshot.tutice.user.entity.Provider;
@@ -117,6 +119,31 @@ public class UserService {
         jwtService.logout(userIdx);
     }
 
+
+    public LoginResponse login(LoginRequest request) {
+        User user = userRepository.findBySocialTokenAndProvider(request.getSocialToken(), Provider.getProviderByValue(request.getProvider()))
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+
+        String accessToken = jwtService.issuedAccessToken(String.valueOf(user.getIdx()));
+        String refreshToken = jwtService.issuedRefreshToken(String.valueOf(user.getIdx()));
+
+        return LoginResponse.of(accessToken, refreshToken, user);
+    }
+
+    public boolean isUser(LoginRequest request) {
+        // 이탈 유저 체크까지
+        return userRepository.existsBySocialTokenAndProviderAndNameIsNotNull(request.getSocialToken(), Provider.getProviderByValue(request.getProvider()));
+    }
+
+    public LoginResponse tempSignUp(LoginRequest request) {
+        User newUser = userRepository.findBySocialTokenAndProvider(request.getSocialToken(), Provider.getProviderByValue(request.getProvider()))
+                .orElseGet(() -> userRepository.save(User.toEntity(request.getSocialToken(), Provider.getProviderByValue(request.getProvider()))));
+
+        String accessToken = jwtService.issuedAccessToken(String.valueOf(newUser.getIdx()));
+        String refreshToken = jwtService.issuedRefreshToken(String.valueOf(newUser.getIdx()));
+
+        return LoginResponse.of(accessToken, refreshToken);
+    }
 
     public void sendValidationNumber(SendValidationNumberRequest request) {
         // 전화번호 중복 확인

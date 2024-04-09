@@ -26,11 +26,7 @@ public class ApiResponse<T> {
         return new ApiResponse<T>(successStatus.getHttpStatusCode(), successStatus.getMessage(), data);
     }
 
-    public static ApiResponse error(ErrorStatus errorStatu) {
-        return new ApiResponse<>(errorStatu.getHttpStatusCode(), errorStatu.getMessage());
-    }
-
-    public static ApiResponse error(ErrorStatus errorStatus, String message) {
-        return new ApiResponse<>(errorStatus.getHttpStatusCode(), message);
+    public static <T> ApiResponse<T> error(ErrorStatus errorStatus, T data) {
+        return new ApiResponse<T>(errorStatus.getHttpStatusCode(), errorStatus.getMessage(), data);
     }
 }

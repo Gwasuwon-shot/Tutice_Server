@@ -1,7 +1,12 @@
 package gwasuwonshot.tutice.user.controller;
 
 import gwasuwonshot.tutice.common.dto.ApiResponse;
+import gwasuwonshot.tutice.common.exception.ErrorStatus;
 import gwasuwonshot.tutice.common.exception.SuccessStatus;
+import gwasuwonshot.tutice.user.dto.request.CheckDuplicationEmailRequest;
+import gwasuwonshot.tutice.user.dto.request.LocalLoginRequest;
+import gwasuwonshot.tutice.user.dto.request.LocalSignUpRequest;
+import gwasuwonshot.tutice.user.dto.request.LoginRequest;
 import gwasuwonshot.tutice.config.sms.SmsService;
 import gwasuwonshot.tutice.user.dto.request.*;
 import gwasuwonshot.tutice.user.dto.response.LoginResponse;
@@ -39,6 +44,14 @@ public class AuthController {
         return ApiResponse.success(SuccessStatus.CHECK_DUPLICATION_EMAIL_SUCCESS);
     }
 
+
+    @PostMapping("/login")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<LoginResponse> login(@RequestBody @Valid final LoginRequest request) {
+        if(userService.isUser(request)) return ApiResponse.success(SuccessStatus.LOGIN_SUCCESS, userService.login(request));
+        else return ApiResponse.error(ErrorStatus.NOT_FOUND_USER_EXCEPTION, userService.tempSignUp(request));
+    }
+  
     @PostMapping("/phone")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse sendValidationNumber(@RequestBody @Valid final SendValidationNumberRequest request) {
