@@ -2,6 +2,9 @@ package gwasuwonshot.tutice.user.service;
 
 import gwasuwonshot.tutice.common.exception.ErrorStatus;
 import gwasuwonshot.tutice.config.jwt.JwtService;
+import gwasuwonshot.tutice.config.sms.SmsService;
+import gwasuwonshot.tutice.user.dto.request.*;
+import gwasuwonshot.tutice.user.dto.response.GetAccountByLessonResponse;
 import gwasuwonshot.tutice.lesson.entity.Lesson;
 import gwasuwonshot.tutice.lesson.exception.invalid.InvalidLessonException;
 import gwasuwonshot.tutice.lesson.exception.notfound.NotFoundLessonException;
@@ -14,7 +17,10 @@ import gwasuwonshot.tutice.user.entity.Provider;
 import gwasuwonshot.tutice.user.entity.Role;
 import gwasuwonshot.tutice.user.entity.User;
 import gwasuwonshot.tutice.user.exception.authException.AlreadyExistEmailException;
+import gwasuwonshot.tutice.user.exception.authException.AlreadyExistPhoneNumberException;
 import gwasuwonshot.tutice.user.exception.authException.InvalidPasswordException;
+import gwasuwonshot.tutice.user.exception.userException.ForbiddenNotificationUserException;
+import gwasuwonshot.tutice.user.exception.userException.NotAllowedNotificationException;
 import gwasuwonshot.tutice.user.exception.userException.NotFoundUserException;
 import gwasuwonshot.tutice.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +34,7 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final SmsService smsService;
     private final UserRepository userRepository;
     private final LessonRepository lessonRepository;
 
@@ -112,6 +119,7 @@ public class UserService {
         jwtService.logout(userIdx);
     }
 
+
     public LoginResponse login(LoginRequest request) {
         User user = userRepository.findBySocialTokenAndProvider(request.getSocialToken(), Provider.getProviderByValue(request.getProvider()))
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
@@ -135,5 +143,17 @@ public class UserService {
         String refreshToken = jwtService.issuedRefreshToken(String.valueOf(newUser.getIdx()));
 
         return LoginResponse.of(accessToken, refreshToken);
+    }
+
+    public void sendValidationNumber(SendValidationNumberRequest request) {
+        // 전화번호 중복 확인
+        if(userRepository.existsByPhoneNumber(request.getPhone())) throw new AlreadyExistPhoneNumberException(ErrorStatus.ALREADY_EXIST_PHONE_NUMBER_EXCEPTION, ErrorStatus.ALREADY_EXIST_PHONE_NUMBER_EXCEPTION.getMessage());
+        smsService.sendSMS(request.getPhone());
+    }
+
+    public void getNotificationStatus(Long userIdx) {
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+        if(user.getDeviceToken() == null || user.getDeviceToken().isBlank()) throw new ForbiddenNotificationUserException(ErrorStatus.FORBIDDEN_NOTIFICATION_USER_EXCEPTION, ErrorStatus.FORBIDDEN_NOTIFICATION_USER_EXCEPTION.getMessage());
     }
 }
