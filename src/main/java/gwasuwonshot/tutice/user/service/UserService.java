@@ -164,12 +164,6 @@ public class UserService {
 
         return LoginResponse.of(accessToken, refreshToken, user);
     }
-  
-    public void sendValidationNumber(SendValidationNumberRequest request) {
-        // 전화번호 중복 확인
-        if(userRepository.existsByPhoneNumber(request.getPhone())) throw new AlreadyExistPhoneNumberException(ErrorStatus.ALREADY_EXIST_PHONE_NUMBER_EXCEPTION, ErrorStatus.ALREADY_EXIST_PHONE_NUMBER_EXCEPTION.getMessage());
-        smsService.sendSMS(request.getPhone());
-    }
 
     public void getNotificationStatus(Long userIdx) {
         User user = userRepository.findById(userIdx)

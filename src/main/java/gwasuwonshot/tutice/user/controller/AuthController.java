@@ -59,13 +59,6 @@ public class AuthController {
         if(userService.isUser(request)) return ApiResponse.success(SuccessStatus.LOGIN_SUCCESS, userService.login(request));
         else return ApiResponse.error(ErrorStatus.NOT_FOUND_USER_EXCEPTION, userService.tempSignUp(request));
     }
-  
-    @PostMapping("/phone")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponse sendValidationNumber(@RequestBody @Valid final SendValidationNumberRequest request) {
-        userService.sendValidationNumber(request);
-        return ApiResponse.success(SuccessStatus.SEND_VALIDATION_NUMBER_SUCCESS);
-    }
 
     @PostMapping("/phone/validation")
     @ResponseStatus(HttpStatus.OK)
