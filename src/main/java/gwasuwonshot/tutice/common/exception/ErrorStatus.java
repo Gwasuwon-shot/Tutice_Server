@@ -68,6 +68,7 @@ public enum ErrorStatus {
     ALREADY_EXIST_LESSON_PARENTS_EXCEPTION(HttpStatus.CONFLICT, "이미 학부모가 등록된 수업입니다."),
     ALREADY_FINISHED_LESSON_EXCEPTION(HttpStatus.CONFLICT, "이미 종료된 수업입니다."),
     ALREADY_EXIST_EMAIL_EXCEPTION(HttpStatus.CONFLICT, "이미 사용 중인 이메일 입니다."),
+    ALREADY_EXIST_PHONE_NUMBER_EXCEPTION(HttpStatus.CONFLICT, "이미 사용 중인 전화번호 입니다."),
 
 
     /**

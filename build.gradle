@@ -54,6 +54,9 @@ dependencies {
 
 	// spring security
 	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	// sms
+	implementation 'net.nurigo:javaSDK:2.2'
 }
 
 tasks.named('test') {
