@@ -34,7 +34,7 @@ public enum SuccessStatus {
     GET_ACCOUNT_BY_LESSON_SUCCESS(HttpStatus.OK,"수업에 연결된 계좌를 가져오는데 성공했습니다."),
     GET_PAYMENT_RECORD_BY_LESSON_SUCCESS(HttpStatus.OK,"입금 내역을 가져오는데 성공했습니다."),
     GET_MISSING_ATTENDANCE_EXISTENCE_BY_LESSON_EXIST_SUCCESS(HttpStatus.OK, "수업 이전 회차 누락 출결 유무를 가져오는데 성공했습니다."),
-
+    GET_NOTIFICATION_STATUS_SUCCESS(HttpStatus.OK, "유저의 알림 상태가 허용되어 있습니다."),
 
     GET_MISSING_ATTENDANCE_EXISTENCE_BY_TEACHER_SUCCESS(HttpStatus.OK, "누락 출결 유무를 가져오는데 성공했습니다."),
     GET_MISSING_MAINTENANCE_EXIST_BY_TEACHER_SUCCESS(HttpStatus.OK, "연장 필요 수업 유무를 가져오는데 성공했습니다."),
