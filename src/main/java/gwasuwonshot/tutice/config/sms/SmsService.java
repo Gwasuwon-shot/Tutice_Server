@@ -84,4 +84,5 @@ public class SmsService {
         if(!redisTemplate.opsForValue().get(key).equals(request.getValidationNumber())) throw new InvalidValidationNumberException(ErrorStatus.INVALID_VALIDATION_NUMBER_EXCEPTION, ErrorStatus.INVALID_VALIDATION_NUMBER_EXCEPTION.getMessage());
         redisTemplate.delete(key);
     }
+
 }
