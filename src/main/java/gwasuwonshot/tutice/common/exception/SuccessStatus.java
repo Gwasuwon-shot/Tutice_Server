@@ -12,7 +12,7 @@ public enum SuccessStatus {
      * 200 OK
      */
     LOGIN_SUCCESS(HttpStatus.OK, "로그인에 성공했습니다."),
-    NEW_TOKEN_SUCCESS(HttpStatus.OK, "토큰 재발급에 성공했습니다."),
+    REISSUE_TOKEN_SUCCESS(HttpStatus.OK, "토큰 재발급에 성공했습니다."),
     GET_TODAY_DATE_SUCCESS(HttpStatus.OK,"오늘 날짜와 요일을 가져오는데 성공했습니다."),
     GET_USER_NAME_SUCCESS(HttpStatus.OK, "유저 이름을 가져오는데 성공했습니다."),
     CHECK_DUPLICATION_EMAIL_SUCCESS(HttpStatus.OK, "사용 가능한 이메일 입니다."),

@@ -3,9 +3,11 @@ package gwasuwonshot.tutice.user.controller;
 import gwasuwonshot.tutice.common.dto.ApiResponse;
 import gwasuwonshot.tutice.common.exception.SuccessStatus;
 import gwasuwonshot.tutice.common.resolver.userIdx.UserIdx;
-import gwasuwonshot.tutice.user.dto.response.GetAccountByLessonResponse;
+import gwasuwonshot.tutice.user.dto.request.ReissueTokenRequest;
 import gwasuwonshot.tutice.user.dto.request.UpdateUserDeviceTokenRequest;
+import gwasuwonshot.tutice.user.dto.response.GetAccountByLessonResponse;
 import gwasuwonshot.tutice.user.dto.response.GetUserNameResponse;
+import gwasuwonshot.tutice.user.dto.response.ReissueTokenResponse;
 import gwasuwonshot.tutice.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -55,5 +57,11 @@ public class UserController {
     public ApiResponse getNotificationStatus(@UserIdx final Long userIdx) {
         userService.getNotificationStatus(userIdx);
         return ApiResponse.success(SuccessStatus.GET_NOTIFICATION_STATUS_SUCCESS);
+    }
+
+    @PostMapping("/reissue")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<ReissueTokenResponse> reissueToken(@RequestBody @Valid final ReissueTokenRequest request) {
+        return ApiResponse.success(SuccessStatus.REISSUE_TOKEN_SUCCESS, userService.reissueToken(request));
     }
 }
