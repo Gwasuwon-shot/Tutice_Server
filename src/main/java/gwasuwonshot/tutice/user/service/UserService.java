@@ -152,7 +152,9 @@ public class UserService {
     public LoginResponse signUp(Long userIdx, SignUpRequest request) {
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
-
+        // 전화번호 중복 확인
+        if(userRepository.existsByPhoneNumber(request.getPhone())) throw new AlreadyExistPhoneNumberException(ErrorStatus.ALREADY_EXIST_PHONE_NUMBER_EXCEPTION, ErrorStatus.ALREADY_EXIST_PHONE_NUMBER_EXCEPTION.getMessage());
+        // 정보 업데이트
         user.updateInfo(request.getName(), Role.getRoleByValue(request.getRole()), request.getPhone(), request.getIsMarketing());
 
         String accessToken = jwtService.issuedAccessToken(String.valueOf(user.getIdx()));
