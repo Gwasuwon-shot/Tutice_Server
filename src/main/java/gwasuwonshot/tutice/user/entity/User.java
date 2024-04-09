@@ -119,4 +119,11 @@ public class User extends AuditingTimeEntity {
     public void setDeviceToken(String deviceToken) {
         this.deviceToken = deviceToken;
     }
+
+    public void updateInfo(String name, Role role, String phone, Boolean isMarketing) {
+        this.name = name;
+        this.role = role;
+        this.phoneNumber = phone;
+        this.isMarketing = isMarketing;
+    }
 }

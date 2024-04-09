@@ -3,9 +3,11 @@ package gwasuwonshot.tutice.user.controller;
 import gwasuwonshot.tutice.common.dto.ApiResponse;
 import gwasuwonshot.tutice.common.exception.SuccessStatus;
 import gwasuwonshot.tutice.common.resolver.userIdx.UserIdx;
+import gwasuwonshot.tutice.user.dto.request.SignUpRequest;
 import gwasuwonshot.tutice.user.dto.response.GetAccountByLessonResponse;
 import gwasuwonshot.tutice.user.dto.request.UpdateUserDeviceTokenRequest;
 import gwasuwonshot.tutice.user.dto.response.GetUserNameResponse;
+import gwasuwonshot.tutice.user.dto.response.LoginResponse;
 import gwasuwonshot.tutice.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -48,5 +50,12 @@ public class UserController {
     public ApiResponse logout(@UserIdx final Long userIdx) {
         userService.logout(userIdx);
         return ApiResponse.success(SuccessStatus.LOGOUT_SUCCESS);
+    }
+
+    @PostMapping("/sign-up")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<LoginResponse> signUp(@UserIdx final Long userIdx,
+                                             @RequestBody @Valid final SignUpRequest request) {
+        return ApiResponse.success(SuccessStatus.SIGNUP_SUCCESS, userService.signUp(userIdx, request));
     }
 }

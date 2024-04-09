@@ -136,4 +136,17 @@ public class UserService {
 
         return LoginResponse.of(accessToken, refreshToken);
     }
+
+    @Transactional
+    public LoginResponse signUp(Long userIdx, SignUpRequest request) {
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+
+        user.updateInfo(request.getName(), Role.getRoleByValue(request.getRole()), request.getPhone(), request.getIsMarketing());
+
+        String accessToken = jwtService.issuedAccessToken(String.valueOf(user.getIdx()));
+        String refreshToken = jwtService.issuedRefreshToken(String.valueOf(user.getIdx()));
+
+        return LoginResponse.of(accessToken, refreshToken, user);
+    }
 }
