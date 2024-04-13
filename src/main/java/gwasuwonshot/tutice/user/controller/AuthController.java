@@ -57,7 +57,7 @@ public class AuthController {
 
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<LoginResponse> login(@RequestBody @Valid final LoginRequest request) {
+    public ApiResponse<LoginResponse> loginAndTempSignUp(@RequestBody @Valid final LoginRequest request) {
         if(userService.isUser(request)) return ApiResponse.success(SuccessStatus.LOGIN_SUCCESS, userService.login(request));
         else return ApiResponse.error(ErrorStatus.NOT_FOUND_USER_EXCEPTION, userService.tempSignUp(request));
     }
