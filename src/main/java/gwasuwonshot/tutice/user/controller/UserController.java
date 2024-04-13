@@ -59,9 +59,4 @@ public class UserController {
         return ApiResponse.success(SuccessStatus.GET_NOTIFICATION_STATUS_SUCCESS);
     }
 
-    @PostMapping("/reissue")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<ReissueTokenResponse> reissueToken(@RequestBody @Valid final ReissueTokenRequest request) {
-        return ApiResponse.success(SuccessStatus.REISSUE_TOKEN_SUCCESS, userService.reissueToken(request));
-    }
 }

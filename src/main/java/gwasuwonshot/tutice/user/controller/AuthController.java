@@ -5,7 +5,9 @@ import gwasuwonshot.tutice.common.exception.SuccessStatus;
 import gwasuwonshot.tutice.user.dto.request.CheckDuplicationEmailRequest;
 import gwasuwonshot.tutice.user.dto.request.LocalLoginRequest;
 import gwasuwonshot.tutice.user.dto.request.LocalSignUpRequest;
+import gwasuwonshot.tutice.user.dto.request.ReissueTokenRequest;
 import gwasuwonshot.tutice.user.dto.response.LoginResponse;
+import gwasuwonshot.tutice.user.dto.response.ReissueTokenResponse;
 import gwasuwonshot.tutice.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -37,6 +39,12 @@ public class AuthController {
     public ApiResponse checkDuplicationEmail(@RequestBody @Valid final CheckDuplicationEmailRequest request) {
         userService.checkDuplicationEmail(request);
         return ApiResponse.success(SuccessStatus.CHECK_DUPLICATION_EMAIL_SUCCESS);
+    }
+
+    @PostMapping("/reissue")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<ReissueTokenResponse> reissueToken(@RequestBody @Valid final ReissueTokenRequest request) {
+        return ApiResponse.success(SuccessStatus.REISSUE_TOKEN_SUCCESS, userService.reissueToken(request));
     }
 
 }
