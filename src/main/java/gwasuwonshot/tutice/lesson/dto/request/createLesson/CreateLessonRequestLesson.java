@@ -18,6 +18,13 @@ public class CreateLessonRequestLesson {
     @Schema(description = "학생 이름")
     private String studentName;
 
+
+    @Pattern(regexp = "^01(0|1|[6-9])[0-9]{3,4}[0-9]{4}$",
+            message = "올바른 전화번호를 입력해주세요.")
+    @Schema(description = "학부모 전화번호")
+    private String parentsPhone;
+
+
     @NotBlank(message = "과목이름이 없습니다.")
     @Schema(description = "과목 이름")
     private String subject;
