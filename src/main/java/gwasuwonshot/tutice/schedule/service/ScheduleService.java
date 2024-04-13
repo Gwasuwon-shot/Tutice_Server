@@ -407,6 +407,57 @@ public class ScheduleService {
         return !scheduleList.isEmpty();
     }
 
+    public List<GetScheduleByLessonResponse> getCanceledScheduleByLesson(Long userIdx, Long lessonIdx) {
+        // 유저 존재 여부 확인
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+        // 수업 존재 여부 확인
+        Lesson lesson = lessonRepository.findByIdxAndDeletedAtIsNull(lessonIdx)
+                .orElseThrow(() -> new NotFoundLessonException(ErrorStatus.NOT_FOUND_LESSON_EXCEPTION, ErrorStatus.NOT_FOUND_LESSON_EXCEPTION.getMessage()));
+        // 수업과 유저 연결 여부 확인
+        if (!lesson.isMatchedUser(user))
+            throw new InvalidLessonException(ErrorStatus.INVALID_LESSON_EXCEPTION, ErrorStatus.INVALID_LESSON_CODE_EXCEPTION.getMessage());
+
+        //오늘날짜, 현재시간 구하기
+        LocalDate today = LocalDate.now();
+        LocalTime nowTime = LocalTime.now();
+
+        // 레슨 스케쥴 정보 구성
+        List<GetScheduleByLessonResponse> getScheduleByLessonResponseList = new ArrayList<>();
+        scheduleRepository.findAllByLessonAndCycleAndStatusOrderByDateDesc(lesson, lesson.getCycle(), ScheduleStatus.CANCEL)
+                .forEach(s -> {
+
+                    //스케쥴날짜가 오늘날짜보다 이전인지 확인
+                    if (today.isAfter(s.getDate())) {
+                        getScheduleByLessonResponseList.add(
+                                GetScheduleByLessonResponse.of(
+                                        s.getIdx(),
+                                        DateAndTimeConvert.localDateConvertString(s.getDate()),
+                                        s.getStatus().getValue(),
+                                        DateAndTimeConvert.localTimeConvertString(s.getStartTime()),
+                                        DateAndTimeConvert.localTimeConvertString(s.getEndTime())));
+                    }
+                    if (today.isEqual(s.getDate())) {
+                        //수업시작시간확인
+
+                        if (!nowTime.isBefore(s.getStartTime())) {
+                            getScheduleByLessonResponseList.add(
+                                    GetScheduleByLessonResponse.of(
+                                            s.getIdx(),
+                                            DateAndTimeConvert.localDateConvertString(s.getDate()),
+                                            s.getStatus().getValue(),
+                                            DateAndTimeConvert.localTimeConvertString(s.getStartTime()),
+                                            DateAndTimeConvert.localTimeConvertString(s.getEndTime())));
+                        }
+
+
+                    }
+                });
+        return getScheduleByLessonResponseList;
+
+    }
+
+
     public List<GetScheduleByLessonResponse> getScheduleByLesson(Long userIdx, Long lessonIdx) {
         // 유저 존재 여부 확인
         User user = userRepository.findById(userIdx)
