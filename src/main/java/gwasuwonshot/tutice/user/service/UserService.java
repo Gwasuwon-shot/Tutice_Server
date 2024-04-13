@@ -3,8 +3,6 @@ package gwasuwonshot.tutice.user.service;
 import gwasuwonshot.tutice.common.exception.ErrorStatus;
 import gwasuwonshot.tutice.config.jwt.JwtService;
 import gwasuwonshot.tutice.config.sms.SmsService;
-import gwasuwonshot.tutice.user.dto.request.*;
-import gwasuwonshot.tutice.user.dto.response.GetAccountByLessonResponse;
 import gwasuwonshot.tutice.lesson.entity.Lesson;
 import gwasuwonshot.tutice.lesson.exception.invalid.InvalidLessonException;
 import gwasuwonshot.tutice.lesson.exception.notfound.NotFoundLessonException;
@@ -152,10 +150,19 @@ public class UserService {
 
     @Transactional
     public LoginResponse signUp(Long userIdx, SignUpRequest request) {
+
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
         // 전화번호 중복 확인
-        if(userRepository.existsByPhoneNumber(request.getPhone())) throw new AlreadyExistPhoneNumberException(ErrorStatus.ALREADY_EXIST_PHONE_NUMBER_EXCEPTION, ErrorStatus.ALREADY_EXIST_PHONE_NUMBER_EXCEPTION.getMessage());
+        if(userRepository.existsByPhoneNumberAndProviderNot(request.getPhone(), Provider.TEMP_PARENTS)) throw new AlreadyExistPhoneNumberException(ErrorStatus.ALREADY_EXIST_PHONE_NUMBER_EXCEPTION, ErrorStatus.ALREADY_EXIST_PHONE_NUMBER_EXCEPTION.getMessage());
+        // TEMP_PARENTS 인 경우
+        if(userRepository.existsByPhoneNumberAndProvider(request.getPhone(), Provider.TEMP_PARENTS)){
+            User existingUser = userRepository.findByPhoneNumberAndProvider(request.getPhone(), Provider.TEMP_PARENTS);
+            existingUser.updateSocialInfo(user.getProvider(), user.getSocialToken());
+            userRepository.saveAndFlush(existingUser);
+            userRepository.delete(user);
+            user = existingUser;
+        }
         // 정보 업데이트
         user.updateInfo(request.getName(), Role.getRoleByValue(request.getRole()), request.getPhone(), request.getIsMarketing());
 
