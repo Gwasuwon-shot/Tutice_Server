@@ -25,10 +25,7 @@ import gwasuwonshot.tutice.lesson.repository.RegularScheduleRepository;
 import gwasuwonshot.tutice.schedule.entity.Schedule;
 import gwasuwonshot.tutice.schedule.entity.ScheduleStatus;
 import gwasuwonshot.tutice.schedule.repository.ScheduleRepository;
-import gwasuwonshot.tutice.user.entity.Account;
-import gwasuwonshot.tutice.user.entity.Bank;
-import gwasuwonshot.tutice.user.entity.Role;
-import gwasuwonshot.tutice.user.entity.User;
+import gwasuwonshot.tutice.user.entity.*;
 import gwasuwonshot.tutice.user.exception.userException.InvalidRoleException;
 import gwasuwonshot.tutice.user.exception.userException.NotFoundUserException;
 import gwasuwonshot.tutice.user.repository.AccountRepository;
@@ -79,10 +76,29 @@ public class LessonService {
         teacher.addAccount(account);
         accountRepository.save(account);
 
+        User parents = null;
+
+        //1.5 학부모 번호가 있으면 학부모 연결
+        if (request.getLesson().getParentsPhone() != null) {
+            // 해당 번호의 유저가 있는지 찾기
+            parents = userRepository.findByPhoneNumber(request.getLesson().getParentsPhone());
+
+            //없으면 새로생성
+            if (parents == null) {
+                parents = User.toEntity(
+                        Provider.TEMP_PARENTS.toString(),
+                        Provider.TEMP_PARENTS.toString(),
+                        Provider.TEMP_PARENTS,
+                        request.getLesson().getParentsPhone());
+                userRepository.save(parents);
+            }
+
+        }
 
         //2. 레슨등록
         Lesson lesson = Lesson.toEntity(
                 teacher,
+                parents,
                 account,
                 request.getLesson().getSubject(),
                 request.getLesson().getStudentName(),
