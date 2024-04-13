@@ -71,6 +71,17 @@ public class ScheduleController {
  }
 
 
+ @GetMapping("/cancellation/lesson/{lessonIdx}")
+ @ResponseStatus(HttpStatus.OK)
+ public ApiResponse<List<GetScheduleByLessonResponse>> getCanceledScheduleByLesson(
+         @UserIdx final Long userIdx,
+         @PathVariable final Long lessonIdx) {
+
+  return ApiResponse.success(SuccessStatus.GET_CANCELED_SCHEDULE_BY_LESSON_SUCCESS,
+          scheduleService.getCanceledScheduleByLesson(userIdx, lessonIdx));
+ }
+
+
  @GetMapping("/today/teacher")
  @ResponseStatus(HttpStatus.OK)
  public ApiResponse<GetTodayScheduleByTeacherResponse> getTodayScheduleByTeacher(@UserIdx final Long userIdx) {
