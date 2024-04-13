@@ -13,11 +13,11 @@ import java.util.List;
 
 @Entity
 @Table( //두개 칼럼 조합 유니크
-        name="user",
-        uniqueConstraints={
+        name = "user",
+        uniqueConstraints = {
                 @UniqueConstraint(
-                        name="UniqueEmailAndProvider",
-                        columnNames={"email", "provider"}
+                        name = "UniqueEmailAndProvider",
+                        columnNames = {"email", "provider"}
                 )
         }
 )
@@ -78,49 +78,47 @@ public class User extends AuditingTimeEntity {
                 .build();
     }
 
-    public static User toEntity(String socialToken, Provider provider, String phoneNumber) {
+    public static User toEntity(String name, String socialToken, Provider provider, String phoneNumber) {
         return User.builder()
+                .name(name)
                 .socialToken(socialToken)
                 .provider(provider)
                 .phoneNumber(phoneNumber)
                 .build();
     }
 
-    public void addAccount(Account account){
+    public void addAccount(Account account) {
         accountList.add(account);
     }
 
-    public void addLesson(Lesson lesson){
+    public void addLesson(Lesson lesson) {
         lessonList.add(lesson);
     }
 
-    public void addNotificationLog(NotificationLog notificationLog){
+    public void addNotificationLog(NotificationLog notificationLog) {
         notificationLogList.add(notificationLog);
     }
 
     @Builder
     public User(String email, Provider provider, String password,
                 String name, String deviceToken, Role role, Boolean isMarketing,
-                String socialToken, String phoneNumber){
+                String socialToken, String phoneNumber) {
         this.email = email;
         this.provider = provider;
-        this.password=password;
+        this.password = password;
         this.name = name;
         this.deviceToken = deviceToken;
-        this.role=role;
-        this.isMarketing=isMarketing;
+        this.role = role;
+        this.isMarketing = isMarketing;
         this.socialToken = socialToken;
         this.phoneNumber = phoneNumber;
-        this.accountList=new ArrayList<>();
-        this.lessonList=new ArrayList<>();
+        this.accountList = new ArrayList<>();
+        this.lessonList = new ArrayList<>();
         this.notificationLogList = new ArrayList<>();
     }
 
 
-
-
-
-    public Boolean isMatchedRole(Role matchRole){
+    public Boolean isMatchedRole(Role matchRole) {
         return this.getRole().equals(matchRole);
     }
 
