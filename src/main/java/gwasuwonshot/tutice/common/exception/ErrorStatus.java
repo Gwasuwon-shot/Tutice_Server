@@ -39,11 +39,11 @@ public enum ErrorStatus {
 
 
 
-
     /**
      * 401 UNAUTHORIZED
      */
     TOKEN_TIME_EXPIRED_EXCEPTION(HttpStatus.UNAUTHORIZED, "만료된 토큰입니다."),
+    INVALID_TIME_EXPIRED_EXCEPTION(HttpStatus.UNAUTHORIZED, "만료되지 않은 토큰입니다."),
     INVALID_REFRESH_TOKEN_EXCEPTION(HttpStatus.UNAUTHORIZED, "유효하지 않은 리프레시 토큰입니다."),
     INVALID_ACCESS_TOKEN_EXCEPTION(HttpStatus.UNAUTHORIZED, "유효하지 않은 엑세스 토큰입니다."),
     INVALID_ROLE_EXCEPTION(HttpStatus.UNAUTHORIZED,"유효하지 않은 역할의 유저입니다."),

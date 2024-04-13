@@ -11,7 +11,9 @@ import gwasuwonshot.tutice.common.resolver.userIdx.UserIdx;
 import gwasuwonshot.tutice.user.dto.request.LoginRequest;
 import gwasuwonshot.tutice.config.sms.SmsService;
 import gwasuwonshot.tutice.user.dto.request.*;
+import gwasuwonshot.tutice.user.dto.request.ReissueTokenRequest;
 import gwasuwonshot.tutice.user.dto.response.LoginResponse;
+import gwasuwonshot.tutice.user.dto.response.ReissueTokenResponse;
 import gwasuwonshot.tutice.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -65,6 +67,12 @@ public class AuthController {
     public ApiResponse validatePhone(@RequestBody @Valid final ValidatePhoneRequest request) {
         smsService.validatePhone(request);
         return ApiResponse.success(SuccessStatus.VALIDATE_PHONE_SUCCESS);
+    }
+
+    @PostMapping("/reissue")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<ReissueTokenResponse> reissueToken(@RequestBody @Valid final ReissueTokenRequest request) {
+        return ApiResponse.success(SuccessStatus.REISSUE_TOKEN_SUCCESS, userService.reissueToken(request));
     }
 
 }

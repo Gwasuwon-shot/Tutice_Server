@@ -13,6 +13,7 @@ import gwasuwonshot.tutice.user.dto.request.*;
 import gwasuwonshot.tutice.user.dto.response.GetAccountByLessonResponse;
 import gwasuwonshot.tutice.user.dto.response.GetUserNameResponse;
 import gwasuwonshot.tutice.user.dto.response.LoginResponse;
+import gwasuwonshot.tutice.user.dto.response.ReissueTokenResponse;
 import gwasuwonshot.tutice.user.entity.Provider;
 import gwasuwonshot.tutice.user.entity.Role;
 import gwasuwonshot.tutice.user.entity.User;
@@ -20,7 +21,6 @@ import gwasuwonshot.tutice.user.exception.authException.AlreadyExistEmailExcepti
 import gwasuwonshot.tutice.user.exception.authException.AlreadyExistPhoneNumberException;
 import gwasuwonshot.tutice.user.exception.authException.InvalidPasswordException;
 import gwasuwonshot.tutice.user.exception.userException.ForbiddenNotificationUserException;
-import gwasuwonshot.tutice.user.exception.userException.NotAllowedNotificationException;
 import gwasuwonshot.tutice.user.exception.userException.NotFoundUserException;
 import gwasuwonshot.tutice.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -169,5 +169,16 @@ public class UserService {
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
         if(user.getDeviceToken() == null || user.getDeviceToken().isBlank()) throw new ForbiddenNotificationUserException(ErrorStatus.FORBIDDEN_NOTIFICATION_USER_EXCEPTION, ErrorStatus.FORBIDDEN_NOTIFICATION_USER_EXCEPTION.getMessage());
+    }
+
+    public ReissueTokenResponse reissueToken(ReissueTokenRequest request) {
+        Long userIdx = jwtService.getUserIdx();
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+       jwtService.checkTokenExpiryTime(userIdx, request.getRefreshToken());
+
+       String accessToken = jwtService.issuedAccessToken(String.valueOf(user.getIdx()));
+       String refreshToken = jwtService.issuedRefreshToken(String.valueOf(user.getIdx()));
+       return ReissueTokenResponse.of(accessToken, refreshToken);
     }
 }
