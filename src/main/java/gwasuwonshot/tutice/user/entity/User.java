@@ -78,6 +78,14 @@ public class User extends AuditingTimeEntity {
                 .build();
     }
 
+    public static User toEntity(String socialToken, Provider provider, String phoneNumber) {
+        return User.builder()
+                .socialToken(socialToken)
+                .provider(provider)
+                .phoneNumber(phoneNumber)
+                .build();
+    }
+
     public void addAccount(Account account){
         accountList.add(account);
     }
