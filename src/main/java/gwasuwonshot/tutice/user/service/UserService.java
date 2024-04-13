@@ -155,7 +155,7 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
         // 전화번호 중복 확인
         if(userRepository.existsByPhoneNumberAndProviderNot(request.getPhone(), Provider.TEMP)) throw new AlreadyExistPhoneNumberException(ErrorStatus.ALREADY_EXIST_PHONE_NUMBER_EXCEPTION, ErrorStatus.ALREADY_EXIST_PHONE_NUMBER_EXCEPTION.getMessage());
-        // TEMP_PARENTS 인 경우
+        // TEMP 인 경우
         if(userRepository.existsByPhoneNumberAndProvider(request.getPhone(), Provider.TEMP)){
             User existingUser = userRepository.findByPhoneNumberAndProvider(request.getPhone(), Provider.TEMP);
             existingUser.updateSocialInfo(user.getProvider(), user.getSocialToken());
