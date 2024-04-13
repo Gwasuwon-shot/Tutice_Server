@@ -132,4 +132,9 @@ public class User extends AuditingTimeEntity {
         this.phoneNumber = phone;
         this.isMarketing = isMarketing;
     }
+
+    public void updateSocialInfo(Provider provider, String socialToken) {
+        this.provider = provider;
+        this.socialToken = socialToken;
+    }
 }
