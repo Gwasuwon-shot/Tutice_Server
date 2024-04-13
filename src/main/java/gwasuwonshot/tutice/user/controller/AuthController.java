@@ -1,10 +1,16 @@
 package gwasuwonshot.tutice.user.controller;
 
 import gwasuwonshot.tutice.common.dto.ApiResponse;
+import gwasuwonshot.tutice.common.exception.ErrorStatus;
 import gwasuwonshot.tutice.common.exception.SuccessStatus;
 import gwasuwonshot.tutice.user.dto.request.CheckDuplicationEmailRequest;
 import gwasuwonshot.tutice.user.dto.request.LocalLoginRequest;
 import gwasuwonshot.tutice.user.dto.request.LocalSignUpRequest;
+import gwasuwonshot.tutice.user.dto.request.SendValidationNumberRequest;
+import gwasuwonshot.tutice.common.resolver.userIdx.UserIdx;
+import gwasuwonshot.tutice.user.dto.request.LoginRequest;
+import gwasuwonshot.tutice.config.sms.SmsService;
+import gwasuwonshot.tutice.user.dto.request.*;
 import gwasuwonshot.tutice.user.dto.request.ReissueTokenRequest;
 import gwasuwonshot.tutice.user.dto.response.LoginResponse;
 import gwasuwonshot.tutice.user.dto.response.ReissueTokenResponse;
@@ -21,6 +27,7 @@ import javax.validation.Valid;
 public class AuthController {
 
     private final UserService userService;
+    private final SmsService smsService;
 
     @PostMapping("/local/sign-up")
     @ResponseStatus(HttpStatus.CREATED)
@@ -39,6 +46,27 @@ public class AuthController {
     public ApiResponse checkDuplicationEmail(@RequestBody @Valid final CheckDuplicationEmailRequest request) {
         userService.checkDuplicationEmail(request);
         return ApiResponse.success(SuccessStatus.CHECK_DUPLICATION_EMAIL_SUCCESS);
+    }
+
+    @PostMapping("/phone")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse sendValidationNumber(@RequestBody @Valid final SendValidationNumberRequest request) {
+        userService.sendValidationNumber(request);
+        return ApiResponse.success(SuccessStatus.SEND_VALIDATION_NUMBER_SUCCESS);
+    }
+
+    @PostMapping("/login")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<LoginResponse> login(@RequestBody @Valid final LoginRequest request) {
+        if(userService.isUser(request)) return ApiResponse.success(SuccessStatus.LOGIN_SUCCESS, userService.login(request));
+        else return ApiResponse.error(ErrorStatus.NOT_FOUND_USER_EXCEPTION, userService.tempSignUp(request));
+    }
+
+    @PostMapping("/phone/validation")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse validatePhone(@RequestBody @Valid final ValidatePhoneRequest request) {
+        smsService.validatePhone(request);
+        return ApiResponse.success(SuccessStatus.VALIDATE_PHONE_SUCCESS);
     }
 
     @PostMapping("/reissue")

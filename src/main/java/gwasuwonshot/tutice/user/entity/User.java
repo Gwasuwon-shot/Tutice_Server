@@ -29,22 +29,17 @@ public class User extends AuditingTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
-    @Column(nullable = false, name = "email")
     private String email;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "provider", nullable = false)
     private Provider provider = Provider.TEMP;
 
-    @Column(nullable = false)
     private String socialToken;
 
-    @Column(nullable = false)
     private String phoneNumber;
 
     private String password;
 
-    @Column(nullable = false)
     private String name;
 
     private String deviceToken;
@@ -52,7 +47,6 @@ public class User extends AuditingTimeEntity {
     private Boolean isMarketing;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private Role role;
 
     @OneToMany(mappedBy = "teacher", cascade = {CascadeType.REMOVE})
@@ -77,6 +71,13 @@ public class User extends AuditingTimeEntity {
                 .build();
     }
 
+    public static User toEntity(String socialToken, Provider provider) {
+        return User.builder()
+                .socialToken(socialToken)
+                .provider(provider)
+                .build();
+    }
+
     public void addAccount(Account account){
         accountList.add(account);
     }
@@ -91,7 +92,8 @@ public class User extends AuditingTimeEntity {
 
     @Builder
     public User(String email, Provider provider, String password,
-                String name, String deviceToken, Role role, Boolean isMarketing){
+                String name, String deviceToken, Role role, Boolean isMarketing,
+                String socialToken, String phoneNumber){
         this.email = email;
         this.provider = provider;
         this.password=password;
@@ -99,6 +101,8 @@ public class User extends AuditingTimeEntity {
         this.deviceToken = deviceToken;
         this.role=role;
         this.isMarketing=isMarketing;
+        this.socialToken = socialToken;
+        this.phoneNumber = phoneNumber;
         this.accountList=new ArrayList<>();
         this.lessonList=new ArrayList<>();
         this.notificationLogList = new ArrayList<>();
@@ -114,5 +118,12 @@ public class User extends AuditingTimeEntity {
 
     public void setDeviceToken(String deviceToken) {
         this.deviceToken = deviceToken;
+    }
+
+    public void updateInfo(String name, Role role, String phone, Boolean isMarketing) {
+        this.name = name;
+        this.role = role;
+        this.phoneNumber = phone;
+        this.isMarketing = isMarketing;
     }
 }
