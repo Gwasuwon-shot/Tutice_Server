@@ -424,37 +424,33 @@ public class ScheduleService {
 
         // 레슨 스케쥴 정보 구성
         List<GetScheduleByLessonResponse> getScheduleByLessonResponseList = new ArrayList<>();
-        scheduleRepository.findAllByLessonAndCycleOrderByDateDesc(lesson, lesson.getCycle())
+        scheduleRepository.findAllByLessonAndCycleAndStatusNotOrderByDateDesc(lesson, lesson.getCycle(), ScheduleStatus.CANCEL)
                 .forEach(s -> {
-                            //스케쥴이 취소상태이면 뒤로가기
-                            if (s.getStatus() != ScheduleStatus.CANCEL) {
-                                //스케쥴날짜가 오늘날짜보다 이전인지 확인
-                                if (today.isAfter(s.getDate())) {
-                                    getScheduleByLessonResponseList.add(
-                                            GetScheduleByLessonResponse.of(
-                                                    s.getIdx(),
-                                                    DateAndTimeConvert.localDateConvertString(s.getDate()),
-                                                    s.getStatus().getValue(),
-                                                    DateAndTimeConvert.localTimeConvertString(s.getStartTime()),
-                                                    DateAndTimeConvert.localTimeConvertString(s.getEndTime())));
-                                }
-                                if (today.isEqual(s.getDate())) {
-                                    //수업시작시간확인
+                    //스케쥴날짜가 오늘날짜보다 이전인지 확인
+                    if (today.isAfter(s.getDate())) {
+                        getScheduleByLessonResponseList.add(
+                                GetScheduleByLessonResponse.of(
+                                        s.getIdx(),
+                                        DateAndTimeConvert.localDateConvertString(s.getDate()),
+                                        s.getStatus().getValue(),
+                                        DateAndTimeConvert.localTimeConvertString(s.getStartTime()),
+                                        DateAndTimeConvert.localTimeConvertString(s.getEndTime())));
+                    }
+                    if (today.isEqual(s.getDate())) {
+                        //수업시작시간확인
 
-                                    if (!nowTime.isBefore(s.getStartTime())) {
-                                        getScheduleByLessonResponseList.add(
-                                                GetScheduleByLessonResponse.of(
-                                                        s.getIdx(),
-                                                        DateAndTimeConvert.localDateConvertString(s.getDate()),
-                                                        s.getStatus().getValue(),
-                                                        DateAndTimeConvert.localTimeConvertString(s.getStartTime()),
-                                                        DateAndTimeConvert.localTimeConvertString(s.getEndTime())));
-                                    }
+                        if (!nowTime.isBefore(s.getStartTime())) {
+                            getScheduleByLessonResponseList.add(
+                                    GetScheduleByLessonResponse.of(
+                                            s.getIdx(),
+                                            DateAndTimeConvert.localDateConvertString(s.getDate()),
+                                            s.getStatus().getValue(),
+                                            DateAndTimeConvert.localTimeConvertString(s.getStartTime()),
+                                            DateAndTimeConvert.localTimeConvertString(s.getEndTime())));
+                        }
 
-                                }
-
-                            }
-                        });
+                    }
+                });
         return getScheduleByLessonResponseList;
 
 

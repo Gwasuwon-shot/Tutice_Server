@@ -31,7 +31,10 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     boolean existsByLessonAndCycleAndStatusAndDateIsBefore(Lesson lesson, Long cycle, ScheduleStatus scheduleStatus, LocalDate now);
     boolean existsByLessonAndCycleAndStatusAndDateAndStartTimeLessThanEqualAndIdxNot(Lesson lesson, Long cycle, ScheduleStatus scheduleStatus, LocalDate date, LocalTime startTime, Long idx);
     Schedule findTopByLessonAndCycleOrderByDateDesc(Lesson lesson, Long cycle);
-    List<Schedule> findAllByLessonAndCycleOrderByDateDesc(Lesson lesson, Long cycle);
+    List<Schedule> findAllByLessonAndCycleAndStatusOrderByDateDesc(Lesson lesson, Long cycle, ScheduleStatus scheduleStatus);
+
+    List<Schedule> findAllByLessonAndCycleAndStatusNotOrderByDateDesc(Lesson lesson, Long cycle, ScheduleStatus scheduleStatus);
+
     List<Schedule> findAllByDateAndEndTimeAndStatus(LocalDate now, LocalTime now1, ScheduleStatus scheduleStatus);
     boolean existsByStatusAndDateIsBeforeAndLesson(ScheduleStatus scheduleStatus, LocalDate now, Lesson lesson);
     boolean existsByStatusAndDateAndStartTimeLessThanEqualAndLessonOrderByDate(ScheduleStatus scheduleStatus, LocalDate now, LocalTime now1, Lesson lesson);
