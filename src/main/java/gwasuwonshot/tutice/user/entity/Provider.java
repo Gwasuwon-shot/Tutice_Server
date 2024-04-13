@@ -9,8 +9,12 @@ import java.util.Arrays;
 @Getter
 @RequiredArgsConstructor
 public enum Provider implements EnumModel {
-    LOCAL("PROVIDER_LOCAL","자체"),
-    KAKAO("PROVIDER_KAKAO","카카오");
+    LOCAL("PROVIDER_LOCAL", "자체"),
+    KAKAO("PROVIDER_KAKAO","카카오"),
+    NAVER("PROVIDER_NAVER","네이버"),
+    TEMP("PROVIDER_TEMP","임시"),
+    TEMP_PARENTS("PROVIDER_TEMP_PARENTS","임시 학부모 유저");;
+
     private final String key;
     private final String value;
 

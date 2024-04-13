@@ -1,15 +1,18 @@
 package gwasuwonshot.tutice.config.jwt;
 
 import gwasuwonshot.tutice.common.exception.BasicException;
+import gwasuwonshot.tutice.common.exception.ErrorStatus;
 import gwasuwonshot.tutice.user.exception.authException.InvalidAccessTokenException;
 import gwasuwonshot.tutice.user.exception.authException.NullAccessTokenException;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Header;
+import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import gwasuwonshot.tutice.common.exception.ErrorStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -51,6 +54,7 @@ public class JwtService {
     // Refresh Token 발급
     public String issuedRefreshToken(String userIdx) {
         String refreshToken = issuedToken("refresh_token", refreshTokenExpiryTime, userIdx);
+        this.deleteToken(Long.valueOf(userIdx));
         redisTemplate.opsForValue().set(String.valueOf(userIdx), refreshToken, Duration.ofMillis(refreshTokenExpiryTime));
         return refreshToken;
     }
@@ -132,14 +136,46 @@ public class JwtService {
         redisTemplate.opsForValue().set(token, status, Duration.ofMillis(expiration));
     }
 
-    private String getToken() {
+    public String getToken() {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-
         String header = request.getHeader("Authorization");
         if (header == null) throw new NullAccessTokenException(ErrorStatus.NULL_ACCESS_TOKEN_EXCEPTION, ErrorStatus.NULL_ACCESS_TOKEN_EXCEPTION.getMessage());
         final String token = header.substring(7);
-        if (!verifyToken(token)) throw new InvalidAccessTokenException(ErrorStatus.INVALID_ACCESS_TOKEN_EXCEPTION, ErrorStatus.INVALID_ACCESS_TOKEN_EXCEPTION.getMessage());
-
+        if (!checkExpiryTime(token)) throw new InvalidAccessTokenException(ErrorStatus.INVALID_TIME_EXPIRED_EXCEPTION, ErrorStatus.INVALID_TIME_EXPIRED_EXCEPTION.getMessage());
         return token;
+    }
+
+    private boolean checkExpiryTime(String token) {
+        try {
+            final Claims claims = getBody(token);
+            throw new BasicException(ErrorStatus.TOKEN_TIME_EXPIRED_EXCEPTION, ErrorStatus.TOKEN_TIME_EXPIRED_EXCEPTION.getMessage());
+        } catch (RuntimeException e) {
+            if (e instanceof ExpiredJwtException) {
+                return true;
+            }
+            return false;
+        }
+    }
+
+    public void checkTokenExpiryTime(Long userIdx, String refreshTokenRequest) {
+        String refreshToken = (String) redisTemplate.opsForValue().get(String.valueOf(userIdx));
+        if(refreshToken == null) throw new BasicException(ErrorStatus.TOKEN_TIME_EXPIRED_EXCEPTION, ErrorStatus.TOKEN_TIME_EXPIRED_EXCEPTION.getMessage());
+        if(!refreshToken.equals(refreshTokenRequest)) throw new BasicException(ErrorStatus.INVALID_REFRESH_TOKEN_EXCEPTION, ErrorStatus.INVALID_REFRESH_TOKEN_EXCEPTION.getMessage());
+    }
+
+    public Long getUserIdx() {
+        String userId = String.valueOf(parseClaims().get(CLAIM_NAME));
+        return Long.parseLong(userId);
+    }
+    public Claims parseClaims() {
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey())
+                    .build()
+                    .parseClaimsJws(getToken())
+                    .getBody();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims();
+        }
     }
 }

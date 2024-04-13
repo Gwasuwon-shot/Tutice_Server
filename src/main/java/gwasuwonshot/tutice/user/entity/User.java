@@ -1,9 +1,7 @@
 package gwasuwonshot.tutice.user.entity;
 
 import gwasuwonshot.tutice.common.entity.AuditingTimeEntity;
-import gwasuwonshot.tutice.common.exception.ErrorStatus;
 import gwasuwonshot.tutice.lesson.entity.Lesson;
-import gwasuwonshot.tutice.user.exception.userException.InvalidRoleException;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,11 +13,11 @@ import java.util.List;
 
 @Entity
 @Table( //두개 칼럼 조합 유니크
-        name="user",
-        uniqueConstraints={
+        name = "user",
+        uniqueConstraints = {
                 @UniqueConstraint(
-                        name="UniqueEmailAndProvider",
-                        columnNames={"email", "provider"}
+                        name = "UniqueEmailAndProvider",
+                        columnNames = {"email", "provider"}
                 )
         }
 )
@@ -31,16 +29,17 @@ public class User extends AuditingTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
-    @Column(nullable = false, name = "email")
     private String email;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "provider", nullable = false)
-    private Provider provider = Provider.LOCAL;
+    private Provider provider = Provider.TEMP;
+
+    private String socialToken;
+
+    private String phoneNumber;
 
     private String password;
 
-    @Column(nullable = false)
     private String name;
 
     private String deviceToken;
@@ -48,7 +47,6 @@ public class User extends AuditingTimeEntity {
     private Boolean isMarketing;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private Role role;
 
     @OneToMany(mappedBy = "teacher", cascade = {CascadeType.REMOVE})
@@ -65,7 +63,7 @@ public class User extends AuditingTimeEntity {
     public static User toEntity(String email, String password, String name, Role role, Boolean isMarketing) {
         return User.builder()
                 .email(email)
-                .provider(Provider.LOCAL)
+                .provider(Provider.TEMP)
                 .password(password)
                 .name(name)
                 .role(role)
@@ -73,42 +71,70 @@ public class User extends AuditingTimeEntity {
                 .build();
     }
 
-    public void addAccount(Account account){
+    public static User toEntity(String socialToken, Provider provider) {
+        return User.builder()
+                .socialToken(socialToken)
+                .provider(provider)
+                .build();
+    }
+
+    public static User toEntity(String name, String socialToken, Provider provider, String phoneNumber) {
+        return User.builder()
+                .name(name)
+                .socialToken(socialToken)
+                .provider(provider)
+                .phoneNumber(phoneNumber)
+                .build();
+    }
+
+    public void addAccount(Account account) {
         accountList.add(account);
     }
 
-    public void addLesson(Lesson lesson){
+    public void addLesson(Lesson lesson) {
         lessonList.add(lesson);
     }
 
-    public void addNotificationLog(NotificationLog notificationLog){
+    public void addNotificationLog(NotificationLog notificationLog) {
         notificationLogList.add(notificationLog);
     }
 
     @Builder
     public User(String email, Provider provider, String password,
-                String name, String deviceToken, Role role, Boolean isMarketing){
+                String name, String deviceToken, Role role, Boolean isMarketing,
+                String socialToken, String phoneNumber) {
         this.email = email;
         this.provider = provider;
-        this.password=password;
+        this.password = password;
         this.name = name;
         this.deviceToken = deviceToken;
-        this.role=role;
-        this.isMarketing=isMarketing;
-        this.accountList=new ArrayList<>();
-        this.lessonList=new ArrayList<>();
+        this.role = role;
+        this.isMarketing = isMarketing;
+        this.socialToken = socialToken;
+        this.phoneNumber = phoneNumber;
+        this.accountList = new ArrayList<>();
+        this.lessonList = new ArrayList<>();
         this.notificationLogList = new ArrayList<>();
     }
 
 
-
-
-
-    public Boolean isMatchedRole(Role matchRole){
+    public Boolean isMatchedRole(Role matchRole) {
         return this.getRole().equals(matchRole);
     }
 
     public void setDeviceToken(String deviceToken) {
         this.deviceToken = deviceToken;
+    }
+
+    public void updateInfo(String name, Role role, String phone, Boolean isMarketing) {
+        this.name = name;
+        this.role = role;
+        this.phoneNumber = phone;
+        this.isMarketing = isMarketing;
+    }
+
+    public void updateSocialInfo(Provider provider, String socialToken) {
+        this.provider = provider;
+        this.socialToken = socialToken;
     }
 }

@@ -12,12 +12,14 @@ public enum SuccessStatus {
      * 200 OK
      */
     LOGIN_SUCCESS(HttpStatus.OK, "로그인에 성공했습니다."),
-    NEW_TOKEN_SUCCESS(HttpStatus.OK, "토큰 재발급에 성공했습니다."),
+    REISSUE_TOKEN_SUCCESS(HttpStatus.OK, "토큰 재발급에 성공했습니다."),
     GET_TODAY_DATE_SUCCESS(HttpStatus.OK,"오늘 날짜와 요일을 가져오는데 성공했습니다."),
     GET_USER_NAME_SUCCESS(HttpStatus.OK, "유저 이름을 가져오는데 성공했습니다."),
     CHECK_DUPLICATION_EMAIL_SUCCESS(HttpStatus.OK, "사용 가능한 이메일 입니다."),
     LOGOUT_SUCCESS(HttpStatus.OK, "로그아웃에 성공했습니다."),
     VALIDATE_TIME_RANGE_SUCCESS(HttpStatus.OK, "유효한 시간입니다."),
+    SEND_VALIDATION_NUMBER_SUCCESS(HttpStatus.OK, "인증번호 전송에 성공했습니다."),
+    VALIDATE_PHONE_SUCCESS(HttpStatus.OK, "전화번호 인증에 성공했습니다."),
 
 
     GET_LESSON_EXISTENCE_BY_USER_SUCCESS(HttpStatus.OK, "유저별로 연결된 수업 여부를 가져오는데 성공했습니다."),
@@ -33,7 +35,7 @@ public enum SuccessStatus {
     GET_ACCOUNT_BY_LESSON_SUCCESS(HttpStatus.OK,"수업에 연결된 계좌를 가져오는데 성공했습니다."),
     GET_PAYMENT_RECORD_BY_LESSON_SUCCESS(HttpStatus.OK,"입금 내역을 가져오는데 성공했습니다."),
     GET_MISSING_ATTENDANCE_EXISTENCE_BY_LESSON_EXIST_SUCCESS(HttpStatus.OK, "수업 이전 회차 누락 출결 유무를 가져오는데 성공했습니다."),
-
+    GET_NOTIFICATION_STATUS_SUCCESS(HttpStatus.OK, "유저의 알림 상태가 허용되어 있습니다."),
 
     GET_MISSING_ATTENDANCE_EXISTENCE_BY_TEACHER_SUCCESS(HttpStatus.OK, "누락 출결 유무를 가져오는데 성공했습니다."),
     GET_MISSING_MAINTENANCE_EXIST_BY_TEACHER_SUCCESS(HttpStatus.OK, "연장 필요 수업 유무를 가져오는데 성공했습니다."),
