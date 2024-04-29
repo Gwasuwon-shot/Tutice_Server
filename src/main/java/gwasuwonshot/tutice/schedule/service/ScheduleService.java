@@ -579,4 +579,26 @@ public class ScheduleService {
         boolean isLastCount = !scheduleRepository.existsByLessonAndCycleAndStatus(schedule.getLesson(), schedule.getCycle(), ScheduleStatus.NO_STATUS);
         return UpdateScheduleAttendanceResponse.of(isLastCount, LocalDate.now());
     }
+
+    @Transactional
+    public void deleteSchedule(Long userIdx, Long scheduleIdx) {
+        // 유저 존재 여부
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+        // 유저 선생님 여부
+        if (!user.isMatchedRole(Role.TEACHER))
+            throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION, ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
+        // 스케줄 존재 여부
+        Schedule schedule = scheduleRepository.findById(scheduleIdx)
+                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_SCHEDULE_EXCEPTION, ErrorStatus.NOT_FOUND_SCHEDULE_EXCEPTION.getMessage()));
+        // 출결 상태가 존재하는 스케줄 체크
+        if (!schedule.getStatus().equals(ScheduleStatus.NO_STATUS))
+            throw new AlreadyUpdateScheduleAttendanceException(ErrorStatus.ALREADY_UPDATE_SCHEDULE_ATTENDANCE_EXCEPTION, ErrorStatus.ALREADY_UPDATE_SCHEDULE_ATTENDANCE_EXCEPTION.getMessage());
+        // 스케줄 삭제
+        scheduleRepository.delete(schedule);
+        // 스케줄 자동 생성
+        Schedule lastSchedule = scheduleRepository.findTopByLessonAndCycleOrderByDateDesc(schedule.getLesson(), schedule.getCycle());
+        scheduleRepository.saveAll(Schedule.autoCreateSchedule(lastSchedule.getDate().plusDays(1), 1L, schedule.getLesson()));
+
+    }
 }

@@ -155,6 +155,14 @@ public class ScheduleController {
           scheduleService.updateScheduleAttendance(userIdx, request));
  }
 
+ @DeleteMapping("/{scheduleIdx}")
+ @ResponseStatus(HttpStatus.OK)
+ public ApiResponse<Boolean> deleteSchedule(@UserIdx final Long userIdx,
+                                            @PathVariable final Long scheduleIdx) {
+  scheduleService.deleteSchedule(userIdx, scheduleIdx);
+  return ApiResponse.success(SuccessStatus.DELETE_SCHEDULE_SUCCESS);
+ }
+
 }
 
 
