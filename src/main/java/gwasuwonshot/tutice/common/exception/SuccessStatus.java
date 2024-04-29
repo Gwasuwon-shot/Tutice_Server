@@ -20,6 +20,7 @@ public enum SuccessStatus {
     VALIDATE_TIME_RANGE_SUCCESS(HttpStatus.OK, "유효한 시간입니다."),
     SEND_VALIDATION_NUMBER_SUCCESS(HttpStatus.OK, "인증번호 전송에 성공했습니다."),
     VALIDATE_PHONE_SUCCESS(HttpStatus.OK, "전화번호 인증에 성공했습니다."),
+    GET_NAVER_PROFILE_INFO_SUCCESS(HttpStatus.OK, "네이버 유저 정보를 가져오는데 성공했습니다."),
 
 
     GET_LESSON_EXISTENCE_BY_USER_SUCCESS(HttpStatus.OK, "유저별로 연결된 수업 여부를 가져오는데 성공했습니다."),
