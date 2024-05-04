@@ -9,14 +9,12 @@ import lombok.*;
 @Builder
 public class GetAccountByLessonResponse {
     private Long idx;
-    private String name;
     private String bank;
     private String number;
 
     public static GetAccountByLessonResponse of(Account account) {
         return GetAccountByLessonResponse.builder()
                 .idx(account.getIdx())
-                .name(account.getName())
                 .bank(account.getBank().getValue())
                 .number(account.getNumber())
                 .build();
