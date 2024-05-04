@@ -3,15 +3,10 @@ package gwasuwonshot.tutice.user.controller;
 import gwasuwonshot.tutice.common.dto.ApiResponse;
 import gwasuwonshot.tutice.common.exception.ErrorStatus;
 import gwasuwonshot.tutice.common.exception.SuccessStatus;
-import gwasuwonshot.tutice.user.dto.request.CheckDuplicationEmailRequest;
-import gwasuwonshot.tutice.user.dto.request.LocalLoginRequest;
-import gwasuwonshot.tutice.user.dto.request.LocalSignUpRequest;
-import gwasuwonshot.tutice.user.dto.request.SendValidationNumberRequest;
-import gwasuwonshot.tutice.common.resolver.userIdx.UserIdx;
-import gwasuwonshot.tutice.user.dto.request.LoginRequest;
 import gwasuwonshot.tutice.config.sms.SmsService;
+import gwasuwonshot.tutice.external.naver.NaverService;
 import gwasuwonshot.tutice.user.dto.request.*;
-import gwasuwonshot.tutice.user.dto.request.ReissueTokenRequest;
+import gwasuwonshot.tutice.user.dto.response.GetNaverProfileInfoResponse;
 import gwasuwonshot.tutice.user.dto.response.LoginResponse;
 import gwasuwonshot.tutice.user.dto.response.ReissueTokenResponse;
 import gwasuwonshot.tutice.user.service.UserService;
@@ -28,6 +23,7 @@ public class AuthController {
 
     private final UserService userService;
     private final SmsService smsService;
+    private final NaverService naverService;
 
     @PostMapping("/local/sign-up")
     @ResponseStatus(HttpStatus.CREATED)
@@ -73,6 +69,12 @@ public class AuthController {
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<ReissueTokenResponse> reissueToken(@RequestBody @Valid final ReissueTokenRequest request) {
         return ApiResponse.success(SuccessStatus.REISSUE_TOKEN_SUCCESS, userService.reissueToken(request));
+    }
+
+    @PostMapping("/naver")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<GetNaverProfileInfoResponse> getNaverProfileInfo(@RequestBody @Valid final GetNaverProfileInfoRequest request) {
+        return ApiResponse.success(SuccessStatus.GET_NAVER_PROFILE_INFO_SUCCESS, naverService.getNaverProfileInfo(request));
     }
 
 }
