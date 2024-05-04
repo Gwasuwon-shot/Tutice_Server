@@ -69,7 +69,7 @@ public class LessonService {
 
         Account account = Account.toEntity(
                 teacher,
-                request.getAccount().getName(),
+                teacher.getName(),
                 Bank.getByValue(request.getAccount().getBank()),
                 request.getAccount().getNumber()
         );
