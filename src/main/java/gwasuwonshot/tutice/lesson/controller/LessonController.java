@@ -126,7 +126,7 @@ public class LessonController {
             @UserIdx final Long userIdx,
             @Valid @RequestBody final UpdateLessonParentsRequest request) {
 
-        lessonService.updateLessonParents(userIdx, request.getLessonCode());
+        lessonService.updateLessonParents(userIdx, request.getLessonIdx() ,request.getParentsPhone());
         return ApiResponse.success(SuccessStatus.UPDATE_LESSON_PARENTS_SUCCESS);
 
     }
