@@ -119,7 +119,7 @@ public class UserService {
 
     public void sendValidationNumber(SendValidationNumberRequest request) {
         // 전화번호 중복 확인
-        if(userRepository.existsByPhoneNumber(request.getPhone())) throw new AlreadyExistPhoneNumberException(ErrorStatus.ALREADY_EXIST_PHONE_NUMBER_EXCEPTION, ErrorStatus.ALREADY_EXIST_PHONE_NUMBER_EXCEPTION.getMessage());
+        if(userRepository.existsByPhoneNumberAndProviderNot(request.getPhone(), Provider.TEMP_PARENTS)) throw new AlreadyExistPhoneNumberException(ErrorStatus.ALREADY_EXIST_PHONE_NUMBER_EXCEPTION, ErrorStatus.ALREADY_EXIST_PHONE_NUMBER_EXCEPTION.getMessage());
         smsService.sendSMS(request.getPhone());
     }
 
