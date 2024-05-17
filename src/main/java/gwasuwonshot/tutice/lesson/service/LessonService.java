@@ -502,11 +502,6 @@ public class LessonService {
         //1.학부모 번호의 유저가 있는지 찾기
         User parents = userRepository.findByPhoneNumber(parentsPhone);
 
-        //1.1 provider가 temp_parents가 아닌경우 역할이 학부모가 아니면 에러발생
-        if (!parents.getProvider().equals(Provider.TEMP_PARENTS) && !parents.isMatchedRole(Role.PARENTS)) {
-            throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION, ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
-        }
-
         //없으면 새로생성
         if (parents == null) {
             parents = User.toEntity(
@@ -515,6 +510,11 @@ public class LessonService {
                     Provider.TEMP_PARENTS,
                     parentsPhone);
             userRepository.save(parents);
+        }
+
+        //1.1 provider가 temp_parents가 아닌경우 역할이 학부모가 아니면 에러발생
+        if (!parents.getProvider().equals(Provider.TEMP_PARENTS) && !parents.isMatchedRole(Role.PARENTS)) {
+            throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION, ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
         }
 
 
