@@ -68,11 +68,10 @@ public class Lesson extends AuditingTimeEntity {
     @OneToMany(mappedBy = "lesson")
     private List<Schedule> scheduleList;
 
-    public static Lesson toEntity(User teacher, User parents, Account account, String subject, String studentName,
+    public static Lesson toEntity(User teacher, Account account, String subject, String studentName,
                                   Long count, Payment payment, Long amount, LocalDate startDate) {
         return Lesson.builder()
                 .teacher(teacher)
-                .parents(parents)
                 .account(account)
                 .subject(subject)
                 .studentName(studentName)

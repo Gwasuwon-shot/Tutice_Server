@@ -14,9 +14,6 @@ import javax.validation.constraints.Pattern;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CreateLessonRequestAccount {
-    @NotBlank(message = "예금주가 없습니다.")
-    @Schema(description = "예금주")
-    private String name;
 
     @NotBlank(message = "은행이 없습니다.")
     @Schema(description = "은행")

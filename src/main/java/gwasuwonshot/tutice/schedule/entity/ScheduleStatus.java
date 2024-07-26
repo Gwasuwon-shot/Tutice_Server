@@ -12,7 +12,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public enum ScheduleStatus implements EnumModel {
 
-    NO_STATUS("SCHEDULE_STATUS_NO_STATUS","상태없음"),
+    NO_STATUS("SCHEDULE_STATUS_NO_STATUS","수업예정"),
     ATTENDANCE("SCHEDULE_STATUS_ATTENDANCE","출석"),
     ABSENCE("SCHEDULE_STATUS_ABSENCE","결석"),
     CANCEL("SCHEDULE_STATUS_CANCEL", "취소");

@@ -69,36 +69,17 @@ public class LessonService {
 
         Account account = Account.toEntity(
                 teacher,
-                request.getAccount().getName(),
+                teacher.getName(),
                 Bank.getByValue(request.getAccount().getBank()),
                 request.getAccount().getNumber()
         );
         teacher.addAccount(account);
         accountRepository.save(account);
 
-        User parents = null;
-
-        //1.5 학부모 번호가 있으면 학부모 연결
-        if (request.getLesson().getParentsPhone() != null) {
-            // 해당 번호의 유저가 있는지 찾기
-            parents = userRepository.findByPhoneNumber(request.getLesson().getParentsPhone());
-
-            //없으면 새로생성
-            if (parents == null) {
-                parents = User.toEntity(
-                        Provider.TEMP_PARENTS.toString(),
-                        Provider.TEMP_PARENTS.toString(),
-                        Provider.TEMP_PARENTS,
-                        request.getLesson().getParentsPhone());
-                userRepository.save(parents);
-            }
-
-        }
 
         //2. 레슨등록
         Lesson lesson = Lesson.toEntity(
                 teacher,
-                parents,
                 account,
                 request.getLesson().getSubject(),
                 request.getLesson().getStudentName(),
@@ -470,33 +451,78 @@ public class LessonService {
         return isMissingMaintenance;
     }
 
+
+    // 아래는 더이상 쓰이지 않는 api
+//    @Transactional
+//    public void updateLessonParentsBefore2024(Long userIdx, String lessonCode) {
+//        //1. 유저가 학부모가 맞는지 보기
+//        User parents = userRepository.findById(userIdx)
+//                .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
+//
+//
+//        //0. 역할이 선생님이 아니면 에러발생
+//        if (!parents.isMatchedRole(Role.PARENTS)) {
+//            throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION, ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
+//        }
+//
+//        //2. 레슨코드해석
+//        Long lessonIdx = this.getLessonIdxFromLessonCode(lessonCode);
+//        //3. 해석한 레슨아이디로 레슨찾기 -> 없으면 404
+//        // 수업 존재 여부 확인
+//        Lesson lesson = lessonRepository.findByIdxAndIsFinishedAndDeletedAtIsNull(lessonIdx, false)
+//                .orElseThrow(() -> new NotFoundLessonException(ErrorStatus.NOT_FOUND_LESSON_EXCEPTION, ErrorStatus.NOT_FOUND_LESSON_EXCEPTION.getMessage()));
+//
+//        //4. 레슨에 연결된 학부모검사 -> 현유저가 아닌유저이면 409
+//        if (lesson.getParents() == null) {
+//            lesson.connectParents(parents);
+//
+//        } else if (lesson.getParents().equals(parents)) {
+//            //이미 같은유저가 연결된거면 성공으로 치기
+//        } else {
+//            throw new AlreadyExistLessonParentsException(ErrorStatus.ALREADY_EXIST_LESSON_PARENTS_EXCEPTION, ErrorStatus.ALREADY_EXIST_LESSON_PARENTS_EXCEPTION.getMessage());
+//        }
+//
+//
+//    }
+
+
     @Transactional
-    public void updateLessonParents(Long userIdx, String lessonCode) {
-        //1. 유저가 학부모가 맞는지 보기
-        User parents = userRepository.findById(userIdx)
+    public void updateLessonParents(Long userIdx, Long lessonIdx, String parentsPhone) {
+        //1. 유저가 선생님이 맞는지 보기
+        User teacher = userRepository.findById(userIdx)
                 .orElseThrow(() -> new NotFoundUserException(ErrorStatus.NOT_FOUND_USER_EXCEPTION, ErrorStatus.NOT_FOUND_USER_EXCEPTION.getMessage()));
 
 
         //0. 역할이 선생님이 아니면 에러발생
-        if (!parents.isMatchedRole(Role.PARENTS)) {
+        if (!teacher.isMatchedRole(Role.TEACHER)) {
             throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION, ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
         }
-        //2. 레슨코드해석
-        Long lessonIdx = this.getLessonIdxFromLessonCode(lessonCode);
-        //3. 해석한 레슨아이디로 레슨찾기 -> 없으면 404
-        // 수업 존재 여부 확인
+
+
+        //1.학부모 번호의 유저가 있는지 찾기
+        User parents = userRepository.findByPhoneNumber(parentsPhone);
+
+        //없으면 새로생성
+        if (parents == null) {
+            parents = User.toEntity(
+                    Provider.TEMP_PARENTS.toString(),
+                    Provider.TEMP_PARENTS.toString(),
+                    Provider.TEMP_PARENTS,
+                    parentsPhone);
+            userRepository.save(parents);
+        }
+
+        //1.1 provider가 temp_parents가 아닌경우 역할이 학부모가 아니면 에러발생
+        if (!parents.getProvider().equals(Provider.TEMP_PARENTS) && !parents.isMatchedRole(Role.PARENTS)) {
+            throw new InvalidRoleException(ErrorStatus.INVALID_ROLE_EXCEPTION, ErrorStatus.INVALID_ROLE_EXCEPTION.getMessage());
+        }
+
+
+        //2.lesson에 학부모 update
         Lesson lesson = lessonRepository.findByIdxAndIsFinishedAndDeletedAtIsNull(lessonIdx, false)
                 .orElseThrow(() -> new NotFoundLessonException(ErrorStatus.NOT_FOUND_LESSON_EXCEPTION, ErrorStatus.NOT_FOUND_LESSON_EXCEPTION.getMessage()));
 
-        //4. 레슨에 연결된 학부모검사 -> 현유저가 아닌유저이면 409
-        if (lesson.getParents() == null) {
-            lesson.connectParents(parents);
-
-        } else if (lesson.getParents().equals(parents)) {
-            //이미 같은유저가 연결된거면 성공으로 치기
-        } else {
-            throw new AlreadyExistLessonParentsException(ErrorStatus.ALREADY_EXIST_LESSON_PARENTS_EXCEPTION, ErrorStatus.ALREADY_EXIST_LESSON_PARENTS_EXCEPTION.getMessage());
-        }
+        lesson.connectParents(parents);
 
     }
 
